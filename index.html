@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counter Example</title>
+</head>
+<body>
+
+<h1>Counter: <span id="counterValue">0</span></h1>
+<button id="increaseButton">Increase Counter</button>
+
+<script>
+    // Initialize counter variable
+    let counter = 0;
+
+    // Get reference to the counter value span and button
+    const counterValueElement = document.getElementById('counterValue');
+    const increaseButton = document.getElementById('increaseButton');
+
+    // Attach a click event listener to the button
+    increaseButton.addEventListener('click', function() {
+        // Increment the counter
+        counter++;
+
+        // Update the displayed counter value
+        counterValueElement.textContent = counter;
+    });
+</script>
+
+</body>
+</html>
