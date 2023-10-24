@@ -43,36 +43,67 @@ function stopAllGathering() {
 }
 
 // State of each resource
-// Fetch the JSON data
-fetch("resources.json")
-    .then(response => {
-        // Check if the request was successful
-        if (!response.ok) {
-            throw new Error("Network response was not ok");
-        }
-        return response.json();
-    })
-    .then(data => {
-        // Now you have your data as a JavaScript object
-        console.log(data);
-        
-        // Continue with the rest of your code here
-        // For instance:
-        // let woodValue = data.wood.value;
-        // document.getElementById("woodValue").textContent = woodValue;
-        try {
-            let resources = data;
-            console.log(resources);
-        } catch (error) {
-            console.error("Error parsing the JSON data:", error);
-            console.log(resourcesScript.textContent);
-        }
-        
-    })
-    .catch(error => {
-        console.error("There was a problem fetching the JSON data:", error);
-    });
-
+const resources = {
+    "clones": {
+        "id": "makeClone",
+        "value": 0
+    },
+    "totalClones": {
+        "value": 0
+    },
+    "wood": {
+        "id": "gatherWood",
+        "isGetting": false,
+        "activeText": "Chopping Wood",
+        "defaultText": "Chop Wood",
+        "tools": [{"tool": "Axe", "val": 1.5}, {"tool": "Chainsaw", "val":3}],
+        "value": 0
+    },
+    "sticks": {
+        "id": "gatherSticks",
+        "isGetting": false,
+        "activeText": "Gathering Sticks",
+        "defaultText": "Gather Sticks",
+        "value": 0
+    },
+    "vines": {
+        "id": "gatherVines",
+        "isGetting": false,
+        "activeText": "Gathering Vines",
+        "defaultText": "Gather Vines",
+        "tools": [{"tool": "Axe", "val": 1.5}],
+        "value": 0
+    },
+    "rocks": {
+        "id": "gatherRocks",
+        "isGetting": false,
+        "activeText": "Gathering Rocks",
+        "defaultText": "Gather Rocks",
+        "value": 0
+    },
+    "fish": {
+        "id": "gatherFish",
+        "isGetting": false,
+        "activeText": "Gone Fishing",
+        "defaultText": "Go Fish",
+        "value": 0,
+        "tools": [{"tool": "Spear", "val":1}, {"tool": "Fishing Rod", "val": 2}]
+    },
+    "ponder":{
+        "id": "gatherPonder",
+        "isGetting": false,
+        "activeText": "Pondering",
+        "defaultText": "Ponder",
+        "value": 0
+    },
+    "ore": {
+        "value": 0,
+        "id": "gatherOre",
+        "isGetting": false,
+        "activeText": "Mining Ore",
+        "defaultText": "Mine Ore"
+    }
+}
 
 
 // Get function for materials
