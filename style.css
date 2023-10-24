@@ -1,0 +1,159 @@
+#production > * {
+    display: none;
+}
+.tabs > * {
+    display: none;
+}
+#sidebar > * {
+    display: none;
+}
+
+#production .startVisible {
+    display: block; /* or whatever your desired default display value is */
+}
+#sidebar .startVisible {
+    display: block; /* or whatever your desired default display value is */
+}
+
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: start;
+    background-color: #ddd;
+    color: #222;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+
+body.dark-mode {
+    background-color: #333;
+    color: #eee;
+}
+
+/* Adjusting for dark mode */
+body.dark-mode .tabs {
+    background-color: #333; /* Adjust this to your desired dark color for the tab container */
+    border-color: #444; /* Adjust this if you have borders */
+}
+
+body.dark-mode .tab-button {
+    background-color: #444; /* Dark button background */
+    color: #fff; /* White text for dark buttons */
+}
+
+body.dark-mode .tab-button.active {
+    background-color: #555; /* Slightly lighter button background for active state */
+    color: #eee; /* Slightly dimmer text for active state */
+}
+
+body.dark-mode .tab-content {
+    background-color: #3a3a3a; /* Adjust this to your desired dark color for the content container */
+}
+
+body.dark-mode #sidebar {
+    background-color: #2c2c2c; /* Adjust this to your desired dark color for the sidebar */
+}
+
+/* Other styles specific to your elements in dark mode can be added below in a similar manner */
+
+
+/* Initial button styling */
+#darkModeToggle {
+    background-color: #4a4a4a;
+    border: none;
+    border-radius: 15px;
+    padding: 10px 20px;
+    color: #ffffff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    outline: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover effect for the button */
+#darkModeToggle:hover {
+    background-color: #6a6a6a;
+}
+
+/* Active state for the button (while it's being pressed) */
+#darkModeToggle:active {
+    background-color: #2a2a2a;
+}
+
+/* If you want a visual change when dark mode is active (you can toggle this with JavaScript) */
+#darkModeToggle.dark {
+    background-color: #ffffff;
+    color: #4a4a4a;
+}
+
+
+
+
+
+#sidebar {
+    width: 200px;
+    height: 100vh;
+    background-color: #bbb;
+    border-left: 2px solid #000;
+    padding: 20px;
+}
+
+#sidebar.dark-mode {
+    width: 200px;
+    height: 100vh;
+    background-color: #272727;
+    border-left: 2px solid #ccc;
+    padding: 20px;
+}
+
+#main {
+    flex: 1;
+    padding: 20px;
+    background-color: #bbb;
+}
+
+#main.dark-mode {
+    flex: 1;
+    padding: 20px;
+    background-color: #272727;
+
+}
+
+button {
+    display: block;
+    margin-bottom: 10px;
+}
+
+#sidebar p {
+    size: 18px;
+    width: 100%;
+
+    margin: 0;
+    padding: 5px 0;
+}
+
+.tab-button {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    background-color: #444;
+    color: white;
+    outline: none;
+}
+
+.tab-button.active {
+    background-color: #666;
+}
+
+.tab-content .content {
+    display: none;
+    padding: 20px;
+    border: 1px solid #444;
+    background-color: #272727;
+}
+
+.tab-content .content.active {
+    display: block;
+}
