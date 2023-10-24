@@ -1,72 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clone Idle</title>
-    <link rel="stylesheet" href="style.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Clone Idle</title>
+	<link rel="stylesheet" href="style.css">
 
 </head>
 <body>
-  <button id="darkModeToggle">Light Mode</button>
+	<button id="darkModeToggle">Light Mode</button>
+	<button id="saveButton" onclick="saveGame()">Save</button>
+	<button id="deleteSaveButton" onclick="localStorage.removeItem('save')">Delete Save Data</button>
+<!-- For cutscenes -->
+<div id="overlay">
+	<p id="overlay-text">That fish didn't taste too good, hopefully you won't need to pilot any airplanes.</p>
+	<button id="overlay-button" onclick="hideOverlay()">Continue</button>
+</div>
 
-  <!-- Tabs navigation -->
-  <div id="tabs">
-    <button class="tab-button active" onclick="showTab('production')">Production</button>
-    <button class="tab-button" onclick="showTab('experiment')">Experiment</button>
-  </div>
+	<!-- Tabs navigation -->
+	<div id="tabs">
+	</div>
 
 <!-- Tab content -->
 <div class="tab-content" id = "main">
-  <div id="production" class="content active">
-      <h3 class = "startVisible" id = "message"> You find yourself alone in a forest </h3>
-      <button class="startVisible tooltip"  id="gatherSticks" data-tooltip-desc="Five, Six, Pick up sticks." data-tooltip-cost="Free"> Gather Sticks </button>
-      <button class="stick tooltip" id="gatherVines" data-tooltip-desc="Some vines are rubbery, others are gummy." data-tooltip-cost="Free"> Gather Vines </button>
+	<h3 class = "startVisible" id = "message"> You find yourself alone in a forest </h3>
+	<button class="eatFish" id="eatFish" onclick='eatFish()'>Eat fish</button>
+	<!-- <button onclick="fadeToBlack()">blackout</button> -->
 
-      <button class = "stick tooltip" id="gatherRocks" data-tooltip-desc="Not a single window to throw them through." data-tooltip-cost="Free"> Gather Rocks </button>
-      <button class = 'clone'         id="increaseButton" onclick="increaseClones(1)">Spawn</button>
-      <br>
-      <button class="woodToggle wood" id="gatherWood" data-tooltip-desc="An axe hurts way less than using your hands.">Chop Wood</button>
-      <br>
-      <button class="wood" id="createLumberjackButton" disabled>Assign Lumberjack</button>
-      <span class="wood" id="lumberjackCostText">Wood Cost: <span id="lumberjackCostValue">10</span></span>
-  </div>
-  <div id="experiment" class="experiment-tab content">
-    <h3>Crafting Materials:</h3>
-    <p class='craftRocks'>Rope: <span id = "ropeValue">0</span></p>
-    <p class = 'craftRocks'>Sharp Rocks: <span id = "sharpRocksValue">0</span>
+	<!-- PRODUCTION TAB (1) -->
+	<div id="productionTab" class="content active" data-target='productionTab'></div>
+		
 
-      <button id="craftRope" class="tooltip" data-tooltip-desc="The basis of attaching things to other things." data-tooltip-cost="3 vines">Twist vines together</button>
-    <button id="craftRocks" class = "tooltip" data-tooltip-desc="Craft a rock using nothing but rocks!" data-tooltip-cost="2 rocks">Bang rocks together</button>
-  </div>
+	<!-- EXPERIMENT TAB (2) -->
+	<div id="experimentTab" class="experiment-tab content" data-target='experimentTab'>
+		<div class="button-columns visible active">
+			<!-- This is where you will append the columns of buttons -->
+		</div>
+
+		<div class="rows visible active craftRocks rope">
+			<hr class='startVisible' id='brCraft'>
+			<p class='craftRocks rope'>Rope: <span id = "ropeValue">0</span></p>
+			<p class = 'craftRocks'>Sharp Rocks: <span id = "sharpRocksValue">0</span></p>
+			<p class='craftRocks'>Handles: <span id='handleValue'>0</span></p>
+			<p class='rope'>Staffs: <span id='staffValue'>0</span></p>
+			<p class='rope'>Spears: <span id='spearValue'>0</span></p>
+			<p class='rope'>Axes: <span id='axeValue'>0</span></p>
+			<p class='rope'>Fishing Rods: <span id='fishingRodValue'>0</span></p>
+		</div>
+	</div>
+
+
+	<!-- PONDER TAB (3) -->
+	<div id='ponderTab' class='ponder-tab content' data-target='ponderTab'>
+	</div>
+
+
+	<!-- JOBS TAB (4) -->
+	
+	<table id="skillsTable" class = 'dark-mode' >
+</table>
 </div>
 
 
 <div id="sidebar">
-  <div id="resources">
-    
-    <p class='clone'>People: <span id="clonesValue">0</span></p>
-    
-    <p class='start startVisible'>Sticks: <span id="sticksValue">0</span></p>
-    <p class='stick'>Vines: <span id="vinesValue">0</span></p>
-    <p class='stick'>Rocks: <span id="rocksValue">0</span></p>
-    
-    <p class='wood'>Wood: <span id="woodValue">0</span></p>
-    
-    <p class='wood'>Lumberjacks: <span id="lumberjackValue">0</span></p>
-  </div>
-    
-  <div id="tools" class = 'stick' style = "display:none">
-    <hr>
-    <ul id="tools-list">
-      <li>Bare Hands</li>
-    </ul>
-  </div>
+	<div id="resources">
+	<h4 class='startVisible'>Resources</h4>
+	<p class='clone'>Clones: <span id="clonesValue">0</span></p>
+	
+	<p class='start startVisible'>Sticks: <span id="sticksValue">0</span></p>
+	<p class='stick'>Vines: <span id="vinesValue">0</span></p>
+	<p class='stick'>Rocks: <span id="rocksValue">0</span></p>
+	<p class='fishing'>Fish: <span id='fishValue'>0</span></p>
+	<p class='wood'>Wood: <span id="woodValue">0</span></p>
+	<p class='clone'>Ponder: <span id="ponderValue">0</span></p>
+	
+	<!-- <p class='wood'>Lumberjacks: <span id="lumberjackValue">0</span></p> -->
+	</div>
+	
+	<div id="tools" class = 'craftRocks'>
+	<hr>
+	<h4>Tools</h4>
+	<ul id="tools-list">
+		<li>Bare Hands</li>
+	</ul>
+	</div>
 </div>
 
-<div id="skillsContainer">
-    <!-- Dynamic progress bars will be appended here -->
-</div>
+
+
 
 
 <script src="script.js"></script>

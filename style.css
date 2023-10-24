@@ -1,20 +1,37 @@
-#production > * {
+#productionTab > * {
     display: none;
 }
 #sidebar > #resources > * {
     display: none;
 }
 
-#production .startVisible {
+#productionTab .startVisible {
     display: block; /* or whatever your desired default display value is */
 }
 #sidebar > #resources > .startVisible {
     display: block; /* or whatever your desired default display value is */
 }
+.rows > * {
+    display: none;
+}
+.experiment-tab {
+    display: flex;
+    flex-direction: column;
+}
+
+.button-columns {
+    display: flex;
+    justify-content: space-between;
+}
+
+.button-columns > div {
+    width: 33.33%;
+}
+
 /* Styles for all direct children inside #tabs (i.e., your buttons) */
 #tabs > * {
     transform: translateX(-200%);  // This moves the element left of its starting position
-    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    transition: 0.3s;
     display: none;
 }
 
@@ -24,28 +41,32 @@
 }
 
 
-/* Light mode progress bar styles */
-#skillsContainer .progress-bar {
-    background-color: #e0e0e0;
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 10px;
+#eatFish {
+    display: none;
+}
+#eatFish.visible {
+    display: block;
 }
 
-#skillsContainer .progress-bar .filled {
-    background-color: #4CAF50;
-    height: 20px;
-    width: 0%; /* Initial width */
+
+#skillsTable {
+    width: calc(100% - 250px); /* 200px is the width of your sidebar. Adjust as needed. */
+    background-color: #f5f5f5; /* Light mode background color */
+    color: #333; /* Light mode text color */
+    position:fixed; 
+    bottom:0; 
+    left:0;
 }
 
-/* Dark mode progress bar styles */
-.dark-mode #skillsContainer .progress-bar {
-    background-color: #444;
+body.dark-mode #skillsTable {
+    background-color: #272727; /* Dark mode background color */
+    color: #eee; /* Dark mode text color */
 }
 
-.dark-mode #skillsContainer .progress-bar .filled {
-    background-color: #76FF03;
+.progressBar {
+    transition: width 0.3s linear;
 }
+
 
 
 
@@ -140,6 +161,17 @@ body.dark-mode #sidebar {
     right: 10px;
 }
 
+#saveButton {
+    position: fixed;
+    bottom: 60px;
+    right: 10px;
+}
+#deleteSaveButton {
+    position: fixed;
+    bottom: 110px;
+    right: 10px;
+}
+
 /* Hover effect for the button */
 #darkModeToggle:hover {
     background-color: #6a6a6a;
@@ -209,15 +241,51 @@ button:hover{
     padding-right: 20px;
 }
 .tab-button.active {
-    background-color: #666;
+    background-color: #66a;
 }
 
-.tab-content .content {
+.tab-content > .content {
     display: none;
     padding: 20px;
     border: 1px solid #444;
 }
 
-.tab-content .content.active {
-    display: block;
+.tab-content > .content.active {
+    display: flex;
+}
+
+
+
+/* Cutscenes */
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 1); /* Fully transparent black background */
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* This ensures the overlay is above all other content */
+    transition: 0.5s;
+}
+
+#overlay-text {
+    position:  fixed;
+    top: 40%;
+    color: white;
+    opacity: 0;
+    transition: opacity 1s;
+}
+
+#overlay-button {
+    color: white;
+    background-color: transparent;
+    border: 2px solid white;
+    padding: 10px 20px;
+    margin-top: 20px;
+    display: none;
+    cursor: pointer;
 }
