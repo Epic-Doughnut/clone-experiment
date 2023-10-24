@@ -5,18 +5,19 @@ let gettingSticks = false;
 let gettingVines = false;
 let gettingRocks = false;
 let gettingWood = false;
+let hasSharpRock = false;
 
 let lumberjacks = 0;
 var lumberjackCost = 10;
 
 // Materials storage
 // [name, total]
-let materials = [];
+// let materials = [];
 
-materials.push(["stick", 0]);
-materials.push(["vine", 0]);
-materials.push(["wood", 0]);
-materials.push(["rock", 0]);
+// materials.push(["stick", 0]);
+// materials.push(["vine", 0]);
+// materials.push(["wood", 0]);
+// materials.push(["rock", 0]);
 
 // Price chart
 // [name, principle, exponent]
@@ -24,6 +25,9 @@ let prices = [];
 
 prices.push(["lumberjacks", 10, 1.1]);
 
+
+// Tool list
+let tools = ["Bare Hands"];
 
 // Get references to the elements
 const messageElement = document.querySelector("#message");
@@ -69,31 +73,45 @@ function stopAllGathering() {
 
 // State of each resource
 const resources = {
-    wood: {
+    'wood': {
         isGetting: false,
         button: document.getElementById('gatherWood'),
         activeText: 'Chopping Wood',
-        defaultText: 'Chop Wood'
+        defaultText: 'Chop Wood',
+        value: 0
     },
-    sticks: {
+    'sticks': {
         isGetting: false,
         button: document.getElementById('gatherSticks'),
         activeText: 'Gathering Sticks',
-        defaultText: 'Gather Sticks'
+        defaultText: 'Gather Sticks',
+        value: 0
     },
-    vines: {
+    'vines': {
         isGetting: false,
         button: document.getElementById('gatherVines'),
         activeText: 'Gathering Vines',
-        defaultText: 'Gather Vines'
+        defaultText: 'Gather Vines',
+        value: 0
     },
-    rocks: {
+    'rocks': {
         isGetting: false,
         button: document.getElementById('gatherRocks'),
         activeText: 'Gathering Rocks',
-        defaultText: 'Gather Rocks'
+        defaultText: 'Gather Rocks',
+        value: 0
     }
 };
+
+// Get function for materials
+function getMaterial(material){
+    if(resources.hasOwnProperty(material)) {
+        return resources[material].value;
+    } else {
+        console.error("Invalid material:", material);  // For debugging
+        return -1;
+    }
+}
 
 function stopAllGathering() {
     for (let key in resources) {
@@ -121,6 +139,61 @@ resources.vines.button.addEventListener('click', () => toggleResource('vines'));
 resources.rocks.button.addEventListener('click', () => toggleResource('rocks'));
 
 
+/* CRAFTING RESOURCES */
+
+const craftedResources = {
+    'sharpRocks': {
+        button: document.getElementById('craftRocks'),
+        value: 0,
+        requires: ['rocks', 2]
+
+    },
+
+    'rope': {
+        button: document.getElementById('craftRope'),
+        value: 0,
+        requires: ['vines', 3]
+    }
+}
+
+function getCraftedResource(material){
+    if(craftedResources.hasOwnProperty(material)) {
+        return craftedResources[material].value;
+    } else {
+        console.error("Invalid crafted resource:", material);  // For debugging
+        return -1;
+    }
+}
+
+// Calculate the final number of crafted goods from bonuses
+function calcCraftBonus(resourceKey){
+    return 1;
+}
+
+// Craft function
+function craftResource(resourceKey){
+    if(!craftedResources.hasOwnProperty(resourceKey)) {
+        console.log("Invalid craft:" + resourceKey)
+        return;
+    }
+
+    var requirements = craftedResources[resourceKey].requires;
+    console.log("Crafting " + requirements[1] + " " + requirements[0] + " into " + calcCraftBonus(resourceKey) + " " + resourceKey);
+
+
+    if (getMaterial(requirements[0]) >= requirements[1]){
+        craftedResources[resourceKey].value += calcCraftBonus(resourceKey);
+        increaseMaterial(requirements[0], -requirements[1]);
+        document.querySelector("#" + resourceKey + "Value").textContent = craftedResources[resourceKey].value;
+
+    }
+}
+
+// Event listeners
+craftedResources.sharpRocks.button.addEventListener('click', () => craftResource('sharpRocks'));
+craftedResources.rope.button.addEventListener('click', () => craftResource('rope'));
+
+
 
 
 /* ASSIGNING JOBS */
@@ -144,20 +217,20 @@ document.getElementById('createLumberjackButton').addEventListener('click', func
 
 /* HELPER FUNCTIONS */
 
-// Get function for materials
-function getMaterial(material){
-    return materials.find(item => item[0] === material)[1];
-}
+
 
 // Generic increase
 function increaseMaterial(material, num){
-    var curr = materials.find(item => item[0] === material);
-    // if (curr === null){
-    //     return -1;
-    // }
+    // This check ensures that the material key exists in the resources map.
+    if(resources.hasOwnProperty(material)) {
+        resources[material].value += num;
+        document.querySelector("#" + material + "Value").textContent = resources[material].value;
+    } else {
+        console.error("Invalid material:", material);  // For debugging
+    }
 
-    curr[1] += num;
-    document.querySelector("#" + material + "Value").textContent = curr[1];
+    // resources[material].value += num;
+    // document.querySelector("#" + material + "Value").textContent = resources[material].value;
 
 }
 
@@ -181,29 +254,51 @@ function checkButtons(){
 // Make everything with the class "stage" visible
 function makeVisible(stage){
     const stageElements = document.querySelectorAll("." + stage);
+    stageElements.forEach(element => element.classList.add('visible'));
     stageElements.forEach(element => element.style.display = 'block');
+
 }
 
 // Check the requirements for each stage of the game
 function updateVisible(){
-    if (getMaterial("stick") >= 1){ // TODO: Make values larger
+    if (getMaterial("sticks") >= 1){ // TODO: Make values larger
         makeVisible("stick");
     }
 
-    if (getMaterial("rock") >= 1){
-        makeVisible("experiment-tab");
+    if (getMaterial("rocks") >= 1){
+        makeVisible("tab-button");
+    }
+
+    if (!hasSharpRock && getCraftedResource('sharpRocks') >= 1){
+        addTool("Sharp Rock");
+        hasSharpRock = true;
     }
 }
 
+function addTool(tool){
+    var ul = document.getElementById("tools-list");
+    var li = document.createElement("li");
+    li.appendChild(document.createTextNode(tool));
+    ul.appendChild(li);
+}
+
+function updateTooltipCosts() {
+    // const gatherVinesButton = document.getElementById("gatherVines");
+    // const cost = calculateVineCost(); // Some function that determines the cost
+    // gatherVinesButton.setAttribute("data-tooltip", "Gather vines. Cost: " + cost + " sticks.");
+}
+
+// Call the function when appropriate (e.g., when game state changes)
+// updateTooltipCosts();
 
 
 /* GAME LOOP */
 
 
 window.setInterval(function(){
-    increaseMaterial("stick", resources.sticks.isGetting ? 1 : 0);
-    increaseMaterial("vine", resources.vines.isGetting ? 1 : 0);
-    increaseMaterial("rock", resources.rocks.isGetting ? 1 : 0);
+    increaseMaterial("sticks", resources.sticks.isGetting ? 1 : 0);
+    increaseMaterial("vines", resources.vines.isGetting ? 1 : 0);
+    increaseMaterial("rocks", resources.rocks.isGetting ? 1 : 0);
     increaseMaterial("wood", lumberjacks + (resources.wood.isGetting ? 1 : 0));
 
     updateVisible();
@@ -233,11 +328,13 @@ function showTab(tabName) {
 /* DARK MODE */
 const darkModeToggle = document.getElementById("darkModeToggle");
 const body = document.body;
+body.classList.toggle('dark-mode');
+darkModeToggle.classList.toggle('dark');
 let isDark = true;
 
 darkModeToggle.addEventListener('click', () => {
     body.classList.toggle('dark-mode');
     darkModeToggle.classList.toggle('dark');
     isDark = !isDark;
-    darkModeToggle.textContent = !isDark ? "Light Mode" : "Dark Mode"
+    darkModeToggle.textContent = isDark ? "Light Mode" : "Dark Mode"
 });

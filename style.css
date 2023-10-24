@@ -1,19 +1,30 @@
 #production > * {
     display: none;
 }
-.tabs > * {
-    display: none;
-}
-#sidebar > * {
+#sidebar > #resources > * {
     display: none;
 }
 
 #production .startVisible {
     display: block; /* or whatever your desired default display value is */
 }
-#sidebar .startVisible {
+#sidebar > #resources > .startVisible {
     display: block; /* or whatever your desired default display value is */
 }
+/* Styles for all direct children inside #tabs (i.e., your buttons) */
+#tabs > * {
+    transform: translateX(-200%);  // This moves the element left of its starting position
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    display: none;
+}
+
+#tabs > *.visible {
+    transform: translateX(0); // Moves the element back to its original position
+    display: inline-block;
+}
+
+
+
 
 
 body {
@@ -47,15 +58,47 @@ body.dark-mode .tab-button.active {
     color: #eee; /* Slightly dimmer text for active state */
 }
 
-body.dark-mode .tab-content {
-    background-color: #3a3a3a; /* Adjust this to your desired dark color for the content container */
-}
 
 body.dark-mode #sidebar {
     background-color: #2c2c2c; /* Adjust this to your desired dark color for the sidebar */
 }
 
 /* Other styles specific to your elements in dark mode can be added below in a similar manner */
+.tooltip {
+    position: relative;
+}
+
+.tooltip:hover::before,
+.tooltip:hover::after {
+    position: absolute;
+    left: 100%;
+    /*bottom: 100%;*/
+    /*transform: translateX(-50%);*/
+    border-radius: 4px;
+    white-space: nowrap;
+    font-size: 12px;
+    z-index: 1000;
+    pointer-events: none;
+    padding: 5px 10px;
+}
+
+.tooltip:hover::before {
+    content: attr(data-tooltip-desc);
+    bottom: 100%; /* Position above the button */
+    background-color: rgba(0, 0, 0, 0.85); /* Darker shade of black */
+    color: #fff;
+    margin-bottom: 2px; /* Adjust this for gap between description and cost */
+}
+
+.tooltip:hover::after {
+    content: attr(data-tooltip-cost);
+    bottom: calc(100% - 25px); /* Adjust this value based on tooltip size */
+    background-color: rgba(0, 0, 0, 0.65); /* Slightly lighter shade */
+    color: #ffc107; /* Gold-ish color for cost, adjust as needed */
+    border-top: 1px solid #fff; /* The horizontal line */
+}
+
+
 
 
 /* Initial button styling */
@@ -70,6 +113,9 @@ body.dark-mode #sidebar {
     transition: background-color 0.3s ease;
     outline: none;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position:  fixed;
+    bottom: 10px;
+    right: 10px;
 }
 
 /* Hover effect for the button */
@@ -100,26 +146,11 @@ body.dark-mode #sidebar {
     padding: 20px;
 }
 
-#sidebar.dark-mode {
-    width: 200px;
-    height: 100vh;
-    background-color: #272727;
-    border-left: 2px solid #ccc;
-    padding: 20px;
-}
-
 #main {
     flex: 1;
     padding: 20px;
-    background-color: #bbb;
 }
 
-#main.dark-mode {
-    flex: 1;
-    padding: 20px;
-    background-color: #272727;
-
-}
 
 button {
     display: block;
@@ -134,7 +165,7 @@ button {
     padding: 5px 0;
 }
 
-.tab-button {
+button {
     padding: 10px 20px;
     cursor: pointer;
     border: none;
@@ -143,6 +174,18 @@ button {
     outline: none;
 }
 
+button .gathering{
+    background-color: #66a;
+}
+
+button:hover{
+    background-color: #666;
+}
+
+.tab-button{
+    width: 100px;
+    padding-right: 20px;
+}
 .tab-button.active {
     background-color: #666;
 }
@@ -151,7 +194,6 @@ button {
     display: none;
     padding: 20px;
     border: 1px solid #444;
-    background-color: #272727;
 }
 
 .tab-content .content.active {
