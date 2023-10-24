@@ -24,6 +24,28 @@
 }
 
 
+/* Light mode progress bar styles */
+#skillsContainer .progress-bar {
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+#skillsContainer .progress-bar .filled {
+    background-color: #4CAF50;
+    height: 20px;
+    width: 0%; /* Initial width */
+}
+
+/* Dark mode progress bar styles */
+.dark-mode #skillsContainer .progress-bar {
+    background-color: #444;
+}
+
+.dark-mode #skillsContainer .progress-bar .filled {
+    background-color: #76FF03;
+}
 
 
 

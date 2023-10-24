@@ -6,6 +6,7 @@ let gettingVines = false;
 let gettingRocks = false;
 let gettingWood = false;
 let hasSharpRock = false;
+let skilled = false;
 
 let lumberjacks = 0;
 var lumberjackCost = 10;
@@ -143,18 +144,36 @@ resources.rocks.button.addEventListener('click', () => toggleResource('rocks'));
 
 const craftedResources = {
     'sharpRocks': {
-        button: document.getElementById('craftRocks'),
+        id: 'craftRocks',  // Added this so that you can reference the button's ID
         value: 0,
-        requires: ['rocks', 2]
-
+        requires: ['rocks', 2],
+        tool: 'Bare Hands'
     },
 
     'rope': {
-        button: document.getElementById('craftRope'),
+        id: 'craftRope',
         value: 0,
-        requires: ['vines', 3]
+        requires: ['vines', 3],
+        tool: 'Bare Hands'
+    },
+
+    'handle': {
+        id: 'craftHandle',
+        value: 0,
+        requires: ['sticks', 1],
+        tool: 'Sharp Rock'
     }
 }
+
+// Automatically add event listeners
+for (let key in craftedResources) {
+    let resource = craftedResources[key];
+    let button = document.getElementById(resource.id);
+    if (button) {
+        button.addEventListener('click', () => craftResource(key));
+    }
+}
+
 
 function getCraftedResource(material){
     if(craftedResources.hasOwnProperty(material)) {
@@ -188,11 +207,6 @@ function craftResource(resourceKey){
 
     }
 }
-
-// Event listeners
-craftedResources.sharpRocks.button.addEventListener('click', () => craftResource('sharpRocks'));
-craftedResources.rope.button.addEventListener('click', () => craftResource('rope'));
-
 
 
 
@@ -290,6 +304,55 @@ function updateTooltipCosts() {
 
 // Call the function when appropriate (e.g., when game state changes)
 // updateTooltipCosts();
+
+const skills = {
+    gathering: {
+        value: 0,
+        affectedResources: ['sticks', 'vines']
+    },
+    masonry: {
+        value: 0,
+        affectedResources: ['rocks']
+    },
+    carpentry: {
+        value: 0,
+        affectedResources: ['wood']
+    }
+};
+
+
+function updateSkills(resource){
+    for (let skill in skills) {
+        if (skills[skill].affectedResources.includes(resource)) {
+            skills[skill].value++;
+        }
+    }
+    if (skilled)
+    {
+        renderSkillBars();
+    }
+}
+
+function renderSkillBars() {
+    const container = document.getElementById('skillsContainer');
+    container.innerHTML = ''; // Clear existing bars
+
+    for (let skill in skills) {
+        // Create progress bar div
+        const progressBar = document.createElement('div');
+        progressBar.className = 'progress-bar';
+
+        // Create filled part of progress bar
+        const filled = document.createElement('div');
+        filled.className = 'filled';
+        filled.style.width = `${skills[skill].value}%`; // Assuming value is between 0 and 100
+
+        // Append filled to progressBar and progressBar to container
+        progressBar.appendChild(filled);
+        container.appendChild(progressBar);
+    }
+}
+
 
 
 /* GAME LOOP */
