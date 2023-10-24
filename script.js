@@ -2,28 +2,17 @@
 let clones = 0;
 
 let hasSharpRock = false;
-let skilled = true;
+let skilled = false;
 let hasGeneratedSkillTable = false;
-let ateFish = false;
 
-let lumberjacks = 0;
-var lumberjackCost = 10;
-
-// Materials storage
-// [name, total]
-// let materials = [];
-
-// materials.push(["stick", 0]);
-// materials.push(["vine", 0]);
-// materials.push(["wood", 0]);
-// materials.push(["rock", 0]);
 
 // Price chart
 // [name, principle, exponent]
 let prices = [];
+let stages = [];
+
 
 prices.push(["lumberjacks", 10, 1.1]);
-
 
 
 // Get references to the elements
@@ -32,14 +21,14 @@ const messageElement = document.querySelector("#message");
 const clonesValueElement = document.querySelector('#clonesValue');
 // const increaseButton = document.querySelector('#increaseButton');
 
-const startElements = document.querySelectorAll(".start");
-const stickElements = document.querySelectorAll(".stick");
-const woodElements = document.querySelectorAll('.wood');
+// const startElements = document.querySelectorAll(".start");
+// const stickElements = document.querySelectorAll(".stick");
+// const woodElements = document.querySelectorAll('.wood');
 
 
-const assignLumberjack = document.querySelector('#createLumberjackButton');
-const lumberjackValueElement = document.querySelector("#lumberjackValue");
-const lumberjackCostElement = document.querySelector("#lumberjackCostValue");
+// const assignLumberjack = document.querySelector('#createLumberjackButton');
+// const lumberjackValueElement = document.querySelector("#lumberjackValue");
+// const lumberjackCostElement = document.querySelector("#lumberjackCostValue");
 
 
 
@@ -54,57 +43,36 @@ function stopAllGathering() {
 }
 
 // State of each resource
-const resources = {
-    'clones': {
-        id: 'makeClone',
-        value: 0
-    },
-    'wood': {
-        id: 'gatherWood',
-        isGetting: false,
-        activeText: 'Chopping Wood',
-        defaultText: 'Chop Wood',
-        tools: [{tool: 'Axe', val: 1.5}, {tool: 'Chainsaw', val:3}],
-        value: 0
-    },
-    'sticks': {
-        id: 'gatherSticks',
-        isGetting: false,
-        activeText: 'Gathering Sticks',
-        defaultText: 'Gather Sticks',
-        value: 0
-    },
-    'vines': {
-        id: 'gatherVines',
-        isGetting: false,
-        activeText: 'Gathering Vines',
-        defaultText: 'Gather Vines',
-        tools: [{tool: 'Axe', val: 1.5}],
-        value: 0
-    },
-    'rocks': {
-        id: 'gatherRocks',
-        isGetting: false,
-        activeText: 'Gathering Rocks',
-        defaultText: 'Gather Rocks',
-        value: 0
-    },
-    'fish': {
-        id: 'gatherFish',
-        isGetting: false,
-        activeText: 'Gone Fishing',
-        defaultText: 'Go Fish',
-        value: 0,
-        tools: [{tool: "Spear", val:1}, {tool: 'Fishing Rod', val: 2}]
-    },
-    'ponder':{
-        id: 'gatherPonder',
-        isGetting: false,
-        activeText: 'Pondering',
-        defaultText: 'Ponder',
-        value: 0,
-    }
-};
+// Fetch the JSON data
+fetch("resources.json")
+    .then(response => {
+        // Check if the request was successful
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Now you have your data as a JavaScript object
+        console.log(data);
+        
+        // Continue with the rest of your code here
+        // For instance:
+        // let woodValue = data.wood.value;
+        // document.getElementById("woodValue").textContent = woodValue;
+        try {
+            let resources = data;
+            console.log(resources);
+        } catch (error) {
+            console.error("Error parsing the JSON data:", error);
+            console.log(resourcesScript.textContent);
+        }
+        
+    })
+    .catch(error => {
+        console.error("There was a problem fetching the JSON data:", error);
+    });
+
 
 
 // Get function for materials
@@ -121,7 +89,7 @@ function getMaterial(material){
 function stopAllGathering() {
     for (let key in resources) {
         resources[key].isGetting = false;
-        resources[key].button.textContent = resources[key].defaultText;
+        if (resources[key].button)       resources[key].button.textContent = resources[key].defaultText;
     }
 }
 
@@ -137,6 +105,7 @@ function toggleResource(resourceKey) {
     }
 }
 
+// let ateFish = true;
 
 
 
@@ -204,7 +173,17 @@ const craftedResources = {
             { material: 'rope', amount: 1 },
         ],
         // tool: 'Bare Hands'
-    }
+    },
+    'pickaxe': {
+        id: 'craftPickaxe',
+        value: 0,
+        requires: [
+        {material: 'handle', amount: 1},
+        {material: 'sharpRocks', amount:3},
+        {material: 'rope', amount: 1},
+        {material: 'rocks', amount: 10}
+        ]
+    },
 }
 
 
@@ -254,7 +233,8 @@ function craftResource(resourceKey) {
             increaseMaterial(req.material, -req.amount);
         }
         craftedResources[resourceKey].value += calcCraftBonus(resourceKey);
-        document.querySelector("#" + resourceKey + "Value").textContent = craftedResources[resourceKey].value.toFixed(2);
+        // document.querySelector("#" + resourceKey + "Value").textContent = craftedResources[resourceKey].value.toFixed(2);
+        updateDisplayValue(resourceKey);
     }
 }
 
@@ -263,8 +243,8 @@ function craftResource(resourceKey) {
 
 
 function updateDisplayValue(material){
-    console.log("Updating the display value for " + material);
-    document.querySelector("#" + material + "Value").textContent = getMaterial(material).toFixed(2);
+    // console.log("Updating the display value for " + material);
+    document.querySelector("#" + material + "Value").textContent = getMaterial(material).toFixed(1);
 }
 
 // Generic increase
@@ -332,7 +312,7 @@ function addTool(tool) {
 
 const buttons = {
 
-    /* PRODUCTION TAB */
+/* PRODUCTION TAB */
     'gatherSticks': {
         class: 'tooltip startVisible',
         tab: 'production',
@@ -376,14 +356,15 @@ const buttons = {
         tab: 'production',
         text: 'Chop Wood',
         tooltipDesc: 'An axe hurts way less than using your hands.',
-        requirement: () => hasTool('Axe') >= 1 
+        requirement: () => hasTool('Axe')
     },
-    'createLumberjackButton': {
-        class: 'wood',
-        tab: 'production',
-        text: 'Assign Lumberjack',
-        disabled: true, // Assuming you want to manage enabling this button via JavaScript
-        requirement: () => getMaterial('wood') >= 10 // Example requirement, adjust as needed
+    'gatherOre': {
+        "class": "tooltip ",
+        "tab": "production",
+        "text": "Mine Ore",
+        "tooltipDesc": "Diggy Diggy Hole",
+        "tooltipCost": "Free",
+        requirement: () => hasTool('Pickaxe')
     },
 
 
@@ -436,6 +417,14 @@ const buttons = {
         tab: 'experiment',
         requirement: () => getCraftedResource('staff') >= 1
     },
+    'craftPickaxe': {
+        class: 'tooltip',
+        text: 'Craft Pickaxe',
+        tooltipDesc: 'Sadly not made of diamonds',
+        tooltipCost: '',
+        tab: 'experiment',
+        requirement: () => hasTool('axe')
+    },
     
 /* TABS */
     'productionTabButton': {
@@ -443,45 +432,214 @@ const buttons = {
         text: 'Production',
         showTab: 'productionTab',
         tab: 'tabs',
-        requirement: () => getMaterial('rocks') >= 1
+        requirement: () => passedStage('tab-button')
     },
     'experimentTabButton': {
         class: 'tab-button',
         text: 'Experiment',
         showTab: 'experimentTab',
         tab: 'tabs',
-        requirement: () => getMaterial('rocks') >= 1
+        requirement: () => passedStage('tab-button')
     },
     'ponderTabButton': {
         class: 'tab-button',
         text: 'Ponder',
         showTab: 'ponderTab',
         tab: 'tabs',
-        requirement: () => getMaterial('clones') >= 1
+        requirement: () => passedStage('ponder-tab')
+    },
+    'jobsTabButton': {
+        class: 'tab-button',
+        text: 'Jobs',
+        showTab: 'jobsTab',
+        tab: 'tabs',
+        requirement: () => passedStage('jobs-tab')  // Assuming the job tab appears after unlocking 'jobs-tab'
     },
 
-
-    /* PONDER TAB */
+/* PONDER TAB */
     'gatherPonder': {
         class: 'tooltip',
         text: 'Ponder',
         tooltipDesc: 'Wrap your head around the great mysteries',
         tooltipCost: 'Time',
         tab: 'ponder',
-        requirement: () => getMaterial('clones') >= 1
+        requirement: () => passedStage('ponder-tab')
     },
     'ponderClones1': {
-        class: 'tooltip',
+        class: 'tooltip unlock',
         text: 'Understand Cloning',
         tooltipDesc: 'Why are there two of you?',
-        tooltipCost: 'Sanity',
+        tooltipCost: 'Sanity (20 Ponder)',
         tab: 'ponder',
-        requirement: () => getMaterial('ponder') >= 10
+        unlock: 'jobs-tab',
+        requirement: () => (getMaterial('ponder') >= 10) && !passedStage('jobs-tab')
     },
+    'ponderSkills': {
+        class: 'tooltip unlock',
+        text: 'Notice Improvement',
+        tooltipDesc: "You're starting to learn things, right?",
+        tooltipCost: '40 Ponder',
+        tab: 'ponder',
+        unlock: 'skillsTable',
+        requirement: () => (getMaterial('ponder') >= 25)
+    },
+
+
+
+/* JOBS TAB */
+    // 'assignFarming': {
+    //     class: 'tooltip',
+    //     text: `
+    //         <div class="btn-adjustment">-</div>
+    //         Farming
+    //         <div class="btn-adjustment">+</div>
+    //     `,
+    //     tooltipDesc: 'Assign a worker to farm crops',
+    //     tooltipCost: 'Food and Water',
+    //     tab: 'job',
+    //     requirement: () => hasTool("Hoe")  // This is just a hypothetical requirement
+    // },
+
+    // 'assignHunting': {
+    //     class: 'tooltip',
+    //     text: `
+    //         <div class="btn-adjustment">-</div>
+    //         Hunting
+    //         <div class="btn-adjustment">+</div>
+    //     `,
+    //     tooltipDesc: 'Assign a worker to hunt animals',
+    //     tooltipCost: 'Weapons and Stamina',
+    //     tab: 'job',
+    //     requirement: () => hasTool("Spear")  // This is just a hypothetical requirement
+    // },
+
+    // 'assignFishing': {
+    //     class: 'tooltip',
+    //     text: `
+    //         <div class="btn-adjustment">-</div>
+    //         Fishing
+    //         <div class="btn-adjustment">+</div>
+    //     `,
+    //     tooltipDesc: 'Assign a worker to fish in the nearby water',
+    //     tooltipCost: 'Fishing Rods and Patience',
+    //     tab: 'job',
+    //     requirement: () => hasTool("Spear") || hasTool("Fishing Rod")  // This is just a hypothetical requirement
+    // }
 
 }
 
+// Hardcoded unlocks map
+let unlocks = {
+    'jobs-tab': {
+        id: 'ponderClones1',
+        isUnlocked: false,
+        requirements: [{
+                    material: 'ponder',
+                    amount: 20
+                }]
+    },
+    'skillsTable': {
+        id: 'ponderSkills',
+        isUnlocked: false,
+        requirements: [{
+                    material: 'ponder',
+                    amount: 40
+                }]
+    }
+    // ... add other unlock items as needed
+};
 
+function isUnlocked(id) {
+    // Check if the id exists in the unlocks map
+    if (unlocks[id]) {
+        return unlocks[id].isUnlocked;
+    }
+
+    // If the id doesn't exist in the map, return false
+    return false;
+}
+
+
+// Function to get all buttons with class 'unlock' and attach an event listener to them
+function initializeUnlockButtons() {
+    const unlockButtons = document.querySelectorAll('.unlock');
+    
+    unlockButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            console.log('click');
+            const unlockAttr = this.getAttribute('unlock');
+            console.log(unlockAttr);
+            if (unlocks[unlockAttr]) {
+                canCraft = true;   
+                for (let req of unlocks[unlockAttr].requirements) {
+                    if (getMaterial(req.material) < req.amount) {
+                        console.log("Cannot unlock " + unlockAttr);
+                        canCraft = false;
+                        break;
+                    }
+                }
+
+                if (canCraft) {
+                    for (let req of unlocks[unlockAttr].requirements) {
+                        increaseMaterial(req.material, -req.amount);
+                    }
+                    unlocks[unlockAttr].isUnlocked = true;
+                    makeVisible(unlockAttr);
+                    // document.querySelector("#" + resourceKey + "Value").textContent = craftedResources[resourceKey].value.toFixed(2);
+                    // make this button disappear
+                    this.display = 'none';
+
+                    console.log("Unlocking " + unlockAttr);
+                }
+            }
+        });
+    });
+}
+
+// Initialize the buttons when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', initializeUnlockButtons);
+
+
+/* JOBS FUNCTIONALITY */
+
+const jobCounts = {
+    farming: 0,
+    gathering: 0,
+    masonry: 0,
+    carpentry: 0,
+    combat: 0,
+};
+
+document.querySelectorAll('.btn-increment').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const jobType = this.closest('.job-button').getAttribute('data-job');
+        if (getMaterial('clones') > 0)
+        {
+            jobCounts[jobType]++;
+            increaseMaterial('clones', -1);
+        }
+        updateDisplay(jobType);
+    });
+});
+
+document.querySelectorAll('.btn-decrement').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const jobType = this.closest('.job-button').getAttribute('data-job');
+        if (jobCounts[jobType] > 0) {
+            jobCounts[jobType]--;
+            increaseMaterial('clones', 1);
+            updateDisplay(jobType);
+        }
+    });
+});
+
+function updateDisplay(jobType) {
+    const jobElement = document.querySelector(`.job-button[data-job="${jobType}"] .job-name`);
+    if (jobElement) jobElement.textContent = `${jobType.charAt(0).toUpperCase() + jobType.slice(1)}: ${jobCounts[jobType]}`;
+}
+
+
+/* BUTTONS GENERATE */
 
 function generateButtons() {
 
@@ -518,16 +676,19 @@ function generateButtons() {
     const productionContainer = document.getElementById('productionTab');
     const experimentContainer = document.getElementById('experimentTab').querySelector('.button-columns');
     const ponderContainer = document.getElementById('ponderTab');
+    // const jobContainer = document.getElementById('jobsTab');
     // You can add more containers for different tabs as needed
 
     const productionColumns = createColumns(productionContainer);
     const experimentColumns = createColumns(experimentContainer);
     const ponderColumns = createColumns(ponderContainer);
+    // const jobColumns = createColumns(jobContainer);
     // Similarly, create columns for other tabs as needed
 
     let productionColumnIndex = 0;
     let experimentColumnIndex = 0;
     let ponderColumnIndex = 0;
+    let jobColumnIndex = 0;
 
     // Add counters for other tabs as needed
 
@@ -539,6 +700,7 @@ function generateButtons() {
         buttonElement.className = btn.class;
         buttonElement.textContent = btn.text;
         buttonElement.setAttribute('data-tooltip-desc', btn.tooltipDesc);
+        buttonElement.setAttribute('unlock', btn.unlock);
 
         // Check if the button corresponds to a crafted resource using the ID
         const craftedResource = Object.values(craftedResources).find(resource => resource.id === key);
@@ -567,7 +729,9 @@ function generateButtons() {
         } else if (btn.tab === 'ponder'){
             ponderColumns[ponderColumnIndex].appendChild(buttonElement);
             ponderColumnIndex = (ponderColumnIndex + 1) % 3;
-
+        }  else if (btn.tab === 'job'){
+            // jobColumns[jobColumnIndex].appendChild(buttonElement);
+            // jobColumnIndex = (jobColumnIndex + 1) % 3;
         }
         // Add more conditions for other tabs as needed
 
@@ -609,11 +773,14 @@ for (let key in craftedResources) {
 }
 
 
-stages = [];
+
+function passedStage(stage){
+    return stages.includes(stage);
+}
 
 // Make everything with the class "stage" visible
 function makeVisible(stage){
-    if (!stages.includes(stage))
+    if (!passedStage(stage))
     {
         stages.push(stage);
     }
@@ -628,12 +795,15 @@ function updateButtonVisibility() {
     for (let key in buttons) {
         const btn = buttons[key];
         const element = document.getElementById(key);
-        if (btn.requirement()) {
+        if (element && btn.requirement()) {
             element.style.display = 'block';
             element.classList.add('visible');
+            element.classList.remove('button-disabled');
+
         } 
         else
         {
+            // element.classList.add('button-disabled');
             // element.style.display = 'none';
             // element.classList.remove('visible');
         }
@@ -649,7 +819,7 @@ const visibilityRules = [
     },
     {
         condition: () => getMaterial("rocks") >= 1,
-        action: () => makeVisible("tab-button")
+        action: () => {makeVisible("tab-button"); makeVisible('craftRocks');}   
     },
     {
         condition: () => !hasTool("Sharp Rock") && getCraftedResource('sharpRocks') >= 1,
@@ -663,8 +833,16 @@ const visibilityRules = [
         action: () => {addTool("Spear"); makeVisible('fishing');}
     },
     {
+        condition: () => getMaterial("fish") >= 1,
+        action: () => makeVisible('fishing')
+    },
+    {
         condition: () => !hasTool("Axe") && getCraftedResource('axe') >= 1,
         action: () => {addTool("Axe"); makeVisible('wood');}
+    },
+    {
+        condition: () => hasTool("Axe"),
+        action: () => makeVisible('wood')
     },
     {
         condition: () => getCraftedResource('rope') >= 1,
@@ -686,7 +864,15 @@ const visibilityRules = [
     },
     {
         condition: () => ateFish,
-        action: () => makeVisible('clone')
+        action: () => {makeVisible('clone'); makeVisible('ponder-tab');}
+    },
+    {
+        condition: () => isUnlocked('jobs-tab'),
+        action: () => makeVisible('jobs-tab')
+    },
+    {
+        condition: () => isUnlocked('skillsTable'),
+        action: () => {skilled = true; populateSkillsTable();}
     }
 ];
 
@@ -722,7 +908,32 @@ const skills = {
     carpentry: {
         exp: 0,
         level: 0,
-        affectedResources: ['wood', 'handle', 'staff']
+        affectedResources: ['wood', 'handle', 'staff', 'fishingRod']
+    },
+    thinking: {
+        exp:0,
+        level:0,
+        affectedResources: ['ponder']
+    },
+    smithing: {
+        exp:0,
+        level:0,
+        affectedResources: ['axe', 'pickaxe', 'spear']
+    },
+    farming: {
+        exp: 0,
+        level:0,
+        affectedResources: []
+    },
+    combat: {
+        exp: 0,
+        level: 0,
+        affectedResources: []
+    },
+    fishing: {
+        exp: 0,
+        level: 0,
+        affectedResources: ['fish']
     }
 };
 
@@ -820,7 +1031,15 @@ function getToolValueForResource(resource) {
     return 1;
 }
 
+function isResourceAffectedByJob(job, resource) {
+    const skill = skills[job];
+    if (skill && skill.affectedResources.includes(resource)) {
+        return true;
+    }
+    return false;
+}
 
+var cloneMult = 0.25;
 function calcIncrease(resource){
     var total = 0;
     if(resources.hasOwnProperty(resource)) {
@@ -831,6 +1050,15 @@ function calcIncrease(resource){
         if (resources[resource].isGetting)
         {
             total += currTool;
+        }
+
+        // Clones work at 1/4 the speed by default
+        for (let job in jobCounts)
+        {
+            if (isResourceAffectedByJob(job, resource))
+            {
+                total += cloneMult * jobCounts[job];
+            }
         }
 
 
@@ -846,7 +1074,8 @@ function calcIncrease(resource){
 
     // round total to nearest thousandth
     total = parseFloat(total.toFixed(3));
-    return total;2}
+    return total;
+}
 
 
 
@@ -887,7 +1116,7 @@ function showTab(tabName) {
             // console.log(button.id);
             if (buttons[button.id].requirement())
             {
-                button.style.display = 'block'; // Or 'inline-block', or whatever your desired display style is
+                button.style.display = 'flex'; // Or 'inline-block', or whatever your desired display style is
                 console.log("displaying " + button.id);
             }
         }
@@ -900,7 +1129,7 @@ function showTab(tabName) {
             for(let column of columnsToHide) {
                 let buttonsToHide = column.querySelectorAll('button');
                 for(let button of buttonsToHide) {
-                    button.style.display = 'none';
+                    button.classList.add('button-disabled');
                 }
             }
         }
@@ -908,6 +1137,7 @@ function showTab(tabName) {
 }
 
 
+/* HOTKEYS */
 document.addEventListener('keydown', function(event) {
     switch (event.key) {
         case '1':
@@ -917,9 +1147,12 @@ document.addEventListener('keydown', function(event) {
             showTab('experimentTab');
             break;
         // Add cases for other tabs as needed
-        // case '3':
-        //     showTab('anotherTabName');
-        //     break;
+        case '3':
+            showTab('ponderTab');
+            break;
+        case '4':
+            showTab('jobsTab');
+            break;
         default:
             break;
     }
@@ -957,6 +1190,7 @@ function eatFish(){
         setTimeout(() => {
             changeMessage("You are with yourself in a forest.");
             increaseMaterial('clones',1);
+            increaseMaterial('totalClones',1);
         }, 1000); // delay of 1s
     }
 }
@@ -1009,7 +1243,9 @@ function saveGame() {
         craftedResources: {}, // This will hold the value for each crafted item
         resources: {},
         tools: [],
-        stages: []
+        stages: [],
+        unlocks: {},
+        jobs: {}
     };
 
     // Extract exp and level from skills and save to save.skills
@@ -1031,6 +1267,12 @@ function saveGame() {
 
     save.tools = playerTools;
     save.stages = stages;
+    save.jobs = jobCounts;
+    
+    for (let u in unlocks)
+    {
+        save.unlocks[u] = isUnlocked(u);
+    }
 
     // You can now use the save object to store the data somewhere or display it to the user
     console.log(save);
@@ -1049,7 +1291,6 @@ function loadGame(){
         // NEW GAME
         return;
     }
-// if (typeof savegame.cookies !== "undefined") cookies = savegame.cookies;
     if (typeof savegame.resources !== "undefined"){
         for (let i in savegame.resources){
             if (i.value === "undefined" || i === null) continue;
@@ -1085,14 +1326,53 @@ function loadGame(){
 
     if (typeof savegame.stages !== 'undefined')
     {
-        for (let s in stages){
-            updateVisible(s);
+        for (let s in savegame.stages){
+            makeVisible(savegame.stages[s]);
         }
+    }
+    if (typeof savegame.jobs !== 'undefined')
+    {
+        // jobCounts = savegame.jobs;
+        for (let j in savegame.jobs)
+        {
+            jobCounts[j] = savegame.jobs[j];
+            console.log(j);
+            updateDisplay(j);
+        }
+    }
+    if (typeof savegame.unlocks !== 'undefined')
+    {
+        for (let u in savegame.unlocks)
+        {
+            unlocks[u].isUnlocked = savegame.unlocks[u];
+        }
+    }
+
+    // If we have a clone, then we ate fish
+    ateFish = getMaterial("totalClones") >= 1;
+    
+    // Change the message to the latest one
+    if (getMaterial("totalClones") >= 1)
+    {
+     changeMessage("You are with yourself in a forest.");
+ 
     }
 }
 
 loadGame();
 
+function updateResourceIncreaseRates() {
+    // const resources = ["clones", "sticks", "vines", "rocks", "fish", "wood", "ponder"];
+    for (let resource in resources) {
+        // console.log("increase of " + resource);
+        const rate = calcIncrease(resource);
+        var rateElement = document.getElementById(`${resource}IncreaseRate`);
+        if (rateElement) rateElement.textContent = rate;
+    }
+}
+
+// Call the function to update the rates, and consider setting an interval to periodically update them.
+// setInterval(updateResourceIncreaseRates, 1000); // This will update the rates every second.
 
 
 
@@ -1103,13 +1383,72 @@ function tick(){
         // console.log("updating " + key);
         increaseMaterial(key, calcIncrease(key));
     }
-    // increaseMaterial("sticks", resources.sticks.isGetting ? 1 : 0);
-    // increaseMaterial("vines", resources.vines.isGetting ? 1 : 0);
-    // increaseMaterial("rocks", resources.rocks.isGetting ? 1 : 0);
-    // increaseMaterial("wood", lumberjacks + (resources.wood.isGetting ? 1 : 0));
-
-    updateVisible();
+    updateResourceIncreaseRates();
 }
 
+window.setInterval(updateVisible, 100) // Update visuals 10 times per second
 window.setInterval(tick, 1000); // Every tick lasts for 1 second
 window.setInterval(saveGame, 10000); // Save the game every 10 seconds
+
+
+
+const myResources = {};
+
+document.getElementById("addResourceBtn").addEventListener("click", function() {
+    document.getElementById("resourceForm").style.display = "block";
+});
+
+function addResource() {
+    const resourceName = document.getElementById("resourceName").value;
+    const activeText = document.getElementById("resourceActiveText").value;
+    const defaultText = document.getElementById("resourceDefaultText").value;
+    
+    const btnText = document.getElementById("btnText").value;
+    const btnTooltipDesc = document.getElementById("btnTooltipDesc").value;
+    const btnTooltipCost = document.getElementById("btnTooltipCost").value;
+    
+    var newResource = myResources[resourceName] = {
+        value: 0,
+        id: "gather" + resourceName,
+        isGetting: false,
+        activeText: activeText,
+        defaultText: defaultText,
+        // ... Add other attributes as fetched from form ...
+    };
+
+        // Create the button object
+    var newButton = buttons["gather" + resourceName.charAt(0).toUpperCase() + resourceName.slice(1)] = {
+        class: 'tooltip ',
+        tab: 'production',
+        text: btnText,
+        tooltipDesc: btnTooltipDesc,
+        tooltipCost: btnTooltipCost,
+        requirement: () => true // By default, making this always visible. Modify as needed.
+    };
+
+    console.log(newResource);
+    console.log(newButton);
+
+    // Hide form once resource is added
+    document.getElementById("resourceForm").style.display = "none";
+    
+    // Optionally, you can update the UI to show the added resource
+    // updateUI(resourceName);
+}
+
+function updateUI(resourceName) {
+    // Here you can create a new DOM element to display the added resource
+    const resourceDiv = document.createElement("div");
+    resourceDiv.innerHTML = `${resourceName}: ${resources[resourceName].value}`;
+    
+    // Append to some container
+    document.body.appendChild(resourceDiv);
+}
+
+
+/*        id: 'gatherFish',
+        isGetting: false,
+        activeText: 'Gone Fishing',
+        defaultText: 'Go Fish',
+        value: 0,
+        tools: [{tool: "Spear", val:1}, {tool: 'Fishing Rod', val: 2}]*/

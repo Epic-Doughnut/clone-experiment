@@ -1,0 +1,83 @@
+clone idle game loop
+
+get clones
+assign them to farm materials
+those materials let you build more facilities for more clones
+can send them to missions like battle or research
+goal is conquering the world?
+
+
+=== TABS ===
+
+= PRODUCTION =
+
+
+= EXPERIMENT =
+
+crafting minigame, select items to use, then itll spit out a recipe for what you made
+
+= PONDER =
+
+unlocks cost ponder
+
+= JOBS =
+
+directly assigned to a skill, results spread out from the resources of that skill
+
+= MILITARY =
+
+
+= SKILLS =
+
+gathering
+masonry
+carpentry
+fishing
+pondering
+combat
+mining
+smithing
+trading
+
+
+
+
+=== PROGRESSION ===
+
+sticks
+vines
+rocks
+
+rocks > sharp ROcks
+vines > rope
+sticks + sharp rock > handle
+2xhandle + rope > staff
+staff + sharprock + rope > spear
+handle + sharprock + rope > axe
+
+spear unlocks fishing
+axe unlocks wood
+
+fish
+wood
+
+wood > shelter
+
+eat fish > blackout (cant eat fish until you have a shelter)
+you feel strange, that fish probably wasn't the best call. at least you don't need to pilot an airplane right now...
+when you wake up, you think you're in front of a mirror, but that's a real you! just standing there! Maybe they'll help you out?
+clone unlocked
+
+assign clone to
+	sticks
+	vines
+	rocks
+
+with a shelter you can now have a place to think
+unlock ponder
+
+can ponder:
+	fishing
+	skills
+	jobs
+	meta-jobs (managing puns)
