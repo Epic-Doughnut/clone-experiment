@@ -11,8 +11,11 @@
 #sidebar > #resources > .startVisible {
     display: block; /* or whatever your desired default display value is */
 }
-.rows > * {
+/*.rows > * {
     display: none;
+}*/
+.startVisible{
+    display:  block;
 }
 .experiment-tab {
     display: flex;
@@ -325,3 +328,25 @@ button:hover{
     display: none;
     cursor: pointer;
 }
+
+
+.rows {
+    background-color: #333; /* Soft background color */
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Adding a soft shadow */
+    margin-bottom: 10px; /* Spacing between sections */
+}
+
+p {
+    margin: 5px 0; /* Top and bottom margin */
+    padding: 5px;
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+p:hover {
+    background-color: #212121; /* Hover effect */
+}
+
+
+/* ... similarly for other items */
