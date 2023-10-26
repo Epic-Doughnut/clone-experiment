@@ -1,158 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Clone Idle</title>
-	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/skills.css">
+	<link rel="stylesheet" href="css/buttons.css">
+	<link rel="stylesheet" href="css/darkmode.css">
+	<link rel="stylesheet" href="css/sidebar.css">
+	<link rel="stylesheet" href="css/jobs.css">
+	<link rel="stylesheet" href="css/tabs.css">
+	<link rel="stylesheet" href="css/overlay.css">
 
 </head>
+
 <body>
 	<button id="darkModeToggle">Light Mode</button>
 	<button id="saveButton" onclick="saveGame()">Save</button>
 	<button id="deleteSaveButton" onclick="localStorage.removeItem('save')">Delete Save Data</button>
-<!-- For cutscenes -->
-<div id="overlay">
-	<p id="overlay-text">That fish didn't taste too good, hopefully you won't need to pilot any airplanes.</p>
-	<button id="overlay-button" onclick="hideOverlay()">Continue</button>
-</div>
+	<!-- For cutscenes -->
+	<div id="overlay">
+		<p id="overlay-text">That fish didn't taste too good, hopefully you won't need to pilot any airplanes.</p>
+		<button id="overlay-button" onclick="hideOverlay()">Continue</button>
+	</div>
 
 	<!-- Tabs navigation -->
 	<div id="tabs">
 	</div>
 
-<!-- Tab content -->
-<div class="tab-content" id = "main">
-	<h3 class = "startVisible" id = "message"> You find yourself alone in a forest </h3>
-	<button class="eatFish" id="eatFish" onclick='eatFish()'>Eat fish</button>
-	<!-- <button onclick="fadeToBlack()">blackout</button> -->
+	<!-- Tab content -->
+	<div class="tab-content" id="main">
+		<h3 class="startVisible" id="message"> You find yourself alone in a forest </h3>
+		<button class="eatFish" id="eatFish" style="background-color: #267A30;" onclick='eatFish()'>Eat fish</button>
+		<!-- <button onclick="fadeToBlack()">blackout</button> -->
 
-	<!-- PRODUCTION TAB (1) -->
-	<div id="productionTab" class="content active" data-target='productionTab'></div>
-		
+		<!-- PRODUCTION TAB (1) -->
+		<div id="productionTab" class="content active" data-target='productionTab'></div>
 
-	<!-- EXPERIMENT TAB (2) -->
-	<div id="experimentTab" class="experiment-tab content" data-target='experimentTab'>
-		<div class="button-columns visible active">
-			<!-- This is where you will append the columns of buttons -->
+
+		<!-- EXPERIMENT TAB (2) -->
+		<div id="experimentTab" class="experiment-tab content" data-target='experimentTab'>
+			<div class="button-columns visible active">
+				<!-- This is where you will append the columns of buttons -->
+			</div>
+
+			<div class="rows visible active craftRocks rope" id="craftedResourceButtons">
+
+			</div>
 		</div>
 
-		<div class="rows visible active craftRocks rope" id="craftedResourceButtons">
-			<hr class='startVisible' id='brCraft'>
-			<p class='craftRocks rope'>Rope: <span id = "ropeValue">0</span></p>
-			<p class = 'craftRocks'>Sharp Rocks: <span id = "sharpRocksValue">0</span></p>
-			<p class='craftRocks'>Handles: <span id='handleValue'>0</span></p>
-			<p class='rope'>Staffs: <span id='staffValue'>0</span></p>
-			<h4 class='startVisible'>Tools:</h4>
-			<p class='rope'>↑ Spears: <span id='spearValue'>0</span></p>
-			<p class='rope'>Axes: <span id='axeValue'>0</span></p>
-			<p class='rope'>Fishing Rods: <span id='fishingRodValue'>0</span></p>
-			<p class='rope'>⇱ Pickaxes: <span id='pickaxeValue'>0</span></p>
+
+		<!-- PONDER TAB (3) -->
+		<div id='ponderTab' class='ponder-tab content' data-target='ponderTab'>
 		</div>
+
+
+		<!-- JOBS TAB (4) -->
+		<div id='jobsTab' class='jobs-tab content' data-target='jobsTab'>
+			<div class="job-button" data-job="gathering">
+				<div class="btn-decrement">-</div>
+				<span class="job-name">ing: 0</span>
+				<div class="btn-increment">+</div>
+			</div>
+
+			<div class="job-button" data-job="masonry">
+				<div class="btn-decrement">-</div>
+				<span class="job-name">Masonry: 0</span>
+				<div class="btn-increment">+</div>
+			</div>
+
+			<div class="job-button" data-job="carpentry">
+				<div class="btn-decrement">-</div>
+				<span class="job-name">Carpentry: 0</span>
+				<div class="btn-increment">+</div>
+			</div>
+		</div>
+
+
+
+		<table id="skillsTable" class='dark-mode'>
+		</table>
 	</div>
-
-
-	<!-- PONDER TAB (3) -->
-	<div id='ponderTab' class='ponder-tab content' data-target='ponderTab'>
-	</div>
-
-
-	<!-- JOBS TAB (4) -->
-	<div id='jobsTab' class='jobs-tab content' data-target='jobsTab'> 
-		<div class="job-button" data-job="gathering">
-		    <div class="btn-decrement">-</div>
-		    <span class="job-name">Gathering: 0</span>
-		    <div class="btn-increment">+</div>
-		</div>
-
-		<div class="job-button" data-job="masonry">
-		    <div class="btn-decrement">-</div>
-		    <span class="job-name">Masonry: 0</span>
-		    <div class="btn-increment">+</div>
-		</div>
-
-		<div class="job-button" data-job="carpentry">
-		    <div class="btn-decrement">-</div>
-		    <span class="job-name">Carpentry: 0</span>
-		    <div class="btn-increment">+</div>
-		</div>
-	</div>
-
-
-
-	<table id="skillsTable" class = 'dark-mode' >
-</table>
-</div>
 
 	<!-- TOOL -->
 	<!-- The button to trigger the form display -->
-<button id="addResourceBtn">Add New Resource</button>
+	<!-- <button id="addResourceBtn" class="hidden">Add New Resource</button> -->
 
-<!-- The form to input resource details -->
-<div id="resourceForm" style="display: none;">
-    <label for="resourceName">Resource Name:</label>
-    <input type="text" id="resourceName">
+	<!-- The form to input resource details -->
+	<div id="resourceForm" style="display: none;">
+		<label for="resourceName">Resource Name:</label>
+		<input type="text" id="resourceName">
 
-    <label for="resourceActiveText">Active Text:</label>
-    <input type="text" id="resourceActiveText">    
+		<label for="resourceActiveText">Active Text:</label>
+		<input type="text" id="resourceActiveText">
 
-    <label for="resourceDefaultText">Default Text:</label>
-    <input type="text" id="resourceDefaultText">
-    
-    <!-- ... Add other fields as needed ... -->
-    <label for="btnText">Button Text:</label>
-	<input type="text" id="btnText">
+		<label for="resourceDefaultText">Default Text:</label>
+		<input type="text" id="resourceDefaultText">
 
-	<label for="btnTooltipDesc">Tooltip Description:</label>
-	<input type="text" id="btnTooltipDesc">
+		<!-- ... Add other fields as needed ... -->
+		<label for="btnText">Button Text:</label>
+		<input type="text" id="btnText">
 
-	<label for="btnTooltipCost">Tooltip Cost:</label>
-	<input type="text" id="btnTooltipCost">
+		<label for="btnTooltipDesc">Tooltip Description:</label>
+		<input type="text" id="btnTooltipDesc">
 
-    <button onclick="addResource()">Add Resource</button>
-</div>
+		<label for="btnTooltipCost">Tooltip Cost:</label>
+		<input type="text" id="btnTooltipCost">
 
-
-
-<!-- SIDEBAR -->
-
-<div id="sidebar">
-	<div id="resources">
-	<h4 class='startVisible'>Resources</h4>
-<p class='clone jobs-tab'>Clones: <span id="clonesValue">0</span> (+<span id="clonesIncreaseRate">0</span>/s)</p>
-
-<p class='start startVisible'>Sticks: <span id="sticksValue">0</span> (+<span id="sticksIncreaseRate">0</span>/s)</p>
-
-<p class='stick'>Vines: <span id="vinesValue">0</span> (+<span id="vinesIncreaseRate">0</span>/s)</p>
-
-<p class='stick'>Rocks: <span id="rocksValue">0</span> (+<span id="rocksIncreaseRate">0</span>/s)</p>
-
-<p class='fishing'>Fish: <span id='fishValue'>0</span> (+<span id="fishIncreaseRate">0</span>/s)</p>
-
-<p class='wood'>Wood: <span id="woodValue">0</span> (+<span id="woodIncreaseRate">0</span>/s)</p>
-<p class='ore'>Ore: <span id="oreValue">0</span> (+<span id="oreIncreaseRate">0</span>/s)</p>
-
-<p class='clone jobs-tab'>Ponder: <span id="ponderValue">0</span> (+<span id="ponderIncreaseRate">0</span>/s)</p>
-
-	<!-- <p class='wood'>Lumberjacks: <span id="lumberjackValue">0</span></p> -->
+		<button onclick="addResource()">Add Resource</button>
 	</div>
-	
-	<div id="tools" class = 'craftRocks'>
-	<hr>
-	<h4>Tools</h4>
-	<ul id="tools-list">
-		<li>Bare Hands</li>
-	</ul>
+
+
+
+	<!-- SIDEBAR -->
+
+	<div id="sidebar">
+		<div id="resources">
+			<h4 class='startVisible'>Resources</h4>
+			<p class='clone resource' id="resource-clones">
+				<span class="resourceName">Clones:</span>
+				<span class="resourceValue" id="clonesValue">0</span>
+				<span class="resourceRate">(+<span id="clonesIncreaseRate">0</span>/s)</span>
+			</p>
+
+			<p class='start startVisible resource' id="resource-sticks">
+				<span class="resourceName">Sticks:</span>
+				<span class="resourceValue" id="sticksValue">0</span>
+				<span class="resourceRate">(+<span id="sticksIncreaseRate">0</span>/s)</span>
+			</p>
+			<p class='stick resource' id="resource-vines">
+				<span class="resourceName">Vines:</span>
+				<span class="resourceValue" id="vinesValue">0</span>
+				<span class="resourceRate">(+<span id="vinesIncreaseRate">0</span>/s)</span>
+			</p>
+
+			<p class='stick resource' id="resource-rocks">
+				<span class="resourceName">Rocks:</span>
+				<span class="resourceValue" id="rocksValue">0</span>
+				<span class="resourceRate">(+<span id="rocksIncreaseRate">0</span>/s)</span>
+			</p>
+
+			<p class='fishing resource' id="resource-fish">
+				<span class="resourceName">Fish:</span>
+				<span class="resourceValue" id="fishValue">0</span>
+				<span class="resourceRate">(+<span id="fishIncreaseRate">0</span>/s)</span>
+			</p>
+
+			<p class='wood resource' id="resource-wood">
+				<span class="resourceName">Wood:</span>
+				<span class="resourceValue" id="woodValue">0</span>
+				<span class="resourceRate">(+<span id="woodIncreaseRate">0</span>/s)</span>
+			</p>
+
+			<p class='ore resource' id="resource-ore">
+				<span class="resourceName">Ore:</span>
+				<span class="resourceValue" id="oreValue">0</span>
+				<span class="resourceRate">(+<span id="oreIncreaseRate">0</span>/s)</span>
+			</p>
+
+			<p class='clone resource' id="resource-ponder">
+				<span class="resourceName">Ponder:</span>
+				<span class="resourceValue" id="ponderValue">0</span>
+				<span class="resourceRate">(+<span id="ponderIncreaseRate">0</span>/s)</span>
+			</p>
+
+			<!-- <p class='wood'>Lumberjacks: <span id="lumberjackValue">0</span></p> -->
+		</div>
+
+		<div id="tools" class='craftRocks'>
+			<hr>
+			<h4>Tools</h4>
+			<ul id="tools-list">
+
+			</ul>
+		</div>
 	</div>
-</div>
+
+	<div id="dynamic-tooltip" class="dynamic-tooltip"></div>
 
 
 
-
-<!-- <script type="application/json" id="resourcesData" src="resources.json"></script> -->
-
-<script src="script.js"></script>
+	<!-- <script type="application/json" id="resourcesData" src="resources.json"></script> -->
+	<script src="scripts/json/buttons.js"></script>
+	<script src="scripts/json/buildings.js"></script>
+	<script src="scripts/json/resources.js"></script>
+	<script src="scripts/json/craftedResources.js"></script>
+	<script src="scripts/json/skills.js"></script>
+	<script src="scripts/tools.js"></script>
+	<script src="scripts/buildings.js"></script>
+	<script src="scripts/jobs.js"></script>
+	<script src="scripts/saving.js"></script>
+	<script src="scripts/main.js"></script>
 
 
 </body>
+
 </html>

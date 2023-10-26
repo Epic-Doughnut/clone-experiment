@@ -1,0 +1,68 @@
+/* Styles for all direct children inside #tabs (i.e., your buttons) */
+#tabs>* {
+    /*transform: translateX(-200%);  // This moves the element left of its starting position*/
+    transition: 0.3s;
+    display: none;
+}
+
+#tabs>*.visible {
+    /*transform: translateX(0); // Moves the element back to its original position*/
+    display: block;
+}
+
+.tab-button {
+    width: 100px;
+    padding-right: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.tab-button.active {
+    background-color: rgb(82, 172, 186);
+}
+
+.tab-content>.content {
+    display: none;
+    padding: 20px;
+    border: 1px solid #444;
+}
+
+.tab-content>.content.active {
+    display: flex;
+}
+
+.experiment-tab {
+    display: flex;
+    flex-direction: column;
+}
+
+.button-columns {
+    display: flex;
+    justify-content: space-between;
+}
+
+.button-columns>div {
+    width: 33.33%;
+}
+
+/* Adjusting for dark mode */
+body.dark-mode .tabs {
+    background-color: #333;
+    /* Adjust this to your desired dark color for the tab container */
+    border-color: #444;
+    /* Adjust this if you have borders */
+}
+
+body.dark-mode .tab-button {
+    background-color: #444;
+    /* Dark button background */
+    color: #fff;
+    /* White text for dark buttons */
+}
+
+body.dark-mode .tab-button.active {
+    background-image: radial-gradient(circle, rgb(52, 56, 157), rgb(27, 29, 83));
+    /* Slightly lighter button background for active state */
+    color: #eee;
+    /* Slightly dimmer text for active state */
+}

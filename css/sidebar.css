@@ -1,0 +1,40 @@
+#sidebar {
+    width: 300px;
+    height: 100vh;
+    background-color: #bbb;
+    border-left: 2px solid #000;
+    padding: 20px;
+}
+
+#sidebar p {
+    size: 18px;
+    width: 100%;
+
+    margin: 0;
+    padding: 5px 0;
+}
+
+p.resource {
+    display: flex !important;
+    /* Enable flexbox on the paragraph */
+    justify-content: space-between;
+    /* Distribute items evenly */
+}
+
+.resourceName,
+.resourceValue,
+.resourceRate {
+    flex: 1;
+    /* Distribute width equally among children */
+    /* text-align: center; */
+    /* Center-align the text */
+}
+
+.resourceValue {
+    text-align: right;
+    /* Right-align the value */
+}
+
+.resourceRate {
+    margin-left: 30px;
+}

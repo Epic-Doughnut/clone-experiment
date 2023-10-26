@@ -1,0 +1,106 @@
+#productionTab>* {
+    display: none;
+}
+
+#sidebar>#resources>* {
+    display: none;
+}
+
+#productionTab .startVisible {
+    display: flex;
+    /* or whatever your desired default display value is */
+}
+
+#sidebar>#resources>.startVisible {
+    display: flex;
+    /* or whatever your desired default display value is */
+}
+
+/*.rows > * {
+    display: none;
+}*/
+.startVisible {
+    display: flex;
+}
+
+
+
+
+#eatFish {
+    display: none;
+}
+
+#eatFish.visible {
+    display: block;
+}
+
+
+
+
+
+
+/* .tooltip {
+    position: relative;
+} */
+
+.dynamic-tooltip {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 1);
+    color: #fff;
+    border-radius: 4px;
+    padding: 5px 10px;
+    white-space: nowrap;
+    font-size: 12px;
+    z-index: 1000;
+    display: none;
+    /* Hidden by default */
+    pointer-events: none;
+    /* To ensure it doesn't interfere with mouse events */
+}
+
+
+#saveButton {
+    position: fixed;
+    bottom: 60px;
+    right: 10px;
+}
+
+#deleteSaveButton {
+    position: fixed;
+    bottom: 110px;
+    right: 10px;
+}
+
+
+#main {
+    flex: 1;
+    padding: 20px;
+}
+
+
+.rows {
+    background-color: #333;
+    /* Soft background color */
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    /* Adding a soft shadow */
+    margin-bottom: 10px;
+    /* Spacing between sections */
+}
+
+p {
+    margin: 5px 0;
+    /* Top and bottom margin */
+    padding: 5px;
+    transition: background-color 0.3s;
+    /* Smooth transition for hover effect */
+}
+
+p:hover {
+    background-color: #212121;
+    /* Hover effect */
+}
+
+
+/* ... similarly for other items */

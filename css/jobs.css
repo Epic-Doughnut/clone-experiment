@@ -1,0 +1,44 @@
+.jobs-tab {
+    display: flex;
+    flex-direction: column;
+}
+
+.job-button {
+    display: flex;
+    align-items: center;
+    background-color: #154966;
+    /* Example blue color for the button */
+    width: 400px;
+    /* Fixed width for the button */
+    border-radius: 5px;
+    /* Rounded corners for the button */
+    cursor: pointer;
+    /* Cursor should indicate it's clickable */
+    padding: 5px 10px;
+    /* Some padding to space things out a bit */
+    justify-content: space-between;
+    /* Spread out the elements inside evenly */
+    margin-bottom: 10px;
+}
+
+.job-name {
+    color: #FFF;
+    /* White color for the job name text */
+    flex-grow: 1;
+    /* Allow the job name to take up any extra space */
+    text-align: center;
+    /* Center the job name text */
+}
+
+.btn-decrement,
+.btn-increment {
+    background-color: #12365e;
+    /* A slightly darker blue for contrast */
+    padding: 5px 15px;
+    /* Padding to give the buttons some size */
+    color: #FFF;
+    /* White color for the text of the buttons */
+    border: 1px solid #111;
+    border-radius: 3px;
+    /* Slightly rounded corners for these buttons */
+}
