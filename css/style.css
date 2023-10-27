@@ -24,10 +24,15 @@
 }
 
 
-
+#alone {
+    cursor: copy;
+    padding: .25em;
+    /* padding-bottom: .5em; */
+}
 
 #eatFish {
     display: none;
+    background-color: #267A30;
 }
 
 #eatFish.visible {

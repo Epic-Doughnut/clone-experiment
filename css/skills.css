@@ -9,10 +9,13 @@
     bottom: 0;
     left: 0;
     transition: 1s;
+    border: 1px solid #eee;
+
 }
 
 body.dark-mode #skillsTable {
     background-color: #272727;
+    border-color: #444;
     /* Dark mode background color */
     color: #eee;
     /* Dark mode text color */

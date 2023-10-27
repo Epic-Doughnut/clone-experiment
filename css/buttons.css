@@ -10,7 +10,7 @@ button {
     margin-bottom: 10px;
     border-radius: 4px;
     width: 200px;
-    text-align: center;
+    text-align: justify;
 }
 
 button .gathering {

@@ -22,9 +22,8 @@ p.resource {
     /* Distribute items evenly */
 }
 
-.resourceName,
-.resourceValue,
-.resourceRate {
+
+.resourceValue {
     flex: 1;
     /* Distribute width equally among children */
     /* text-align: center; */
@@ -38,4 +37,5 @@ p.resource {
 
 .resourceRate {
     margin-left: 30px;
+    width: 80px;
 }

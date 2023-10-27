@@ -61,7 +61,7 @@ body.dark-mode .tab-button {
 }
 
 body.dark-mode .tab-button.active {
-    background-image: radial-gradient(circle, rgb(52, 56, 157), rgb(27, 29, 83));
+    background-image: linear-gradient(rgb(52, 56, 157), rgb(41, 44, 122));
     /* Slightly lighter button background for active state */
     color: #eee;
     /* Slightly dimmer text for active state */
