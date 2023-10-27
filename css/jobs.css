@@ -21,6 +21,10 @@
     margin-bottom: 10px;
 }
 
+.job-button.button-disabled {
+    pointer-events: none;
+}
+
 .job-name {
     color: #FFF;
     /* White color for the job name text */
