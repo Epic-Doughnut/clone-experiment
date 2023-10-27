@@ -25,3 +25,21 @@ function updateToolUI(tool) {
     li.appendChild(document.createTextNode(tool));
     ul.appendChild(li);
 }
+
+function getToolValueForResource(resource) {
+    if (resource.tools) {
+        // Sort the tools in descending order based on their val
+        const sortedTools = resource.tools.sort((a, b) => b.val - a.val);
+
+        // Iterate through the sorted tools
+        for (let tool of sortedTools) {
+            if (hasTool(tool.tool)) {
+                // If the player has the tool, return its associated value
+                return tool.val;
+            }
+        }
+    }
+
+    // If none of the tools are found, return the default value
+    return 1;
+}

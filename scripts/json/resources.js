@@ -6,11 +6,13 @@ const resources = {
     "clones": {
         "id": "makeClone",
         "value": 0,
+        "isVisible": false,
         max: 0
     },
     "wood": {
         "id": "gatherWood",
         "isGetting": false,
+        "isVisible": false,
         "activeText": "Chopping Wood",
         "defaultText": "Chop Wood",
         "tools": [{ "tool": "Axe", "val": 1.5 }, { "tool": "Chainsaw", "val": 3 }],
@@ -21,6 +23,7 @@ const resources = {
     "sticks": {
         "id": "gatherSticks",
         "isGetting": false,
+        "isVisible": true,
         "activeText": "Gathering Sticks",
         "defaultText": "Gather Sticks",
         "value": 0,
@@ -29,6 +32,7 @@ const resources = {
     "vines": {
         "id": "gatherVines",
         "isGetting": false,
+        "isVisible": false,
         "activeText": "Gathering Vines",
         "defaultText": "Gather Vines",
         "tools": [{ "tool": "Axe", "val": 1.5 }],
@@ -38,6 +42,7 @@ const resources = {
     "rocks": {
         "id": "gatherRocks",
         "isGetting": false,
+        "isVisible": false,
         "activeText": "Gathering Rocks",
         "defaultText": "Gather Rocks",
         "value": 0,
@@ -46,6 +51,7 @@ const resources = {
     "fish": {
         "id": "gatherFish",
         "isGetting": false,
+        "isVisible": false,
         "activeText": "Gone Fishing",
         "defaultText": "Go Fish",
         "value": 0,
@@ -55,6 +61,7 @@ const resources = {
     "ponder": {
         "id": "gatherPonder",
         "isGetting": false,
+        "isVisible": false,
         "activeText": "Pondering",
         "defaultText": "Ponder",
         "value": 0,
@@ -64,6 +71,7 @@ const resources = {
         "value": 0,
         "id": "gatherOre",
         "isGetting": false,
+        "isVisible": false,
         "activeText": "Mining Ore",
         "defaultText": "Mine Ore",
         max: 20
@@ -72,38 +80,16 @@ const resources = {
         "value": 0,
         "id": "gatherSand",
         "isGetting": false,
-        "activeText": "Mining Ore",
-        "defaultText": "Mine Ore",
-        max: 20
-    },
-    "gold": {
-        "value": 0,
-        "id": "gatherGold",
-        "isGetting": false,
-        "activeText": "Mining Ore",
-        "defaultText": "Mine Ore",
-        max: 20
-    },
-    "iron": {
-        "value": 0,
-        "id": "gatherIron",
-        "isGetting": false,
-        "activeText": "Mining Ore",
-        "defaultText": "Mine Ore",
-        max: 20
-    },
-    "silver": {
-        "value": 0,
-        "id": "gatherSilver",
-        "isGetting": false,
-        "activeText": "Mining Ore",
-        "defaultText": "Mine Ore",
+        "isVisible": false,
+        "activeText": "Scooping Sand",
+        "defaultText": "Scoop Sand",
         max: 20
     },
     "wheat": {
         "value": 0,
         "id": "gatherWheat",
         "isGetting": false,
+        "isVisible": false,
         "activeText": "Mining Ore",
         "defaultText": "Mine Ore",
         max: 20

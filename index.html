@@ -19,7 +19,8 @@
 <body>
 	<button id="darkModeToggle">Light Mode</button>
 	<button id="saveButton" onclick="saveGame()">Save</button>
-	<button id="deleteSaveButton" onclick="localStorage.removeItem('save')">Delete Save Data</button>
+	<button id="deleteSaveButton" onclick="localStorage.removeItem('save'); location.reload();">Delete Save
+		Data</button>
 	<!-- For cutscenes -->
 	<div id="overlay">
 		<p id="overlay-text">That fish didn't taste too good, hopefully you won't need to pilot any airplanes.</p>
@@ -32,7 +33,7 @@
 
 	<!-- Tab content -->
 	<div class="tab-content" id="main">
-		<h3 class="startVisible" id="message"> You find yourself alone in a forest </h3>
+		<h3 class="startVisible" id="message"> You find yourself <span id='alone'>alone</span> in a forest </h3>
 		<button class="eatFish" id="eatFish" style="background-color: #267A30;" onclick='eatFish()'>Eat fish</button>
 		<!-- <button onclick="fadeToBlack()">blackout</button> -->
 
@@ -59,9 +60,10 @@
 
 		<!-- JOBS TAB (4) -->
 		<div id='jobsTab' class='jobs-tab content' data-target='jobsTab'>
+			<p id="jobs-total">Assigned Clones:</p>
 			<div class="job-button" data-job="gathering">
 				<div class="btn-decrement">-</div>
-				<span class="job-name">ing: 0</span>
+				<span class="job-name">Gathering: 0</span>
 				<div class="btn-increment">+</div>
 			</div>
 
@@ -71,11 +73,13 @@
 				<div class="btn-increment">+</div>
 			</div>
 
-			<div class="job-button" data-job="carpentry">
+			<div class="job-button wood" data-job="carpentry">
 				<div class="btn-decrement">-</div>
 				<span class="job-name">Carpentry: 0</span>
 				<div class="btn-increment">+</div>
 			</div>
+
+
 		</div>
 
 
@@ -166,6 +170,12 @@
 				<span class="resourceRate">(+<span id="ponderIncreaseRate">0</span>/s)</span>
 			</p>
 
+			<p class='sand resource' id="resource-sand">
+				<span class="resourceName">Sand:</span>
+				<span class="resourceValue" id="sandValue">0</span>
+				<span class="resourceRate">(+<span id="sandIncreaseRate">0</span>/s)</span>
+			</p>
+
 			<!-- <p class='wood'>Lumberjacks: <span id="lumberjackValue">0</span></p> -->
 		</div>
 
@@ -183,15 +193,18 @@
 
 
 	<!-- <script type="application/json" id="resourcesData" src="resources.json"></script> -->
+	<!-- For the game -->
+	<script src="scripts/tools.js"></script>
+	<script src="scripts/json/resources.js"></script>
 	<script src="scripts/json/buttons.js"></script>
 	<script src="scripts/json/buildings.js"></script>
-	<script src="scripts/json/resources.js"></script>
 	<script src="scripts/json/craftedResources.js"></script>
 	<script src="scripts/json/skills.js"></script>
-	<script src="scripts/tools.js"></script>
 	<script src="scripts/buildings.js"></script>
 	<script src="scripts/jobs.js"></script>
+	<script src="scripts/resources.js"></script>
 	<script src="scripts/saving.js"></script>
+	<script src="scripts/json/ponder.js"></script>
 	<script src="scripts/main.js"></script>
 
 

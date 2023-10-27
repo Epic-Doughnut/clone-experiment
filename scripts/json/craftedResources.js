@@ -1,7 +1,7 @@
 /* CRAFTING RESOURCES */
 
 const craftedResources = {
-    'sharpRocks': {
+    'sharprocks': {
         id: 'craftRocks',
         value: 0,
         requires: [
@@ -38,12 +38,12 @@ const craftedResources = {
         craftedOnce: false
         // tool: 'Bare Hands'
     },
-    'fishingRod': {
+    'fishingrod': {
         id: 'craftFishingRod',
         value: 0,
         requires: [
             { material: 'staff', amount: 1 },
-            { material: 'rope', amound: 1 }
+            { material: 'rope', amount: 2 }
         ],
         craftedOnce: false
         // tool: 'Bare Hands'
@@ -81,6 +81,7 @@ const craftedResources = {
         ],
         craftedOnce: false
     },
+
     'glass': {
         id: 'craftGlass',
         value: 0,
@@ -94,6 +95,30 @@ const craftedResources = {
         value: 0,
         requires: [
             { material: 'wood', amount: 12 }
+        ],
+        craftedOnce: false
+    },
+    'gold': {
+        id: 'craftGold',
+        value: 0,
+        requires: [
+            { material: 'ore', amount: 100 }
+        ],
+        craftedOnce: false
+    },
+    'iron': {
+        id: 'craftIron',
+        value: 0,
+        requires: [
+            { material: 'ore', amount: 20 }
+        ],
+        craftedOnce: false
+    },
+    'silver': {
+        id: 'craftSilver',
+        value: 0,
+        requires: [
+            { material: 'ore', amount: 50 }
         ],
         craftedOnce: false
     }

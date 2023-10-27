@@ -7,65 +7,19 @@
 // let skilled = false;
 let hasGeneratedSkillTable = false;
 
+let allVisibleButtons = new Set(['gatherSticks']);
 
-// Price chart
-// [name, principle, exponent]
-let prices = [];
 let stages = [];
 
 
-prices.push(["lumberjacks", 10, 1.1]);
 
-
-// Get references to the elements
-const messageElement = document.querySelector("#message");
-
-const clonesValueElement = document.querySelector('#clonesValue');
-// const increaseButton = document.querySelector('#increaseButton');
-
-// const startElements = document.querySelectorAll(".start");
-// const stickElements = document.querySelectorAll(".stick");
-// const woodElements = document.querySelectorAll('.wood');
-
-
-// const assignLumberjack = document.querySelector('#createLumberjackButton');
-// const lumberjackValueElement = document.querySelector("#lumberjackValue");
-// const lumberjackCostElement = document.querySelector("#lumberjackCostValue");
-
-
-
-
-
-
-function getCraftedResourceConfigById(id) {
-    for (let c in craftedResources) {
-        if (craftedResources[c].id === id) {
-            return craftedResources[c];
-        }
-    }
-    return null;
-}
-
-function getCraftedResourceKeyByConfig(config) {
-    for (let k in craftedResources) {
-        // console.log(k);
-        if (craftedResources[k].id === config.id) return k;
-    }
-    return null;
-}
 
 
 
 
 /* GATHERING MATERIALS*/
 
-// Stop all gathering functions
-// function stopAllGathering() {
-//     woodToggle.textContent = "Chop Wood";
-//     stickToggle.textContent = "Gather Sticks";
-//     vineToggle.textContent = "Gather Vines";
-//     rockToggle.textContent = "Gather Rocks";
-// }
+
 
 
 // Get function for materials
@@ -79,13 +33,18 @@ function getMaterial(material) {
     }
 }
 
+function capitalizeFirst(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+const sidebarParent = document.querySelector("#resources");
 function stopAllGathering() {
     for (let key in resources) {
         resources[key].isGetting = false;
-        if (resources[key].button) resources[key].button.textContent = resources[key].defaultText;
+        const rButton = document.querySelector("#gather" + capitalizeFirst(key));
+        if (rButton) rButton.textContent = resources[key].defaultText;
 
         // Set sidebar to not bold
-        const sidebarParent = document.querySelector("#resources");
         const sidebarText = sidebarParent.querySelector('#resource-' + key);
         if (sidebarText) sidebarText.style.fontWeight = 'normal';
 
@@ -97,18 +56,16 @@ function toggleResource(resourceKey) {
 
     const sidebarParent = document.querySelector("#resources");
     const sidebarText = sidebarParent.querySelector('#resource-' + resourceKey);
-
+    const resourceButton = document.querySelector('#gather' + resourceKey.charAt(0).toUpperCase() + resourceKey.slice(1));
 
     if (!resource.isGetting) {
         stopAllGathering(); // Stop all gathering actions
         resource.isGetting = true;
-        resource.button.textContent = resource.activeText;
-
-        // console.log(sidebarText);
+        resourceButton.textContent = resource.activeText;
         if (sidebarText) sidebarText.style.fontWeight = 'bold';
     } else {
         resource.isGetting = false;
-        resource.button.textContent = resource.defaultText;
+        resourceButton.textContent = resource.defaultText;
         if (sidebarText) sidebarText.style.fontWeight = 'normal';
     }
 }
@@ -118,127 +75,14 @@ var ateFish;
 
 
 
-function generateBuildingTooltipCost(cost) {
-    return Object.entries(cost).map(([material, amount]) => `${amount.toFixed(2)} ${material}`).join(', ');
-}
 
 
-function generateTooltipCost(requirements) {
-    return requirements.map(req => `${req.amount} ${req.material}`).join(', ');
-}
 
 
-function getCraftedResource(material) {
-    if (craftedResources.hasOwnProperty(material)) {
-        return craftedResources[material].value;
-    } else {
-        console.warn("Invalid crafted resource:", material);  // For debugging
-        return -1;
-    }
-}
-
-// Calculate the final number of crafted goods from bonuses
-function calcCraftBonus(resourceKey) {
-    return 1;
-}
-
-
-function canCraft(resourceKey) {
-    let canCraft = true;
-    let requirements = craftedResources[resourceKey].requires;
-
-    // Check if all requirements are met
-    for (let req of requirements) {
-        if (getMaterial(req.material) < req.amount) {
-            canCraft = false;
-            break;
-        }
-    }
-
-    return canCraft;
-}
-
-
-// Craft function
-function craftResource(resourceKey) {
-    if (!craftedResources.hasOwnProperty(resourceKey)) {
-        console.log("Invalid craft:" + resourceKey);
-        return;
-    }
-
-    let requirements = craftedResources[resourceKey].requires;
-
-    if (canCraft(resourceKey)) {
-        for (let req of requirements) {
-            increaseMaterial(req.material, -req.amount);
-        }
-        craftedResources[resourceKey].value += calcCraftBonus(resourceKey);
-        // document.querySelector("#" + resourceKey + "Value").textContent = craftedResources[resourceKey].value.toFixed(2);
-        craftedResources[resourceKey].craftedOnce = true;
-        updateDisplayValue(resourceKey);
-    }
-}
 
 
 /* HELPER FUNCTIONS */
 
-function updateDisplayValue(material) {
-    const element = document.querySelector("#" + material + "Value");
-    if (element) {
-        element.textContent = getMaterial(material).toFixed(1);
-    } else {
-        const craftedButton = document.querySelector(`button#craft${material}`);
-        if (craftedButton) {
-            const countSpan = craftedButton.querySelector(`#${material}Value`);
-            if (countSpan) {
-                countSpan.textContent = getCraftedResource(material).toFixed(1);
-            }
-        } else {
-            console.warn(`No display element found for material: ${material}`);
-        }
-    }
-}
-
-
-
-function increaseMax(material, num) {
-    console.log("increase max ", material, num);
-    material.max += num;
-    updateSidebar();
-}
-// Generic increase
-function increaseMaterial(material, num) {
-    // Ensure we actually need to do anything
-    if (num != 0) {
-        // console.log(material);
-        // This check ensures that the material key exists in the resources map.
-        if (resources.hasOwnProperty(material)) {
-            // console.log('changing',material,'by',num);
-            resources[material].value += num;
-            updateDisplayValue(material);
-            updateSkills(material);
-        } else {
-            // console.error("Invalid material:", material);  // For debugging
-            if (craftedResources.hasOwnProperty(material)) {
-                // crafted materials have no max, a la Kittens Game
-                craftedResources[material].value += num;
-                updateDisplayValue(material);
-                updateSkills(material);
-            }
-        }
-
-        if (resources[material] && resources[material].value > resources[material].max) {
-            resources[material].value = resources[material].max;
-        }
-
-        updateSidebar();
-    }
-
-
-    // resources[material].value += num;
-    // document.querySelector("#" + material + "Value").textContent = resources[material].value;
-
-}
 
 
 
@@ -248,50 +92,29 @@ function increaseMaterial(material, num) {
 
 
 
-// Hardcoded unlocks map
-let unlocks = {
-    'jobs-tab': {
-        id: 'ponderClones1',
-        isUnlocked: false,
-        cost: [{
-            material: 'ponder',
-            amount: 20
-        }]
-    },
-    'skillsTable': {
-        id: 'ponderSkills',
-        isUnlocked: false,
-        cost: [{
-            material: 'ponder',
-            amount: 40
-        }]
-    }
-    // ... add other unlock items as needed
-};
 
-function isUnlocked(id) {
+
+function isPondered(id) {
     // Check if the id exists in the unlocks map
-    if (unlocks[id]) {
-        return unlocks[id].isUnlocked;
-    }
-
     // If the id doesn't exist in the map, return false
-    return false;
+
+    return ponders[id] ? ponders[id].isPondered : false;
+
 }
 
 function canUnlock(unlockId) {
     // Get the key from this id
     var unlockKey = '';
-    for (let unlock in unlocks) {
-        if (unlocks[unlock].id === unlockId) {
+    for (let unlock in ponders) {
+        if (ponders[unlock].id === unlockId) {
             unlockKey = unlock;
         }
     }
     // Check if we have enough resources
     var canBuy = true;
-    for (let req of unlocks[unlockKey].cost) {
+    for (let req of ponders[unlockKey].cost) {
         if (getMaterial(req.material) < req.amount) {
-            console.log("Cannot unlock " + unlockAttr);
+            // console.log("Cannot unlock " + unlockId);
             canBuy = false;
             break;
         }
@@ -303,40 +126,40 @@ function canUnlock(unlockId) {
 
 
 // Function to get all buttons with class 'unlock' and attach an event listener to them
-function initializeUnlockButtons() {
-    const unlockButtons = document.querySelectorAll('.unlock');
+// function initializeUnlockButtons() {
+//     const unlockButtons = document.querySelectorAll('.unlock');
 
-    unlockButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            console.log('click');
-            const unlockAttr = this.getAttribute('unlock');
-            console.log(unlockAttr);
-            if (unlocks[unlockAttr]) {
-                canCraft = true;
-                for (let req of unlocks[unlockAttr].cost) {
-                    if (getMaterial(req.material) < req.amount) {
-                        console.log("Cannot unlock " + unlockAttr);
-                        canCraft = false;
-                        break;
-                    }
-                }
+//     unlockButtons.forEach(button => {
+//         button.addEventListener('click', function () {
+//             console.log('click');
+//             const unlockAttr = this.getAttribute('unlock');
+//             console.log(unlockAttr);
+//             if (unlocks[unlockAttr]) {
+//                 canCraft = true;
+//                 for (let req of unlocks[unlockAttr].cost) {
+//                     if (getMaterial(req.material) < req.amount) {
+//                         console.log("Cannot unlock " + unlockAttr);
+//                         canCraft = false;
+//                         break;
+//                     }
+//                 }
 
-                if (canCraft) {
-                    for (let req of unlocks[unlockAttr].cost) {
-                        increaseMaterial(req.material, -req.amount);
-                    }
-                    unlocks[unlockAttr].isUnlocked = true;
-                    makeVisible(unlockAttr);
-                    // document.querySelector("#" + resourceKey + "Value").textContent = craftedResources[resourceKey].value.toFixed(2);
-                    // make this button disappear
-                    this.display = 'none';
+//                 if (canCraft) {
+//                     for (let req of unlocks[unlockAttr].cost) {
+//                         increaseMaterial(req.material, -req.amount);
+//                     }
+//                     unlocks[unlockAttr].isUnlocked = true;
+//                     makeVisible(unlockAttr);
+//                     // document.querySelector("#" + resourceKey + "Value").textContent = craftedResources[resourceKey].value.toFixed(2);
+//                     // make this button disappear
+//                     this.display = 'none';
 
-                    console.log("Unlocking " + unlockAttr);
-                }
-            }
-        });
-    });
-}
+//                     console.log("Unlocking " + unlockAttr);
+//                 }
+//             }
+//         });
+//     });
+// }
 
 // Initialize the buttons when the DOM is fully loaded
 // document.addEventListener('DOMContentLoaded', initializeUnlockButtons);
@@ -404,12 +227,15 @@ function generateButtons() {
         buttonElement.id = key;
         buttonElement.className = btn.class;
         buttonElement.textContent = btn.text;
+
         // buttonElement.style.textAlign = 'center';
         if (btn.tooltipDesc) buttonElement.setAttribute('data-tooltip-desc', btn.tooltipDesc);
         if (btn.tooltipEffect) buttonElement.setAttribute('data-tooltip-effect', btn.tooltipEffect);
         buttonElement.setAttribute('unlock', btn.unlock);
         // console.log(btn);
         buttonElement.setAttribute('data_building', btn.data_building);
+        // if this resource isn't unlocked, hide it
+        // if (!btn.isVisible) buttonElement.classList.add('hidden');
 
         // Check if the button corresponds to a crafted resource using the ID
         const craftedResource = Object.values(craftedResources).find(resource => resource.id === key);
@@ -436,6 +262,7 @@ function generateButtons() {
         if (btn.tab === 'production') {
             productionColumns[productionColumnIndex].appendChild(buttonElement);
             productionColumnIndex = (productionColumnIndex + 1) % 3;
+
         } else if (btn.tab === 'experiment') {
             experimentColumns[experimentColumnIndex].appendChild(buttonElement);
             experimentColumnIndex = (experimentColumnIndex + 1) % 3;
@@ -461,19 +288,18 @@ function generateButtons() {
 
 
 
-generateButtons(); // Call this once on page load or game initialization
 
 
 // After you've appended your buttons:
-const buildingButtons = document.querySelectorAll('button[data_building]:not([data_building="undefined"])');
-console.log(buildingButtons);
-buildingButtons.forEach(button => {
-    button.addEventListener('click', function () {
-        console.log("Button clicked! ");
-        const buildingName = this.getAttribute('data_building');
-        buyBuilding(buildingName);
-    });
-});
+// const buildingButtons = document.querySelectorAll('button[data_building]:not([data_building="undefined"])');
+// console.log(buildingButtons);
+// buildingButtons.forEach(button => {
+//     button.addEventListener('click', function () {
+//         console.log("Button clicked! ");
+//         const buildingName = this.getAttribute('data_building');
+//         buyBuilding(buildingName);
+//     });
+// });
 
 
 
@@ -529,6 +355,8 @@ function updateButtonVisibility() {
 
         var state = 'hidden';
 
+        if (button.id && allVisibleButtons.has(button.id)) state = 'button-disabled';
+
         // If requirement is met, it should be visible
         if (buttonConfig.requirement()) {
             state = 'button-disabled';
@@ -549,6 +377,9 @@ function updateButtonVisibility() {
                 if (button.id && button.classList.contains('unlock')) {
                     // console.log(button);
                     if (canUnlock(button.id)) state = 'purchasable';
+                    // If a ponder button is unlocked, hide it
+                    if (isPondered(button.getAttribute('unlock'))) state = 'hidden';
+                    // console.log(button, state);
                 }
             }
 
@@ -604,11 +435,20 @@ function updateButtonVisibility() {
             // console.log('hiding',button);
             button.style.display = 'none';
         } else {
+            // console.log('all visible ', button.id);
+            allVisibleButtons.add(button.id);
             button.style.display = ''; // This will revert it back to its original display state or default (e.g., 'block' or 'inline-block')
         }
     });
 }
 
+const toolsToStages = {
+    'SharpRocks': 'craftRocks',
+    'Spear': 'fishing',
+    "FishingRod": 'fishing',
+    'Axe': 'wood',
+    "Pickaxe": 'ore'
+};
 
 // Update visibility of assets
 const visibilityRules = [
@@ -620,25 +460,12 @@ const visibilityRules = [
         condition: () => getMaterial("rocks") >= 1,
         action: () => { makeVisible("tab-button"); makeVisible('craftRocks'); }
     },
-    {
-        condition: () => !hasTool("Sharp Rock") && getCraftedResource('sharpRocks') >= 1,
-        action: () => {
-            addTool("Sharp Rock");
-            makeVisible('craftRocks');
-        }
-    },
-    {
-        condition: () => !hasTool("Spear") && getCraftedResource('spear') >= 1,
-        action: () => { addTool("Spear"); makeVisible('fishing'); }
-    },
+
     {
         condition: () => getMaterial("fish") >= 1,
         action: () => makeVisible('fishing')
     },
-    {
-        condition: () => !hasTool("Axe") && getCraftedResource('axe') >= 1,
-        action: () => { addTool("Axe"); makeVisible('wood'); }
-    },
+
     {
         condition: () => hasTool("Axe"),
         action: () => makeVisible('wood')
@@ -647,13 +474,7 @@ const visibilityRules = [
         condition: () => getCraftedResource('rope') >= 1,
         action: () => makeVisible('rope')
     },
-    {
-        condition: () => !hasTool("Fishing Rod") && getCraftedResource('fishingRod') >= 1,
-        action: () => {
-            addTool("Fishing Rod");
-            makeVisible("fishing");
-        }
-    },
+
     {
         condition: () => getMaterial('fish') >= 5,
         action: () => {
@@ -665,23 +486,30 @@ const visibilityRules = [
         condition: () => ateFish,
         action: () => { makeVisible('clone'); makeVisible('ponder-tab'); }
     },
-    {
-        condition: () => isUnlocked('jobs-tab'),
-        action: () => makeVisible('jobs-tab')
-    },
-    {
-        condition: () => isUnlocked('skillsTable'),
-        action: () => { makeVisible("skilled"); populateSkillsTable(); }
-    }
+    // {
+    //     condition: () => isPondered('jobs-tab'),
+    //     action: () => makeVisible('jobs-tab')
+    // },
+    // {
+    //     condition: () => isPondered('skillsTable'),
+    //     action: () => { makeVisible("skilled"); populateSkillsTable(); }
+    // }
 ];
 
-function updateVisible() {
+function render() {
     // console.log('updating visible');
     visibilityRules.forEach(rule => {
         if (rule.condition()) {
             rule.action();
         }
     });
+
+    for (let tool in toolsToStages) {
+        if (!hasTool(tool) && getCraftedResource(tool) > 0) {
+            addTool(tool);
+            makeVisible(toolsToStages[tool]);
+        }
+    }
 
     try {
         updateButtonVisibility();
@@ -692,21 +520,12 @@ function updateVisible() {
 }
 
 
-function updateTooltipCosts() {
-    // const gatherVinesButton = document.getElementById("gatherVines");
-    // const cost = calculateVineCost(); // Some function that determines the cost
-    // gatherVinesButton.setAttribute("data-tooltip", "Gather vines. Cost: " + cost + " sticks.");
-}
 
-// Call the function when appropriate (e.g., when game state changes)
-// updateTooltipCosts();
-
-
-
-function updateSkills(resource) {
+function updateSkills(resource, num) {
+    num = Math.abs(num);
     for (let skill in skills) {
         if (skills[skill].affectedResources.includes(resource)) {
-            skills[skill].exp += 1 / Math.pow(1.1, skills[skill].level);
+            skills[skill].exp += num / Math.pow(1.1, skills[skill].level);
             // console.log("Updating skill:" + skill + " to " + skills[skill].exp)
 
             if (skills[skill].exp >= 100) {
@@ -716,7 +535,7 @@ function updateSkills(resource) {
             }
         }
     }
-    if (passedStage('skilled')) {
+    if (passedStage('skillsTable')) {
         populateSkillsTable();
     }
 }
@@ -731,6 +550,7 @@ function populateSkillsTable() {
         hasGeneratedSkillTable = true;
         for (let skill in skills) {
             let tr = document.createElement('tr');
+            tr.id = 'tr-' + skill;
             let tdProgress = document.createElement('td');
             tdProgress.style.position = 'relative';
 
@@ -741,7 +561,6 @@ function populateSkillsTable() {
             }
             else {
                 progressBar.style.backgroundColor = '#50C878';
-
             }
             progressBar.style.height = '20px';
             progressBar.setAttribute('data-skill', skill); // Assign a data attribute for identification
@@ -755,101 +574,33 @@ function populateSkillsTable() {
             skillText.style.top = '50%';
             skillText.style.transform = 'translateY(-50%)';
 
+            if (skills[skill].exp == 0 && skills[skill].level == 0) {
+                tr.style.display = 'none';
+            }
             tdProgress.appendChild(progressBar);
             tdProgress.appendChild(skillText);
             tr.appendChild(tdProgress);
 
             table.appendChild(tr);
-        }
-    }
 
-    // Now, simply update the widths and colors
-    for (let skill in skills) {
-        let progressBar = document.querySelector(`.progressBar[data-skill="${skill}"]`);
-        if (progressBar) {
-            progressBar.style.width = skills[skill].exp + '%';
-            let skillName = document.querySelector("#level-" + skill);
-            skillName.textContent = '[' + skills[skill].level + ']   ' + skill;
-        }
-    }
-}
-
-function getToolValueForResource(resource) {
-    if (resource.tools) {
-        // Sort the tools in descending order based on their val
-        const sortedTools = resource.tools.sort((a, b) => b.val - a.val);
-
-        // Iterate through the sorted tools
-        for (let tool of sortedTools) {
-            if (hasTool(tool.tool)) {
-                // If the player has the tool, return its associated value
-                return tool.val;
+            // let progressBar = document.querySelector(`.progressBar[data-skill="${skill}"]`);
+            if (progressBar) {
+                progressBar.style.width = skills[skill].exp + '%';
+                let skillName = document.querySelector("#level-" + skill);
+                skillName.textContent = '[' + skills[skill].level + ']   ' + skill;
             }
         }
     }
 
-    // If none of the tools are found, return the default value
-    return 1;
-}
-
-function isResourceAffectedByJob(job, resource) {
-    const skill = skills[job];
-    if (skill && skill.affectedResources.includes(resource)) {
-        return true;
-    }
-    return false;
-}
-
-var cloneMult = 0.25;
-function calcIncrease(resource) {
-    var total = 0;
-
-    // clones increase by 1 per second as long as there's space
-    if (resource === 'clones') {
-        total = 1;
-        return total;
-    }
-    if (resources.hasOwnProperty(resource)) {
-        // Check tools
-        var currTool = getToolValueForResource(resources[resource]);
-        // Gathering personally
-        if (resources[resource].isGetting) {
-            total += currTool;
-        }
-
-        // Clones work at 1/4 the speed by default
-        for (let job in jobCounts) {
-            if (isResourceAffectedByJob(job, resource)) {
-                total += cloneMult * jobCounts[job];
-            }
-        }
-
-
-        // Apply skills to all clones
+    else {
+        // Display everything we can
         for (let skill in skills) {
-            if (skills[skill].affectedResources.includes(resource)) {
-                var mult = 1 + (Math.pow(1.2, skills[skill].level) - 1) / 100;
-                // console.log("Multiplying gain by " + mult);
-                total *= mult;
+            if (skills[skill].exp > 0 || skills[skill].level > 0) {
+                document.querySelector('#tr-' + skill).style.display = '';
             }
-        }
-
-
-        // All buildings after level
-        for (let building in buildings) {
-            const boostData = getBoost(building, resource);
-            if (boostData && boostData.multiplier) {
-                total *= Math.pow(boostData.multiplier, buildings[building].count);
-            }
-        }
-        if (resource === 'ponder') {
-            // console.log("PONDERING INC: ",total);
         }
     }
 
-    // round total to nearest thousandth
-    total = parseFloat(total.toFixed(3));
-    return total;
 }
 
 
@@ -945,12 +696,12 @@ body.classList.toggle('dark-mode');
 darkModeToggle.classList.toggle('dark');
 let isDark = true;
 
-darkModeToggle.addEventListener('click', () => {
-    body.classList.toggle('dark-mode');
-    darkModeToggle.classList.toggle('dark');
-    isDark = !isDark;
-    darkModeToggle.textContent = isDark ? "Light Mode" : "Dark Mode"
-});
+// darkModeToggle.addEventListener('click', () => {
+//     body.classList.toggle('dark-mode');
+//     darkModeToggle.classList.toggle('dark');
+//     isDark = !isDark;
+//     darkModeToggle.textContent = isDark ? "Light Mode" : "Dark Mode"
+// });
 
 
 
@@ -967,9 +718,9 @@ function eatFish() {
         fishButton.display = 'none';
         ateFish = true;
         setTimeout(() => {
-            changeMessage("You are with yourself in a forest.");
+            changeMessage("You are with yourself in a forest.", 'with yourself');
             increaseMax('clones', 1);
-            increaseMaterial('clones', 1);
+            // increaseMaterial('clones', 1);
         }, 1000); // delay of 1s
 
     }
@@ -992,16 +743,17 @@ function fadeToBlack() {
     }, 5000);
 }
 
+const overlay = document.getElementById('overlay');
 function hideOverlay() {
-    const overlay = document.getElementById('overlay');
     overlay.style.display = 'none';
 }
 
 
 // Message 
-function changeMessage(newMessage) {
-    const messageElement = document.getElementById('message');
-    messageElement.textContent = newMessage;
+const messageElement = document.getElementById('message');
+function changeMessage(newMessage, cloneWords) {
+    const modifiedMessage = newMessage.replace(cloneWords, `<span id="alone">${cloneWords}</span>`);
+    messageElement.innerHTML = modifiedMessage;
 }
 
 // Example usage:
@@ -1011,22 +763,8 @@ function changeMessage(newMessage) {
 
 
 
-document.addEventListener('DOMContentLoaded', (event) => {
-    loadGame();
-    initializeUnlockButtons();
-    // Your code here
-});
 
 
-function updateResourceIncreaseRates() {
-    // const resources = ["clones", "sticks", "vines", "rocks", "fish", "wood", "ponder"];
-    for (let resource in resources) {
-        // console.log("increase of " + resource);
-        const rate = calcIncrease(resource);
-        var rateElement = document.getElementById(`${resource}IncreaseRate`);
-        if (rateElement) rateElement.textContent = rate;
-    }
-}
 
 // Call the function to update the rates, and consider setting an interval to periodically update them.
 // setInterval(updateResourceIncreaseRates, 1000); // This will update the rates every second.
@@ -1035,17 +773,58 @@ function updateResourceIncreaseRates() {
 
 /* GAME LOOP */
 
-function tick() {
-    for (let key in resources) {
-        // console.log("updating " + key);
-        increaseMaterial(key, calcIncrease(key));
+
+let milliseconds_per_frame = 50;
+let last_time = null;
+let total_time = 0;
+let accumulated_lag = 0;
+
+
+function loop(current_time) {
+    if (last_time === null) last_time = current_time;
+
+    const delta_time = current_time - last_time;
+
+    total_time += delta_time;
+    accumulated_lag += delta_time;
+
+    last_time = current_time;
+
+    // Catch up all the missed ticks
+    while (accumulated_lag >= milliseconds_per_frame) {
+        accumulated_lag -= milliseconds_per_frame;
+        update(milliseconds_per_frame, total_time);
     }
-    updateResourceIncreaseRates();
+
+    requestAnimationFrame(loop);
 }
 
-window.setInterval(updateVisible, 100) // Update visuals 10 times per second
-window.setInterval(tick, 1000); // Every tick lasts for 1 second
-window.setInterval(saveGame, 10000); // Save the game every 10 seconds
+
+let time_since_last_save = 0;
+
+function update(delta_time, total_time) {
+
+    for (let key in resources) {
+        // console.log("updating " + key);
+        increaseMaterial(key, calcIncrease(key, delta_time));
+    }
+    updateResourceIncreaseRates();
+
+    render();
+
+    // Save the game every 10 seconds
+    time_since_last_save += delta_time;
+    total_time += delta_time;
+    if (time_since_last_save >= 10000) {
+        saveGame();
+        time_since_last_save = 0;
+    }
+
+}
+
+// window.setInterval(render, 100) // Update visuals 10 times per second
+// window.setInterval(tick, 1000); // Every tick lasts for 1 second
+// window.setInterval(saveGame, 10000); // Save the game every 10 seconds
 
 
 
@@ -1103,6 +882,28 @@ function updateUI(resourceName) {
 }
 
 
+function abbreviateNumber(num) {
+    function format(value, unit) {
+        if (value < 10) return roundToDecimals(value, 3) + unit;
+        if (value < 100) return roundToDecimals(value, 2) + unit;
+        if (value < 1000) return roundToDecimals(value, 1) + unit;
+        return Math.round(value) + unit;
+    }
+
+    function roundToDecimals(number, decimals) {
+        const factor = Math.pow(10, decimals);
+        return (Math.round(number * factor) / factor).toFixed(decimals);
+    }
+
+    if (num < 1e3) return roundToDecimals(num, 2); // If less than 1,000
+    if (num < 1e6) return format(num / 1e3, 'K'); // Thousands
+    if (num < 1e9) return format(num / 1e6, 'M'); // Millions
+    if (num < 1e12) return format(num / 1e9, 'B'); // Billions
+    // Add more cases for larger numbers if needed
+    return num.toString();
+}
+
+
 
 function updateSidebar() {
     for (const [resourceName, resourceData] of Object.entries(resources)) {
@@ -1115,148 +916,20 @@ function updateSidebar() {
             // console.log('has passed', resourceName, passedStage(c));
             if (passedStage(c)) { shouldHide = false; console.log('dont hide', resourceName, c); }
         }
+        if (resourceData.value > 0) { shouldHide = false; resources[resourceName].isVisible = true; }
+        if (resourceData.isVisible) { shouldHide = false; }
 
         if (shouldHide) {
             parentElement.style.display = 'none';
         }
         const displayElem = document.getElementById(resourceName + 'Value');
         if (displayElem) {
-            // console.log(resourceData);
-            displayElem.textContent = `${resourceData.value.toFixed(1)} / ${resourceData.max.toFixed(1)}`;
+            // console.log(abbreviateNumber(resourceData));
+            displayElem.textContent = abbreviateNumber(resourceData.value) + ' / ' + abbreviateNumber(resourceData.max);
         }
     }
 }
 
-function createCraftedResourceButton(config) {
-    const button = document.createElement('button');
-    button.className = config.class + ' tooltip';
-    button.setAttribute('id', config.id);
-    const cleanCount = parseFloat(config.count).toFixed(0);
-    button.innerHTML = `${config.text}: <span id="${config.countId}">${cleanCount}</span>`;
-    // button.tooltipDesc = config.tooltipDesc; 
-    button.tab = 'experiment';
-
-    button.addEventListener('click', function () {
-        // Your crafting logic can be added here
-        craftResource(config.resourceName);
-        // config.craftedOnce = true;
-    });
-
-    return button;
-}
-
-
-function appendCraftedResourceButtons() {
-    const container = document.querySelector('#craftedResourceButtons');
-
-    // Define the button configurations based on the existing paragraphs
-    const resourceConfigs = [
-        {
-            text: 'Sharp Rocks',
-            id: 'craftRocks',
-            resourceName: 'sharpRocks',
-            countId: 'sharpRocksValue',
-            count: 0,
-            requirement: () => getMaterial('rocks') >= 5,
-            tooltipDesc: 'Craft a rock using nothing but rocks!',
-            tooltipCost: 'Rocks: 5',
-            class: 'craftRocks'
-        },
-        {
-            text: 'Rope',
-            id: 'craftRope',
-            resourceName: 'rope',
-            countId: 'ropeValue',
-            count: 0,
-            requirement: () => getMaterial('vines') >= 3,
-            tooltipDesc: 'The basis of attaching things to other things.',
-            tooltipCost: 'Vines: 3',
-            class: 'rope'
-        },
-        {
-            text: 'Handles',
-            id: 'craftHandle',
-            resourceName: 'handle',
-            countId: 'handleValue',
-            count: 0,
-            requirement: () => getCraftedResource('sharpRocks') >= 1,
-            tooltipDesc: 'Shear off that bark to hold it better',
-            tooltipCost: 'Sharp Rocks: 1',
-            class: 'craftRocks'
-        },
-        {
-            text: 'Staffs',
-            id: 'craftStaff',
-            resourceName: 'staff',
-            countId: 'staffValue',
-            count: 0,
-            requirement: () => getCraftedResource('handle') >= 2,
-            tooltipDesc: 'Stick some sheared sticks together',
-            tooltipCost: 'Handles: 2',
-            class: 'rope'
-        },
-        {
-            text: 'Spears',
-            id: 'craftSpear',
-            resourceName: 'spear',
-            countId: 'spearValue',
-            count: 0,
-            requirement: () => getCraftedResource('staff') >= 1,
-            tooltipDesc: 'A long and pointy stick',
-            tooltipCost: 'Staffs: 1',
-            class: 'rope'
-        },
-        {
-            text: 'Axes',
-            id: 'craftAxe',
-            resourceName: 'axe',
-            countId: 'axeValue',
-            count: 0,
-            requirement: () => getCraftedResource('spear') >= 1,
-            tooltipDesc: 'Put a rock straight through that handle',
-            tooltipCost: 'Spears: 1',
-            class: 'rope'
-        },
-        {
-            text: 'Pickaxes',
-            id: 'craftPickaxe',
-            resourceName: 'pickaxe',
-            countId: 'pickaxeValue',
-            count: 0,
-            requirement: () => getCraftedResource('axe') >= 1,
-            tooltipDesc: 'Sadly not made of diamonds',
-            tooltipCost: 'Axes: 1',
-            class: 'rope'
-        }
-        // ... other resources as needed
-    ];
-
-
-    // Capture the count values before deleting the paragraphs
-    // for (let config of resourceConfigs) {
-    //     config.count = document.getElementById(config.countId).textContent;
-    // }
-
-    // // Clear out the existing children (i.e., the <p> elements)
-    // while (container.firstChild) {
-    //     container.removeChild(container.firstChild);
-    // }
-
-    // For each resource, create a button using the captured counts
-    for (let config of resourceConfigs) {
-
-        config.count = craftedResources[config.resourceName].value;
-        const button = createCraftedResourceButton(config);
-        button.setAttribute('data-tooltip-desc', config.tooltipDesc);
-        button.setAttribute('data-tooltip-cost', generateTooltipCost(getCraftedResourceConfigById(config.id).requires));
-
-        container.appendChild(button);
-        buttons[config.id] = config;
-    }
-}
-
-// Call the function to replace <p> elements with the buttons
-appendCraftedResourceButtons();
 
 
 const tooltip = document.getElementById('dynamic-tooltip');
@@ -1275,7 +948,7 @@ function showTooltip(target, desc, effect, cost) {
     if (cost) {
         content += `<span style="color:#F4D03F">${cost}</span><br>`;
     }
-
+    // console.log(target, content);
     tooltip.innerHTML = content;
     tooltip.style.left = (target.getBoundingClientRect().right + 5) + 'px';
     tooltip.style.top = (target.getBoundingClientRect().top - tooltip.offsetHeight / 2) + 'px';
@@ -1286,22 +959,110 @@ function hideTooltip() {
     tooltip.style.display = 'none';
 }
 
-function updateTooltip(button, target) {
+function updateTooltip(button) {
     const desc = button.getAttribute('data-tooltip-desc');
     const effect = button.getAttribute('data-tooltip-effect');
     const cost = button.getAttribute('data-tooltip-cost');
-    showTooltip(target.target, desc, effect, cost);
+    showTooltip(button, desc, effect, cost);
 }
-// Sample usage:
-document.querySelectorAll('.tooltip').forEach(button => {
-    // Extract the data from your building or any other data - source
-    // const content = "Your tooltip content here";
-    button.addEventListener('mousemove', function (e) {
-        updateTooltip(button, e);
+
+
+generateButtons(); // Call this once on page load or game initialization
+// After all has been loaded
+document.addEventListener('DOMContentLoaded', (event) => {
+
+    loadGame();
+    updateSidebar();
+
+
+
+    document.addEventListener("click", (event) => {
+        if (event.target.matches("button")) {
+            // one of our buttons was clicked
+            const button = event.target;
+            // console.log('clicked', button);
+
+            // Update tooltips 
+            if (button.classList.contains('tooltip')) updateTooltip(button);
+
+            if (button.getAttribute('data_building') && button.getAttribute('data_building') !== 'undefined' && button.classList.contains('purchasable')) {
+                var building = button.getAttribute('data_building');
+                buyBuilding(building);
+            }
+            if (button.classList.contains('unlock')) {
+                const unlockAttr = button.getAttribute('unlock');
+                // console.log('click');
+                console.log(unlockAttr);
+                if (ponders[unlockAttr]) {
+                    var canUnlock = true;
+                    for (let req of ponders[unlockAttr].cost) {
+                        if (getMaterial(req.material) < req.amount) {
+                            console.log("Cannot unlock " + unlockAttr);
+                            canUnlock = false;
+                            break;
+                        }
+                    }
+
+                    if (canUnlock) {
+                        for (let req of ponders[unlockAttr].cost) {
+                            increaseMaterial(req.material, -req.amount);
+                        }
+                        ponders[unlockAttr].isUnlocked = true;
+                        makeVisible(unlockAttr);
+                        // document.querySelector("#" + resourceKey + "Value").textContent = craftedResources[resourceKey].value.toFixed(2);
+                        // make this button disappear
+                        button.display = 'none';
+
+                        console.log("Unlocking " + unlockAttr);
+                    }
+                }
+
+            }
+
+            if (button.id && button.id.slice(0, 6) === "gather") {
+                for (let r in resources) {
+                    // console.log(resources[r].id, button.id);
+                    if (resources[r].id == button.id) {
+                        console.log(r);
+                        toggleResource(r);
+
+                    }
+                }
+            }
+
+            if (button.id && button.id === 'darkModeToggle') {
+                body.classList.toggle('dark-mode');
+                darkModeToggle.classList.toggle('dark');
+                isDark = !isDark;
+                darkModeToggle.textContent = isDark ? "Light Mode" : "Dark Mode"
+
+            }
+
+        }
+
+        if (event.target.matches("#alone")) {
+            increaseMax('clones', 1);
+        }
     });
 
-    button.addEventListener('click', function (e) {
-        updateTooltip(button, e);
+
+    requestAnimationFrame(loop);
+
+    // Sample usage:
+    document.querySelectorAll('.tooltip').forEach(button => {
+        // console.log(button);
+        // Extract the data from your building or any other data - source
+        // const content = "Your tooltip content here";
+        button.addEventListener('mousemove', function (e) {
+            updateTooltip(button);
+        });
+
+        button.addEventListener('mouseleave', hideTooltip);
     });
-    button.addEventListener('mouseleave', hideTooltip);
+
+    // Update the jobs counter
+    updateTotal();
+
+
 });
+

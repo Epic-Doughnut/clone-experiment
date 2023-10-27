@@ -1,3 +1,5 @@
+// DEPENDS ON: resources.js
+
 /* SAVING */
 var save = {
     resources: resources,
@@ -15,7 +17,9 @@ function saveGame() {
         stages: [],
         unlocks: {},
         jobs: {},
-        buildings: {}
+        buildings: {},
+        time: {},
+        allVisibleButtons: []
     };
 
     // Extract exp and level from skills and save to save.skills
@@ -51,13 +55,24 @@ function saveGame() {
     save.stages = stages;
     save.jobs = jobCounts;
 
-    for (let u in unlocks) {
-        save.unlocks[u] = isUnlocked(u);
+    for (let u in ponders) {
+        save.unlocks[u] = isPondered(u);
     }
 
     for (let b in buildings) {
         save.buildings[b] = buildings[b].count;
     }
+
+    // console.log(allVisibleButtons.values());
+    for (let a of allVisibleButtons) {
+        // console.log(a);
+        save.allVisibleButtons.push(a);
+        // console.log(save.allVisibleButtons);
+    }
+
+
+    save.time['total_time'] = total_time;
+    save.time['time_of_save'] = Date.now();
     // You can now use the save object to store the data somewhere or display it to the user
     console.log(save);
 
@@ -121,13 +136,13 @@ function loadGame() {
         // jobCounts = savegame.jobs;
         for (let j in savegame.jobs) {
             jobCounts[j] = savegame.jobs[j];
-            console.log(j);
+            // console.log(j);
             updateDisplay(j);
         }
     }
     if (typeof savegame.unlocks !== 'undefined') {
         for (let u in savegame.unlocks) {
-            unlocks[u].isUnlocked = savegame.unlocks[u];
+            ponders[u].isUnlocked = savegame.unlocks[u];
         }
     }
 
@@ -146,14 +161,38 @@ function loadGame() {
 
     // If we have a clone, then we ate fish
     ateFish = resources.clones.max >= 1;
-    console.log('atefish', ateFish);
+    // console.log('atefish', ateFish);
     if (ateFish) {
         const fishButton = document.querySelector("#eatFish");
         fishButton.style.display = 'none';
     }
     // Change the message to the latest one
     if (resources.clones.max >= 1) {
-        changeMessage("You are with yourself in a forest.");
+        changeMessage("You are with yourself in a forest.", 'with yourself');
+    }
+
+
+    // Calculate resources earned while away
+    if (typeof savegame.time !== 'undefined') {
+        total_time = savegame.time[total_time];
+        const time_difference = Date.now() - savegame.time['time_of_save'];
+        for (let r in resources) {
+            const inc = calcIncrease(r, time_difference);
+            resources[r].value += inc;
+            // console.log(r, time_difference, inc);
+            if (resources[r].value > resources[r].max) resources[r].value = resources[r].max;
+        }
+    }
+
+    if (typeof savegame.allVisibleButtons !== 'undefined') {
+        console.log(savegame.allVisibleButtons);
+        for (let a in savegame.allVisibleButtons) {
+            allVisibleButtons.add(a);
+        }
 
     }
 }
+
+
+// save the time when the player exits the browser tab
+// window.addEventListener("beforeunload", () => saveGame());

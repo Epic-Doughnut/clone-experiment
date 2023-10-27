@@ -29,13 +29,6 @@ const buttons = {
         requirement: () => getMaterial('vines') >= 10 || passedStage('stick'),
         hide: () => false
     },
-    'makeClone': {
-        class: 'clone',
-        tab: 'production',
-        text: 'Spawn',
-        requirement: () => false && passedStage('clone'),
-        hide: () => false
-    },
     'gatherFish': {
         class: 'tooltip fishing',
         tab: 'production',
@@ -117,7 +110,7 @@ const buttons = {
         tab: 'ponder',
         unlock: 'jobs-tab',
         requirement: () => (getMaterial('ponder') >= 10),
-        hide: () => passedStage('jobs-tab')
+        hide: () => passedStage('jobs-tab') || isPondered('jobs-tab')
     },
     'ponderSkills': {
         class: 'tooltip unlock',
@@ -127,6 +120,17 @@ const buttons = {
         tab: 'ponder',
         unlock: 'skillsTable',
         requirement: () => (getMaterial('ponder') >= 25),
-        hide: () => passedStage('skilled')
+        hide: () => passedStage('skillsTable') || isPondered('skillsTable')
     },
+    'ponderFishing': {
+        class: 'tooltip unlock',
+        text: 'Think about Fishing',
+        tooltipDesc: 'What if you could make your clones fish?',
+        tooltipCost: '60 Ponder, 50 Fish',
+        tab: 'ponder',
+        unlock: 'fishing',
+        requirement: () => getMaterial('fish') >= 40,
+        hide: () => isPondered('fishing')
+
+    }
 }

@@ -1,4 +1,4 @@
-
+// DEPENDS ON resources.js
 /* BUILDINGS */
 
 function getBuildingCount(buildingName) {
@@ -6,8 +6,10 @@ function getBuildingCount(buildingName) {
 }
 function getBoost(buildingName, resource) {
     const building = buildings[buildingName];
-    if (building && building.boost && building.boost[resource]) {
-        return building.boost[resource];
+
+    if (building && building.boost) {
+        if (building.boost[resource]) return building.boost[resource];
+        if (building.boost['all']) return building.boost['all'];
     }
     return null;
 }
@@ -61,7 +63,9 @@ function recalculateBuildingCost(buildingKey) {
 }
 
 
-
+function generateBuildingTooltipCost(cost) {
+    return Object.entries(cost).map(([material, amount]) => `${amount.toFixed(2)} ${material}`).join(', ');
+}
 
 
 function createBuildingButton(buildingKey) {
@@ -102,6 +106,7 @@ function createBuildingButton(buildingKey) {
 function generateTooltipDescription(buildingKey) {
     const quips = {
         "shelter": "For when you need a home away from home.",
+        "make_clone": "Delegate that to yourself",
         "shed": "The ultimate storage solution for the pack rat in you.",
         "fish_traps": "Fishing made easy. No patience required.",
         "drying_racks": "Air drying: Nature's way of preserving food.",
@@ -156,38 +161,39 @@ function buyBuilding(buildingName) {
 
 
 
-    if (canBuyBuilding(buildingName)) {
-        // Subtract the cost
-        for (const resource in building.cost) {
-            console.log("Reducing ", resource, "by", building.cost[resource]);
-            increaseMaterial(resource, -building.cost[resource]);
-        }
-        // Add the effects
-        for (const effect in building.effects) {
-            if (building.effects[effect].max) {
-                increaseMax(resources[effect], building.effects[effect].max);
-            }
-            // Additional logic can be added here for other effects (e.g., increase production rates)
-        }
+    if (!canBuyBuilding(buildingName)) return;
 
-
-        // Actually build the building
-        building.count++;
-
-        updateSidebar();
-        // Update button text
-        updateBuildingButtonCount(buildingName, building.count);
-
-        // Update the cost of the building
-        recalculateBuildingCost(buildingName);
-
-
+    // Subtract the cost
+    for (const resource in building.cost) {
+        console.log("Reducing ", resource, "by", building.cost[resource]);
+        console.log(increaseMaterial);
+        increaseMaterial(resource, -building.cost[resource]);
     }
+    // Add the effects
+    for (const effect in building.effects) {
+        if (building.effects[effect].max) {
+            increaseMax(effect, building.effects[effect].max);
+        }
+        // Additional logic can be added here for other effects (e.g., increase production rates)
+    }
+
+
+    // Actually build the building
+    building.count++;
+
+    updateSidebar();
+    // Update button text
+    updateBuildingButtonCount(buildingName, building.count);
+
+    // Update the cost of the building
+    recalculateBuildingCost(buildingName);
+
+
+
 }
 
 function updateBuildingButtonCount(buildingName, buildingCount) {
-    document.getElementById(`${buildingName}`).textContent = `${buildingName} (${buildingCount})`;
+    document.getElementById(`${buildingName}`).textContent = `${buildingName.charAt(0).toUpperCase() + buildingName.slice(1).split('_').join(' ')} (${buildingCount})`;
 
 }
 
-console.log("BUILDING.JS LOADED");
