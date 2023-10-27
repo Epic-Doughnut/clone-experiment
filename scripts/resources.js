@@ -128,6 +128,8 @@ function increaseMaterial(material, num) {
 
     // This check ensures that the material key exists in the resources map.
     if (resources.hasOwnProperty(material)) {
+        if (isPondered('fasterResourceGain')) num *= 1.05;
+
         if (resources[material].value < resources[material].max && num > 0) {
             resources[material].value += num;
             updateSkills(material, num);

@@ -36,7 +36,7 @@ let ponders = {
         isPondered: false,
         cost: [{
             material: 'ponder',
-            amount: 80
+            amount: 200
         }, { material: 'clones', amount: 5 }]
     },
     'fasterSkills': {
@@ -44,8 +44,10 @@ let ponders = {
         isPondered: false,
         cost: [{
             material: 'ponder',
-            amount: 100
-        }]
+            amount: 80
+        }],
+        text: "Skills I",
+        tooltipDesc: "Think Smarter. 5% bonus to skill exp"
     },
     'thinking': {
         id: 'ponderThinking',
@@ -58,7 +60,9 @@ let ponders = {
         cost: [{
             material: 'ponder',
             amount: 120
-        }]
+        }],
+        text: "Productivity I",
+        tooltipDesc: "Just work harder. 5% bonus to resource gain"
     },
     'metal-working': {
         id: 'ponderMetalWorking',

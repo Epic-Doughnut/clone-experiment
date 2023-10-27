@@ -481,6 +481,7 @@ function render() {
 
 function updateSkills(resource, num) {
     num = Math.abs(num);
+    if (isPondered('fasterSkills')) num *= 1.05;
     for (let skill in skills) {
         if (skills[skill].affectedResources.includes(resource)) {
             skills[skill].exp += num / Math.pow(1.1, skills[skill].level);
