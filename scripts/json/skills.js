@@ -2,17 +2,19 @@ const skills = {
     gathering: {
         exp: 0,
         level: 0,
-        affectedResources: ['sticks', 'vines']
+        affectedResources: ['sticks', 'vines', 'sand']
     },
     masonry: {
         exp: 0,
         level: 0,
-        affectedResources: ['rocks']
+        affectedResources: ['rocks', 'ore'],
+        needTools: [{ 'pickaxe': ['ore'] }]
     },
     carpentry: {
         exp: 0,
         level: 0,
-        affectedResources: ['wood', 'handle', 'staff', 'fishingRod']
+        affectedResources: ['wood', 'handle', 'staff', 'fishingRod'],
+        needTools: [{ 'axe': ['wood'] }]
     },
     thinking: {
         exp: 0,
@@ -22,12 +24,12 @@ const skills = {
     smithing: {
         exp: 0,
         level: 0,
-        affectedResources: ['axe', 'pickaxe', 'spear']
+        affectedResources: ['axe', 'pickaxe', 'spear', 'glass', 'iron', 'silver', 'gold']
     },
     farming: {
         exp: 0,
         level: 0,
-        affectedResources: []
+        affectedResources: ['wheat']
     },
     combat: {
         exp: 0,
