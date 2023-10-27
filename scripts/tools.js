@@ -4,7 +4,12 @@
 // List to hold the tools
 let playerTools = ['Bare Hands'];
 
-// Function to check if a tool is present in the list
+
+/**
+ * Function to check if a tool is present in the list 
+ * @param {string} tool 
+ * @returns 
+ */
 function hasTool(tool) {
     return playerTools.includes(tool);
 }

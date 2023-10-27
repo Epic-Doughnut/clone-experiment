@@ -1,5 +1,5 @@
 
-// DEPENDS ON: tools.js
+// DEPENDS ON: tools.js, jobs.js
 
 /**
  * 
@@ -24,6 +24,8 @@ function isResourceAffectedByJob(job, resource) {
                     }
                 }
             }
+            // We needed a tool but not for this
+            return true;
         }
         // If no tool requirement was found for the resource, it's still affected by the job
         else {
@@ -44,42 +46,44 @@ function calcIncrease(resource, delta_time) {
     //     total = 1;
     //     return total;
     // }
-    if (resources.hasOwnProperty(resource)) {
-        // Check tools
-        var currTool = getToolValueForResource(resources[resource]);
-        // Gathering personally
-        if (resources[resource].isGetting) {
-            total += currTool;
-        }
+    if (!resources.hasOwnProperty(resource)) return total;
 
-        for (let job in jobCounts) {
-            if (isResourceAffectedByJob(job, resource)) {
-                total += cloneMult * jobCounts[job];
-            }
-        }
+    // Check tools
+    var currTool = getToolValueForResource(resources[resource]);
+    // Gathering personally
+    if (resources[resource].isGetting) {
+        total += currTool;
+    }
 
-
-        // Apply skills to all clones
-        for (let skill in skills) {
-            if (skills[skill].affectedResources.includes(resource)) {
-                var mult = 1 + (Math.pow(1.2, skills[skill].level) - 1) / 100;
-                // console.log("Multiplying gain by " + mult);
-                total *= mult;
-            }
-        }
-
-
-        // All buildings after level
-        for (let building in buildings) {
-            const boostData = getBoost(building, resource);
-            if (boostData && boostData.multiplier) {
-                total *= Math.pow(boostData.multiplier, buildings[building].count);
-            }
-        }
-        if (resource === 'ponder') {
-            // console.log("PONDERING INC: ",total);
+    // Check jobs
+    for (let job in jobCounts) {
+        if (isResourceAffectedByJob(job, resource)) {
+            total += cloneMult * jobCounts[job];
         }
     }
+
+
+    // Apply skills to all clones
+    for (let skill in skills) {
+        if (skills[skill].affectedResources.includes(resource)) {
+            var mult = 1 + (Math.pow(1.2, skills[skill].level) - 1) / 100;
+            // console.log("Multiplying gain by " + mult);
+            total *= mult;
+        }
+    }
+
+
+    // All buildings after level
+    for (let building in buildings) {
+        const boostData = getBoost(building, resource);
+        if (boostData && boostData.multiplier) {
+            total *= Math.pow(boostData.multiplier, buildings[building].count);
+        }
+    }
+    if (resource === 'ponder') {
+        // console.log("PONDERING INC: ",total);
+    }
+
 
     // Convert from seconds to milliseconds
     total *= delta_time / 1000;

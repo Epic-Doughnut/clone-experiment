@@ -17,7 +17,7 @@ const buttons = {
         text: 'Gather Vines',
         tooltipDesc: 'Some vines are rubbery, others are gummy.',
         tooltipCost: 'Free',
-        requirement: () => getMaterial('sticks') >= 10 || passedStage('stick'),
+        requirement: () => getMaterial('sticks') >= 10 || passedStage('vines'),
         hide: () => false
     },
     'gatherRocks': {
@@ -26,7 +26,7 @@ const buttons = {
         text: 'Gather Rocks',
         tooltipDesc: 'Not a single window to throw them through.',
         tooltipCost: 'Free',
-        requirement: () => getMaterial('vines') >= 10 || passedStage('stick'),
+        requirement: () => getMaterial('vines') >= 10 || passedStage('rocks'),
         hide: () => false
     },
     'gatherFish': {
@@ -102,35 +102,35 @@ const buttons = {
         requirement: () => passedStage('ponder-tab'),
         hide: () => false
     },
-    'ponderClones1': {
-        class: 'tooltip unlock',
-        text: 'Understand Cloning',
-        tooltipDesc: 'Why are there two of you?',
-        tooltipCost: 'Sanity (20 Ponder)',
-        tab: 'ponder',
-        unlock: 'jobs-tab',
-        requirement: () => (getMaterial('ponder') >= 10),
-        hide: () => passedStage('jobs-tab') || isPondered('jobs-tab')
-    },
-    'ponderSkills': {
-        class: 'tooltip unlock',
-        text: 'Notice Improvement',
-        tooltipDesc: "You're starting to learn things, right?",
-        tooltipCost: '40 Ponder',
-        tab: 'ponder',
-        unlock: 'skillsTable',
-        requirement: () => (getMaterial('ponder') >= 25),
-        hide: () => passedStage('skillsTable') || isPondered('skillsTable')
-    },
-    'ponderFishing': {
-        class: 'tooltip unlock',
-        text: 'Think about Fishing',
-        tooltipDesc: 'What if you could make your clones fish?',
-        tooltipCost: '60 Ponder, 50 Fish',
-        tab: 'ponder',
-        unlock: 'fishing',
-        requirement: () => getMaterial('fish') >= 40,
-        hide: () => isPondered('fishing')
+    // 'ponderClones1': {
+    //     class: 'tooltip unlock',
+    //     text: 'Understand Cloning',
+    //     tooltipDesc: 'Why are there two of you?',
+    //     tooltipCost: 'Sanity (20 Ponder)',
+    //     tab: 'ponder',
+    //     unlock: 'jobs-tab',
+    //     requirement: () => (getMaterial('ponder') >= 10),
+    //     hide: () => passedStage('jobs-tab') || isPondered('jobs-tab')
+    // },
+    // 'ponderSkills': {
+    //     class: 'tooltip unlock',
+    //     text: 'Notice Improvement',
+    //     tooltipDesc: "You're starting to learn things, right?",
+    //     tooltipCost: '40 Ponder',
+    //     tab: 'ponder',
+    //     unlock: 'skillsTable',
+    //     requirement: () => (getMaterial('ponder') >= 25),
+    //     hide: () => passedStage('skillsTable') || isPondered('skillsTable')
+    // },
+    // 'ponderFishing': {
+    //     class: 'tooltip unlock',
+    //     text: 'Think about Fishing',
+    //     tooltipDesc: 'What if you could make your clones fish?',
+    //     tooltipCost: '60 Ponder, 50 Fish',
+    //     tab: 'ponder',
+    //     unlock: 'fishing',
+    //     requirement: () => getMaterial('fish') >= 40,
+    //     hide: () => isPondered('fishing')
 
-    }
+    // }
 }

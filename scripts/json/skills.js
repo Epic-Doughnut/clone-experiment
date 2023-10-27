@@ -8,13 +8,13 @@ const skills = {
         exp: 0,
         level: 0,
         affectedResources: ['rocks', 'ore'],
-        needTools: [{ 'pickaxe': ['ore'] }]
+        needTools: [{ 'Pickaxe': ['ore'] }]
     },
     carpentry: {
         exp: 0,
         level: 0,
         affectedResources: ['wood', 'handle', 'staff', 'fishingRod'],
-        needTools: [{ 'axe': ['wood'] }]
+        needTools: [{ 'Axe': ['wood'] }]
     },
     thinking: {
         exp: 0,

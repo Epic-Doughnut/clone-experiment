@@ -1,63 +1,18 @@
-// DEPENDS ON: skills.js
+// DEPENDS ON: skills.js, ponder.js
 
 /* JOBS FUNCTIONALITY */
 
-const jobCounts = {
-    farming: 0,
-    gathering: 0,
-    masonry: 0,
-    carpentry: 0,
-    combat: 0,
+
+const jobCounts = {};
+for (let skill in skills) {
+    jobCounts[skill] = 0;
+}
+
+const jobRequiredPonders = {
+    'thinking': 'thinking',
+    'fishing': 'fishing',
+    'smithing': 'not-unlockable'
 };
-
-
-function getTotalJobs() {
-    var total = 0;
-    for (let j in jobCounts) {
-        total += jobCounts[j];
-    }
-    return total;
-}
-
-document.querySelectorAll('.btn-increment').forEach(btn => {
-    btn.addEventListener('click', function () {
-        const jobType = this.closest('.job-button').getAttribute('data-job');
-        if (getMaterial('clones') > getTotalJobs()) {
-            jobCounts[jobType]++;
-            // increaseMaterial('clones', -1);
-        }
-        updateDisplay(jobType);
-        updateTotal();
-    });
-});
-
-document.querySelectorAll('.btn-decrement').forEach(btn => {
-    btn.addEventListener('click', function () {
-        const jobType = this.closest('.job-button').getAttribute('data-job');
-        if (jobCounts[jobType] > 0) {
-            jobCounts[jobType]--;
-            // increaseMaterial('clones', 1);
-            updateDisplay(jobType);
-            updateTotal();
-        }
-    });
-});
-
-// const allJobButtonbs = document.querySelectorAll('.job-button');
-function updateDisplay(jobType) {
-    const thisJobButton = document.querySelector(`.job-button[data-job="${jobType}"]`);
-    const jobElement = thisJobButton.querySelector(`.job-name`);
-    if (jobElement) jobElement.textContent = `${jobType.charAt(0).toUpperCase() + jobType.slice(1)}: ${jobCounts[jobType]}`;
-
-
-}
-
-
-function updateTotal() {
-    const totalElement = document.querySelector('#jobs-total');
-    totalElement.textContent = "Assigned Clones: " + getTotalJobs() + " / " + getMaterial('clones');
-}
-
 
 const jobsTab = document.getElementById('jobsTab');
 
@@ -83,4 +38,56 @@ Object.keys(skills).forEach(skill => {
 
     jobsTab.appendChild(jobDiv);
 });
+
+
+
+
+document.querySelectorAll('.btn-increment').forEach(btn => {
+    btn.addEventListener('click', function () {
+        const jobType = this.closest('.job-button').getAttribute('data-job');
+        if (getMaterial('clones') > getTotalJobs()) {
+            jobCounts[jobType]++;
+            // increaseMaterial('clones', -1);
+        }
+        updateDisplay(jobType);
+        updateTotal();
+    });
+});
+
+document.querySelectorAll('.btn-decrement').forEach(btn => {
+    btn.addEventListener('click', function () {
+        const jobType = this.closest('.job-button').getAttribute('data-job');
+        if (jobCounts[jobType] > 0) {
+            jobCounts[jobType]--;
+            // increaseMaterial('clones', 1);
+            updateDisplay(jobType);
+            updateTotal();
+        }
+    });
+});
+
+
+function getTotalJobs() {
+    var total = 0;
+    for (let j in jobCounts) {
+        total += jobCounts[j];
+    }
+    return total;
+}
+
+// const allJobButtonbs = document.querySelectorAll('.job-button');
+function updateDisplay(jobType) {
+    const thisJobButton = document.querySelector(`.job-button[data-job="${jobType}"]`);
+    const jobElement = thisJobButton.querySelector(`.job-name`);
+    if (jobElement) jobElement.textContent = `${jobType.charAt(0).toUpperCase() + jobType.slice(1)}: ${jobCounts[jobType]}`;
+
+
+}
+
+
+function updateTotal() {
+    const totalElement = document.querySelector('#jobs-total');
+    totalElement.textContent = "Assigned Clones: " + getTotalJobs() + " / " + getMaterial('clones');
+}
+
 

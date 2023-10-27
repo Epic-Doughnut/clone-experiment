@@ -33,9 +33,7 @@ function getMaterial(material) {
     }
 }
 
-function capitalizeFirst(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-}
+
 
 const sidebarParent = document.querySelector("#resources");
 function stopAllGathering() {
@@ -73,96 +71,6 @@ function toggleResource(resourceKey) {
 var ateFish;
 
 
-
-
-
-
-
-
-
-
-/* HELPER FUNCTIONS */
-
-
-
-
-
-
-
-
-
-
-
-
-function isPondered(id) {
-    // Check if the id exists in the unlocks map
-    // If the id doesn't exist in the map, return false
-
-    return ponders[id] ? ponders[id].isPondered : false;
-
-}
-
-function canUnlock(unlockId) {
-    // Get the key from this id
-    var unlockKey = '';
-    for (let unlock in ponders) {
-        if (ponders[unlock].id === unlockId) {
-            unlockKey = unlock;
-        }
-    }
-    // Check if we have enough resources
-    var canBuy = true;
-    for (let req of ponders[unlockKey].cost) {
-        if (getMaterial(req.material) < req.amount) {
-            // console.log("Cannot unlock " + unlockId);
-            canBuy = false;
-            break;
-        }
-    }
-
-    // console.log('can we unlock ', unlockId, canBuy);
-    return canBuy;
-}
-
-
-// Function to get all buttons with class 'unlock' and attach an event listener to them
-// function initializeUnlockButtons() {
-//     const unlockButtons = document.querySelectorAll('.unlock');
-
-//     unlockButtons.forEach(button => {
-//         button.addEventListener('click', function () {
-//             console.log('click');
-//             const unlockAttr = this.getAttribute('unlock');
-//             console.log(unlockAttr);
-//             if (unlocks[unlockAttr]) {
-//                 canCraft = true;
-//                 for (let req of unlocks[unlockAttr].cost) {
-//                     if (getMaterial(req.material) < req.amount) {
-//                         console.log("Cannot unlock " + unlockAttr);
-//                         canCraft = false;
-//                         break;
-//                     }
-//                 }
-
-//                 if (canCraft) {
-//                     for (let req of unlocks[unlockAttr].cost) {
-//                         increaseMaterial(req.material, -req.amount);
-//                     }
-//                     unlocks[unlockAttr].isUnlocked = true;
-//                     makeVisible(unlockAttr);
-//                     // document.querySelector("#" + resourceKey + "Value").textContent = craftedResources[resourceKey].value.toFixed(2);
-//                     // make this button disappear
-//                     this.display = 'none';
-
-//                     console.log("Unlocking " + unlockAttr);
-//                 }
-//             }
-//         });
-//     });
-// }
-
-// Initialize the buttons when the DOM is fully loaded
-// document.addEventListener('DOMContentLoaded', initializeUnlockButtons);
 
 
 
@@ -287,44 +195,28 @@ function generateButtons() {
 
 
 
+// Attach event listeners for gathering
+// for (let key in resources) {
+//     let resource = resources[key];
+//     let button = document.getElementById(resource.id);
+//     if (button) {
+//         button.addEventListener('click', () => toggleResource(key));
+//         resource.button = button; // Store the button reference in the object
+//     }
 
-
-
-// After you've appended your buttons:
-// const buildingButtons = document.querySelectorAll('button[data_building]:not([data_building="undefined"])');
-// console.log(buildingButtons);
-// buildingButtons.forEach(button => {
-//     button.addEventListener('click', function () {
-//         console.log("Button clicked! ");
-//         const buildingName = this.getAttribute('data_building');
-//         buyBuilding(buildingName);
-//     });
-// });
-
-
-
-// Attach event listeners
-for (let key in resources) {
-    let resource = resources[key];
-    let button = document.getElementById(resource.id);
-    if (button) {
-        button.addEventListener('click', () => toggleResource(key));
-        resource.button = button; // Store the button reference in the object
-    }
-
-    if (craftedResources[key]) {
-        resource.tooltipCost = generateTooltipCost(craftedResources[key].requires);
-    }
-}
+//     if (craftedResources[key]) {
+//         resource.tooltipCost = generateTooltipCost(craftedResources[key].requires);
+//     }
+// }
 
 // Automatically add event listeners
-for (let key in craftedResources) {
-    let resource = craftedResources[key];
-    let button = document.getElementById(resource.id);
-    if (button) {
-        button.addEventListener('click', () => craftResource(key));
-    }
-}
+// for (let key in craftedResources) {
+//     let resource = craftedResources[key];
+//     let button = document.getElementById(resource.id);
+//     if (button) {
+//         button.addEventListener('click', () => craftResource(key));
+//     }
+// }
 
 
 
@@ -414,7 +306,6 @@ function updateButtonVisibility() {
             state = canBuyBuilding(buttonConfig.data_building) ? 'purchasable' : state;
         }
 
-
         // If hidden is met, it should be hidden
         if (buttonConfig.hide) {
             state = buttonConfig.hide() ? 'hidden' : state;
@@ -440,6 +331,65 @@ function updateButtonVisibility() {
             button.style.display = ''; // This will revert it back to its original display state or default (e.g., 'block' or 'inline-block')
         }
     });
+
+    document.querySelectorAll('.job-button').forEach(button => {
+        const job = button.getAttribute('data-job');
+        button.classList.remove('hidden', 'purchasable', 'button-disabled');
+
+        var state = 'purchasable';
+        const reqPonder = jobRequiredPonders[job];
+        if (reqPonder === null || reqPonder === undefined) state = 'purchasable';
+        else if (isPondered(reqPonder)) state = 'purchasable';
+        else if (reqPonder === 'not-unlockable') state = 'hidden';
+        else state = 'button-disabled';
+
+
+        // console.log(job, button, reqPonder, state);
+        // button.classList.
+        if (state === 'hidden') {
+            // console.log('hiding',button);
+            button.style.display = 'none';
+        } else {
+            // console.log('all visible ', button.id);
+            allVisibleButtons.add(button.id);
+            button.classList.add(state);
+            button.style.display = ''; // This will revert it back to its original display state or default (e.g., 'block' or 'inline-block')
+        }
+    });
+}
+
+
+// Create all our resource tags in the sidebar
+const resourcesContainer = document.getElementById('resources');
+
+for (const resourceName in resources) {
+    if (resources.hasOwnProperty(resourceName)) {
+        const resourceDisplayName = capitalizeFirst(resourceName).split('_').join(' ');
+
+        const resourceElement = document.createElement('p');
+        resourceElement.className = `${resourceName} resource`;
+        resourceElement.id = `resource-${resourceName}`;
+
+        const resourceNameSpan = document.createElement('span');
+        resourceNameSpan.className = 'resourceName';
+        resourceNameSpan.textContent = `${resourceDisplayName}:`;
+
+        const resourceValueSpan = document.createElement('span');
+        resourceValueSpan.className = 'resourceValue';
+        resourceValueSpan.id = `${resourceName}Value`;
+        resourceValueSpan.textContent = '0';
+
+        const resourceRateSpan = document.createElement('span');
+        resourceRateSpan.className = 'resourceRate';
+        resourceRateSpan.innerHTML = `(+
+            <span id="${resourceName}IncreaseRate">0</span>/s)`;
+
+        resourceElement.appendChild(resourceNameSpan);
+        resourceElement.appendChild(resourceValueSpan);
+        resourceElement.appendChild(resourceRateSpan);
+
+        resourcesContainer.appendChild(resourceElement);
+    }
 }
 
 const toolsToStages = {
@@ -455,6 +405,14 @@ const visibilityRules = [
     {
         condition: () => getMaterial("sticks") >= 1,
         action: () => makeVisible("stick")
+    },
+    {
+        condition: () => getMaterial('sticks') >= 10,
+        action: () => makeVisible('vines')
+    },
+    {
+        condition: () => getMaterial('vines') >= 10,
+        action: () => makeVisible('rocks')
     },
     {
         condition: () => getMaterial("rocks") >= 1,
@@ -583,12 +541,6 @@ function populateSkillsTable() {
 
             table.appendChild(tr);
 
-            // let progressBar = document.querySelector(`.progressBar[data-skill="${skill}"]`);
-            if (progressBar) {
-                progressBar.style.width = skills[skill].exp + '%';
-                let skillName = document.querySelector("#level-" + skill);
-                skillName.textContent = '[' + skills[skill].level + ']   ' + skill;
-            }
         }
     }
 
@@ -597,6 +549,12 @@ function populateSkillsTable() {
         for (let skill in skills) {
             if (skills[skill].exp > 0 || skills[skill].level > 0) {
                 document.querySelector('#tr-' + skill).style.display = '';
+            }
+            let progressBar = document.querySelector(`.progressBar[data-skill="${skill}"]`);
+            if (progressBar) {
+                progressBar.style.width = skills[skill].exp + '%';
+                let skillName = document.querySelector("#level-" + skill);
+                skillName.textContent = '[' + skills[skill].level + ']   ' + skill;
             }
         }
     }
@@ -608,11 +566,11 @@ function populateSkillsTable() {
 
 
 // Switch tabs
+let tabContainers = document.querySelectorAll(".tab-content > .content"); // Direct children only
 function showTab(tabName) {
     console.log("show tab: " + tabName);
     // Get all main container divs and hide them
-    let contents = document.querySelectorAll(".tab-content > .content"); // Direct children only
-    for (let content of contents) {
+    for (let content of tabContainers) {
         content.classList.remove("active");
     }
 
@@ -629,10 +587,9 @@ function showTab(tabName) {
     // Get the clicked tab button and make it active
     const tabString = `#${tabName}Button`;
     let activeTabButton = document.querySelector(tabString);
-    console.log(tabString);
-    if (activeTabButton) {
-        activeTabButton.classList.add("active");
-    }
+    // console.log(tabString);
+    if (activeTabButton) activeTabButton.classList.add("active");
+
 
     // Show buttons in the active tab (including those in the three columns)
     let columnsInActiveTab = activeContent.querySelectorAll('div');
@@ -650,7 +607,7 @@ function showTab(tabName) {
     }
 
     // Hide buttons in inactive tabs (including those in the three columns)
-    for (let content of contents) {
+    for (let content of tabContainers) {
         if (content !== activeContent) {
             let columnsToHide = content.querySelectorAll('div');
             for (let column of columnsToHide) {
@@ -696,14 +653,6 @@ body.classList.toggle('dark-mode');
 darkModeToggle.classList.toggle('dark');
 let isDark = true;
 
-// darkModeToggle.addEventListener('click', () => {
-//     body.classList.toggle('dark-mode');
-//     darkModeToggle.classList.toggle('dark');
-//     isDark = !isDark;
-//     darkModeToggle.textContent = isDark ? "Light Mode" : "Dark Mode"
-// });
-
-
 
 /* CUTSCENES */
 
@@ -720,7 +669,7 @@ function eatFish() {
         setTimeout(() => {
             changeMessage("You are with yourself in a forest.", 'with yourself');
             increaseMax('clones', 1);
-            // increaseMaterial('clones', 1);
+            increaseMaterial('clones', 1);
         }, 1000); // delay of 1s
 
     }
@@ -752,23 +701,9 @@ function hideOverlay() {
 // Message 
 const messageElement = document.getElementById('message');
 function changeMessage(newMessage, cloneWords) {
-    const modifiedMessage = newMessage.replace(cloneWords, `<span id="alone">${cloneWords}</span>`);
+    const modifiedMessage = newMessage.replace(cloneWords, `<span id="alone" title="You feel peckish for some seafood">${cloneWords}</span>`);
     messageElement.innerHTML = modifiedMessage;
 }
-
-// Example usage:
-// changeMessage("You are now in a desert.");
-
-
-
-
-
-
-
-
-// Call the function to update the rates, and consider setting an interval to periodically update them.
-// setInterval(updateResourceIncreaseRates, 1000); // This will update the rates every second.
-
 
 
 /* GAME LOOP */
@@ -791,11 +726,18 @@ function loop(current_time) {
     last_time = current_time;
 
     // Catch up all the missed ticks
+    let normalRate = milliseconds_per_frame;
+    // simulate with less fidelity to make up time
+    while (accumulated_lag >= 100 * milliseconds_per_frame) {
+        milliseconds_per_frame *= 10;
+    }
     while (accumulated_lag >= milliseconds_per_frame) {
+
         accumulated_lag -= milliseconds_per_frame;
         update(milliseconds_per_frame, total_time);
     }
 
+    milliseconds_per_frame = normalRate;
     requestAnimationFrame(loop);
 }
 
@@ -974,8 +916,22 @@ document.addEventListener('DOMContentLoaded', (event) => {
     loadGame();
     updateSidebar();
 
+    showTab('productionTab');
 
-
+    function getRKeyFromID(id) {
+        for (let r in resources) {
+            // console.log(resources[r].id, id);
+            if (resources[r].id === id) return r;
+        }
+        return '';
+    }
+    function getCRKeyFromID(id) {
+        for (let r in craftedResources) {
+            // console.log(resources[r].id, id);
+            if (craftedResources[r].id === id) return r;
+        }
+        return '';
+    }
     document.addEventListener("click", (event) => {
         if (event.target.matches("button")) {
             // one of our buttons was clicked
@@ -983,7 +939,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
             // console.log('clicked', button);
 
             // Update tooltips 
-            if (button.classList.contains('tooltip')) updateTooltip(button);
+            // if (button.classList.contains('tooltip')) updateTooltip(button);
+            // updateTooltip(button);
 
             if (button.getAttribute('data_building') && button.getAttribute('data_building') !== 'undefined' && button.classList.contains('purchasable')) {
                 var building = button.getAttribute('data_building');
@@ -1007,7 +964,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                         for (let req of ponders[unlockAttr].cost) {
                             increaseMaterial(req.material, -req.amount);
                         }
-                        ponders[unlockAttr].isUnlocked = true;
+                        ponders[unlockAttr].isPondered = true;
                         makeVisible(unlockAttr);
                         // document.querySelector("#" + resourceKey + "Value").textContent = craftedResources[resourceKey].value.toFixed(2);
                         // make this button disappear
@@ -1019,29 +976,28 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
             }
 
-            if (button.id && button.id.slice(0, 6) === "gather") {
-                for (let r in resources) {
-                    // console.log(resources[r].id, button.id);
-                    if (resources[r].id == button.id) {
-                        console.log(r);
-                        toggleResource(r);
+            if (button.id !== 'undefined') {
+                console.log(button);
+                if (button.id.slice(0, 6) === "gather") toggleResource(getRKeyFromID(button.id));
 
-                    }
+                if (button.id.slice(0, 5) === 'craft') craftResource(getCRKeyFromID(button.id));
+
+
+                if (button.id === 'darkModeToggle') {
+                    body.classList.toggle('dark-mode');
+                    darkModeToggle.classList.toggle('dark');
+                    isDark = !isDark;
+                    darkModeToggle.textContent = isDark ? "Light Mode" : "Dark Mode"
+
                 }
-            }
-
-            if (button.id && button.id === 'darkModeToggle') {
-                body.classList.toggle('dark-mode');
-                darkModeToggle.classList.toggle('dark');
-                isDark = !isDark;
-                darkModeToggle.textContent = isDark ? "Light Mode" : "Dark Mode"
 
             }
 
         }
 
         if (event.target.matches("#alone")) {
-            increaseMax('clones', 1);
+            increaseMaterial('clones', 1);
+            updateTotal();
         }
     });
 
@@ -1056,6 +1012,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
         button.addEventListener('mousemove', function (e) {
             updateTooltip(button);
         });
+
+
+        // TODO: move this event listener
+        button.addEventListener('click', function () {
+            updateTooltip(button);
+        })
 
         button.addEventListener('mouseleave', hideTooltip);
     });

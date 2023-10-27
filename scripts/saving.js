@@ -19,7 +19,8 @@ function saveGame() {
         jobs: {},
         buildings: {},
         time: {},
-        allVisibleButtons: []
+        allVisibleButtons: [],
+        message: []
     };
 
     // Extract exp and level from skills and save to save.skills
@@ -69,6 +70,24 @@ function saveGame() {
         save.allVisibleButtons.push(a);
         // console.log(save.allVisibleButtons);
     }
+
+    function extractTextFromHTML(htmlString) {
+        const div = document.createElement('div');
+        div.innerHTML = htmlString;
+
+        const textContent = div.textContent;
+        const spanText = div.querySelector('span').textContent;
+
+        return [textContent, spanText];
+    }
+
+    const htmlString = message.innerHTML;
+
+    save.message = extractTextFromHTML(htmlString); // [message, span]
+
+
+    // console.log(combinedText); // "You find yourself alone in a forest"
+    // console.log(spanText); // "alone"
 
 
     save.time['total_time'] = total_time;
@@ -142,10 +161,13 @@ function loadGame() {
     }
     if (typeof savegame.unlocks !== 'undefined') {
         for (let u in savegame.unlocks) {
-            ponders[u].isUnlocked = savegame.unlocks[u];
+            ponders[u].isPondered = savegame.unlocks[u];
         }
     }
 
+    if (isPondered('skillsTable')) {
+        populateSkillsTable();
+    }
     if (typeof savegame.buildings !== 'undefined') {
         for (let b in savegame.buildings) {
             // console.log(b, savegame.buildings[b]);
@@ -167,8 +189,10 @@ function loadGame() {
         fishButton.style.display = 'none';
     }
     // Change the message to the latest one
-    if (resources.clones.max >= 1) {
-        changeMessage("You are with yourself in a forest.", 'with yourself');
+    if (typeof savegame.message !== 'undefined') {
+        // [full message, span]
+        changeMessage(savegame.message[0], savegame.message[1]);
+
     }
 
 
