@@ -1,19 +1,25 @@
 let ponders = {
     'jobs-tab': {
-        id: 'ponderClones1',
+        id: 'ponderJobs-tab',
         isPondered: false,
         cost: [{
             material: 'ponder',
             amount: 20
-        }]
+        }],
+        text: "Understand Cloning",
+        tooltipDesc: 'Why are there two of you?',
+        tooltipCost: 'Sanity (20 Ponder)',
+
     },
     'skillsTable': {
-        id: 'ponderSkills',
+        id: 'ponderSkillsTable',
         isPondered: false,
         cost: [{
             material: 'ponder',
             amount: 40
-        }]
+        }],
+        tooltipDesc: "You're starting to learn things, right?",
+        text: "Notice Improvement"
     },
     'fishing': {
         id: 'ponderFishing',
@@ -21,7 +27,9 @@ let ponders = {
         cost: [{
             material: 'ponder',
             amount: 60
-        }, { material: 'fish', amount: 50 }]
+        }, { material: 'fish', amount: 50 }],
+        tooltipDesc: "What if... your clones could go fishing?",
+        text: "Ponder Fishing"
     },
     'management': {
         id: 'ponderManagement',
@@ -38,6 +46,11 @@ let ponders = {
             material: 'ponder',
             amount: 100
         }]
+    },
+    'thinking': {
+        id: 'ponderThinking',
+        isPondered: false,
+        cost: [{ material: 'ponder', amount: 150 }]
     },
     'fasterResourceGain': {
         id: 'ponderFasterResource',
