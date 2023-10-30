@@ -1,4 +1,7 @@
 // DEPENDS ON resources.js
+const { buildings } = require('./json/buildings');
+const { buttons } = require('./json/buttons');
+const { getMaterial } = require('./resources');
 /* BUILDINGS */
 
 function getBuildingCount(buildingName) {
@@ -14,41 +17,49 @@ function getBoost(buildingName, resource) {
     return null;
 }
 
+/**
+ * 
+ * @param {string} building 
+ * @returns 
+ */
 function generateEffectString(building) {
     let effectParts = [];
 
-    for (let [resource, effect] of Object.entries(building.effects)) {
-        for (let [key, value] of Object.entries(effect)) {
-            if (key === "max") {
-                effectParts.push(`+${value} max ${resource}`);
-            } else if (key === "multiplier") {
-                let percentageBoost = Math.round((value - 1) * 100);
-                effectParts.push(`+${percentageBoost}% ${resource} production`);
-            }
-            // Add more conditions here if you introduce new types of effects
-        }
+    for (let [resource, value] of Object.entries(building.effects)) {
+        // for (let [key, value] of Object.entries(effect)) {
+        effectParts.push(`+${value} max ${resource}`);
+        // Add more conditions here if you introduce new types of effects
+        // }
     }
 
     for (let [resource, boost] of Object.entries(building.boost)) {
-        for (let [key, value] of Object.entries(boost)) {
-            if (key === "multiplier") {
-                let percentageBoost = Math.round((value - 1) * 100);
-                effectParts.push(`+${percentageBoost}% ${resource} production`);
-            }
-            // Similarly, add more conditions here for new types of boosts
-        }
+        // for (let [key, value] of Object.entries(boost)) {
+        // if (key === "multiplier") {
+        let percentageBoost = Math.round((boost - 1) * 100);
+        effectParts.push(`+${percentageBoost}% ${resource} production`);
+        // }
+        // Similarly, add more conditions here for new types of boosts
+        // }
     }
 
     return effectParts.join(', ');
 }
 
 // Usage:
-
-function recalculateBuildingCost(buildingKey) {
+/**
+ * 
+ * @param {string} buildingKey 
+ * @param {Object} buildings
+ * @param {function} hasPerk
+ */
+function recalculateBuildingCost(buildingKey, buildings, hasPerk) {
     let building = buildings[buildingKey];
     if (building && building.cost && building.ratio) {
         for (let material in building.cost) {
-            building.cost[material] = building.cost[material] * Math.pow(building.ratio, building.count);
+            // console.log(building.basecost[material], building.ratio, building.count);
+            building.cost[material] = Math.round(building.basecost[material] * Math.pow(building.ratio, building.count));
+
+            if (hasPerk('Architect')) building.cost[material] *= 0.75; // 25% reduction for architects
         }
     }
 
@@ -64,33 +75,36 @@ function recalculateBuildingCost(buildingKey) {
 
 
 function generateBuildingTooltipCost(cost) {
-    return Object.entries(cost).map(([material, amount]) => `${amount.toFixed(2)} ${material}`).join(', ');
+    return Object.entries(cost).map(([material, amount]) => `${amount.toFixed(2)} ${material}`).join('\n');
 }
 
 
-function createBuildingButton(buildingKey) {
+function createBuildingButton(buildingKey, buildings) {
     const building = buildings[buildingKey];
+
+    // building.cost = building.basecost;
+    building.cost = JSON.parse(JSON.stringify(building.basecost));
 
     const costs = Object.entries(building.cost)
         .map(([material, amount]) => `${material}: ${amount}`)
         .join(', ');
 
     const halfCostRequirement = Object.entries(building.cost)
-        .map(([material, amount]) => `getMaterial('${material}') >= ${Math.floor(amount / 2)}`)
+        .map(([material, amount]) => `getMaterial('${material},resources') >= ${Math.floor(amount / 2)}`)
         .join(' && ');
 
     let requirementString = `return ${halfCostRequirement}`;
 
     // Check if the building has an effect on clones max
-    if (building.effects && building.effects.clones && building.effects.clones.max) {
-        requirementString += ` && passedStage('clone')`;
+    if (building.effects && building.effects['clones']) {
+        requirementString += ` && passedStage('clones')`;
     }
 
     const button = {
         'class': 'tooltip ' + buildingKey,
         'tab': 'production',
         'text': `${buildingKey.charAt(0).toUpperCase() + buildingKey.slice(1)}`,
-        'tooltipDesc': generateTooltipDescription(buildingKey),
+        'tooltipDesc': buildings[buildingKey].tooltipDesc || "A mysterious building with untold benefits.",
         'tooltipCost': costs,
         'requirement': new Function(requirementString),
         'data_building': buildingKey,
@@ -103,49 +117,31 @@ function createBuildingButton(buildingKey) {
 
 
 
-function generateTooltipDescription(buildingKey) {
-    const quips = {
-        "shelter": "For when you need a home away from home.",
-        "make_clone": "Delegate that to yourself",
-        "shed": "The ultimate storage solution for the pack rat in you.",
-        "fish_traps": "Fishing made easy. No patience required.",
-        "drying_racks": "Air drying: Nature's way of preserving food.",
-        "mine": "Dig deep and find your inner ore.",
-        "campfire": "Where stories are told and marshmallows are toasted.",
-        "house": "Every clone's dream. Minus the white picket fence.",
-        "lumber_yard": "Wood you like some more wood?",
-        "stone_quarry": "Rock on with your bad self!",
-        "fishery": "Fish are friends. And food.",
-        "vineyard": "For the finest vines. What else would it grow?",
-        "observatory": "Stargazing has never been so... productive?",
-        "forge": "Melt, mold, and make marvelous metals.",
-        "workshop": "DIY's dream destination.",
-        "library": "Knowledge is power. And a fire hazard if not stored properly."
-    };
-
-    return quips[buildingKey] || "A mysterious building with untold benefits.";
-}
 
 for (let buildingKey in buildings) {
-    const button = createBuildingButton(buildingKey);
+    const button = createBuildingButton(buildingKey, buildings);
     buttons[buildingKey] = button;
     // console.log("Made button for " + buildingKey);
 }
 
 
-console.log(buttons);
+// console.log(buttons);
 
 function getBuildingCost(buildingName) {
     return buildings[buildingName].cost;
 }
-
+/**
+ * 
+ * @param {string} buildingName 
+ * @returns 
+ */
 function canBuyBuilding(buildingName) {
     // Check if we have enough resources
     let canBuy = true;
     const building = buildings[buildingName];
 
     for (const resource in building.cost) {
-        if (building.cost[resource] > getMaterial(resource)) {
+        if (building.cost[resource] > getMaterial(resource, resources)) {
             canBuy = false;
             break;
         }
@@ -165,15 +161,15 @@ function buyBuilding(buildingName) {
 
     // Subtract the cost
     for (const resource in building.cost) {
-        console.log("Reducing ", resource, "by", building.cost[resource]);
-        console.log(increaseMaterial);
+        // console.log("Reducing ", resource, "by", building.cost[resource]);
+        // console.log(increaseMaterial);
         increaseMaterial(resource, -building.cost[resource]);
     }
     // Add the effects
-    for (const effect in building.effects) {
-        if (building.effects[effect].max) {
-            increaseMax(effect, building.effects[effect].max);
-        }
+    for (const resource in building.effects) {
+        // if (building.effects[effect]) {
+        increaseMax(resource, building.effects[resource]);
+        // }
         // Additional logic can be added here for other effects (e.g., increase production rates)
     }
 
@@ -182,18 +178,46 @@ function buyBuilding(buildingName) {
     building.count++;
 
     updateSidebar();
+
+    updateTotal();
     // Update button text
     updateBuildingButtonCount(buildingName, building.count);
 
     // Update the cost of the building
-    recalculateBuildingCost(buildingName);
+    recalculateBuildingCost(buildingName, buildings, hasPerk);
+}
 
-
-
+function buyMaxBuildings(buildingName) {
+    while (canBuyBuilding(buildingName)) {
+        buyBuilding(buildingName);
+    }
 }
 
 function updateBuildingButtonCount(buildingName, buildingCount) {
-    document.getElementById(`${buildingName}`).textContent = `${buildingName.charAt(0).toUpperCase() + buildingName.slice(1).split('_').join(' ')} (${buildingCount})`;
+    document.getElementById(`${buildingName}`).textContent = `${capitalizeFirst(buildingName).split('_').join(' ')} (${buildingCount})`;
 
 }
 
+
+
+
+function doubleStorageEffectsIfPassed() {
+    if (passedStage("doubleStorage1")) {
+        for (let buildingKey in buildings) {
+            let building = buildings[buildingKey];
+
+            if (building.effects) {
+                for (let material in building.effects) {
+                    building.effects[material].max *= 2;
+                }
+            }
+        }
+    }
+}
+
+
+module.exports = {
+    recalculateBuildingCost: recalculateBuildingCost,
+    generateBuildingTooltipCost: generateBuildingTooltipCost,
+    createBuildingButton, createBuildingButton
+};

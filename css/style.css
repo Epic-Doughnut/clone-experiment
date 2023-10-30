@@ -2,19 +2,6 @@
     display: none;
 }
 
-#sidebar>#resources>* {
-    display: none;
-}
-
-#productionTab .startVisible {
-    display: flex;
-    /* or whatever your desired default display value is */
-}
-
-#sidebar>#resources>.startVisible {
-    display: flex;
-    /* or whatever your desired default display value is */
-}
 
 /*.rows > * {
     display: none;
@@ -27,6 +14,7 @@
 #alone {
     cursor: copy;
     padding: .25em;
+    user-select: none;
     /* padding-bottom: .5em; */
 }
 
@@ -39,23 +27,64 @@
     display: block;
 }
 
+#emojiGatherDisplay {
+    font-size: 48px;
+}
 
+#emojiDisplay {
+    /* text-align: right; */
+    font-size: 48px;
+    text-wrap: wrap;
+    overflow-wrap: break-word;
+    /* max-width: 600px; */
+    /* width: 600px; */
+    /* height: 100px; */
+}
 
+#levelUpMessage {
+    /* display: none; */
+    transition: display 0.5s ease-out;
+    color: #F4D03F;
+    font-style: italic;
+}
 
+.tierOneButton {
+    margin: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+}
 
+#perksTab {
+    /* display: flex; */
+    flex-direction: row;
+}
+
+#perksTab #tierOneContainer .tierOneButton.selected {
+    background-image: linear-gradient(rgb(52, 56, 157), rgb(41, 44, 122));
+    /* you can adjust this color as needed */
+}
+
+#perksTab #tierOneContainer .tierOneButton:disabled {
+    background-image: linear-gradient(gray, darkgray);
+    opacity: .6;
+    cursor: not-allowed;
+}
 
 /* .tooltip {
     position: relative;
 } */
 
 .dynamic-tooltip {
-    position: absolute;
+    position: fixed;
     background-color: rgba(0, 0, 0, 1);
     color: #fff;
     border-radius: 4px;
     padding: 5px 10px;
     white-space: nowrap;
-    font-size: 12px;
+    font-size: small;
+    max-width: 300px;
+    text-align: center;
+    text-wrap: balance;
     z-index: 1000;
     display: none;
     /* Hidden by default */
@@ -63,6 +92,24 @@
     /* To ensure it doesn't interfere with mouse events */
 }
 
+.enough {
+    color: #F4D03F;
+}
+
+.not-enough {
+    color: #F58549;
+}
+
+.exceeds-max {
+    color: #f54949;
+}
+
+.hidden {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    /* This ensures the element doesn't respond to clicks. */
+}
 
 #saveButton {
     position: fixed;
@@ -106,6 +153,3 @@ p:hover {
     background-color: #212121;
     /* Hover effect */
 }
-
-
-/* ... similarly for other items */

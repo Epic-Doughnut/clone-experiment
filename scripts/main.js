@@ -1,4 +1,4 @@
-
+const { buttons } = require('./json/buttons');
 /* MY CODE STARTS HERE */
 
 
@@ -22,17 +22,6 @@ let stages = [];
 
 
 
-// Get function for materials
-function getMaterial(material) {
-    if (resources.hasOwnProperty(material)) {
-        return resources[material].value;
-    } else {
-        // console.error("Invalid material:", material);  // For debugging
-        return getCraftedResource(material);
-
-    }
-}
-
 
 
 const sidebarParent = document.querySelector("#resources");
@@ -49,9 +38,11 @@ function stopAllGathering() {
     }
 }
 
+const emojiGatherDiv = document.querySelector('#emojiGatherDisplay');
 function toggleResource(resourceKey) {
     const resource = resources[resourceKey];
 
+    // emojiDiv.textContent = '𓆮';
     const sidebarParent = document.querySelector("#resources");
     const sidebarText = sidebarParent.querySelector('#resource-' + resourceKey);
     const resourceButton = document.querySelector('#gather' + resourceKey.charAt(0).toUpperCase() + resourceKey.slice(1));
@@ -61,6 +52,8 @@ function toggleResource(resourceKey) {
         resource.isGetting = true;
         resourceButton.textContent = resource.activeText;
         if (sidebarText) sidebarText.style.fontWeight = 'bold';
+        emojiGatherDiv.textContent = resource.emoji;
+        console.log(resource.emoji);
     } else {
         resource.isGetting = false;
         resourceButton.textContent = resource.defaultText;
@@ -68,7 +61,7 @@ function toggleResource(resourceKey) {
     }
 }
 
-var ateFish;
+var ateFish = false;
 
 
 
@@ -149,14 +142,9 @@ function generateButtons() {
         const craftedResource = Object.values(craftedResources).find(resource => resource.id === key);
 
         if (craftedResource) {
-            btn.tooltipCost = generateTooltipCost(craftedResource.requires);
+            btn.tooltipCost = generateTooltipCost(craftedResource.cost);
         }
 
-        const building = Object.keys(buildings).find(building => building === key);
-        if (building) {
-            // console.log(building, key);
-            btn.tooltipCost = generateBuildingTooltipCost(buildings[building].cost);
-        }
 
         buttonElement.setAttribute('data-tooltip-cost', btn.tooltipCost);
 
@@ -185,10 +173,22 @@ function generateButtons() {
         }
         // Add more conditions for other tabs as needed
 
+        // Update tooltip for buildings
+        const building = Object.keys(buildings).find(building => building === key);
+        if (building) {
+            // console.log(building, key);
+            // btn.tooltipCost = generateBuildingTooltipCost(buildings[building].cost);
+            recalculateBuildingCost(key);
+        }
         // Hide the buttons we shouldn't see yet
         // console.log(btn);
-        if (!btn.requirement()) {
-            buttonElement.style.display = 'none';
+        try {
+            if (!btn.requirement()) {
+                // console.log(buttonElement, btn.requirement());
+                buttonElement.style.display = 'none';
+            }
+        } catch (err) {
+            console.warn('Error with requirement while generating buttons: ', btn, err);
         }
     }
 }
@@ -231,7 +231,7 @@ function makeVisible(stage) {
     }
     const stageElements = document.querySelectorAll("p." + stage);
     stageElements.forEach(element => element.classList.add('visible'));
-    stageElements.forEach(element => element.style.display = 'block');
+    stageElements.forEach(element => element.style.display = '');
     updateButtonVisibility();
 }
 
@@ -250,35 +250,39 @@ function updateButtonVisibility() {
         if (button.id && allVisibleButtons.has(button.id)) state = 'button-disabled';
 
         // If requirement is met, it should be visible
-        if (buttonConfig.requirement()) {
-            state = 'button-disabled';
-            // always purchasable gather buttons
-            if (buttonConfig.tab && !buttonConfig.data_building) {
-                // console.log(buttonConfig);
-                if (buttonConfig.tab === 'production') state = 'purchasable';
-            }
+        try {
+            if (buttonConfig.requirement()) {
+                state = 'button-disabled';
+                // always purchasable gather buttons
+                if (buttonConfig.tab && !buttonConfig.data_building) {
+                    // console.log(buttonConfig);
+                    if (buttonConfig.tab === 'production') state = 'purchasable';
+                }
 
-            // ponder button
-            if (button.id && button.id === 'gatherPonder') {
-                state = 'purchasable';
-            }
+                // ponder button
+                if (button.id && button.id === 'gatherPonder') {
+                    state = 'purchasable';
+                }
 
-            // ponder unlocks
-            if (buttonConfig.tab && buttonConfig.tab === 'ponder') {
-                // console.log(button.classList);
-                if (button.id && button.classList.contains('unlock')) {
-                    // console.log(button);
-                    if (canUnlock(button.id)) state = 'purchasable';
-                    // If a ponder button is unlocked, hide it
-                    if (isPondered(button.getAttribute('unlock'))) state = 'hidden';
-                    // console.log(button, state);
+                // ponder unlocks
+                if (buttonConfig.tab && buttonConfig.tab === 'ponder') {
+                    // console.log(button.classList);
+                    if (button.id && button.classList.contains('unlock')) {
+                        // console.log(button);
+                        if (canUnlock(button.id)) state = 'purchasable';
+                        // If a ponder button is unlocked, hide it
+                        if (isPondered(button.getAttribute('unlock'))) state = 'hidden';
+                        // console.log(button, state);
+                    }
+                }
+
+                // tab buttons always either hidden or enabled
+                if (buttonConfig.tab && buttonConfig.tab === 'tabs') {
+                    state = 'visible';
                 }
             }
-
-            // tab buttons always either hidden or enabled
-            if (buttonConfig.tab && buttonConfig.tab === 'tabs') {
-                state = 'visible';
-            }
+        } catch (err) {
+            console.warn('Error with checking requirement of button: ', buttonConfig, err);
         }
 
         if (buttonConfig.id && buttonConfig.id.slice(0, 5) === 'craft') {
@@ -321,6 +325,9 @@ function updateButtonVisibility() {
         // If the state is not-purchasable, disable the button
         // button.disabled = state === 'button-disabled';
 
+        // Update the tooltip for this button if its active
+        // if (button === currentHoverButton) updateTooltip(button);
+
         // If the state is hidden, set the button's display to none
         if (state === 'hidden') {
             // console.log('hiding',button);
@@ -359,38 +366,37 @@ function updateButtonVisibility() {
 }
 
 
-// Create all our resource tags in the sidebar
-const resourcesContainer = document.getElementById('resources');
 
-for (const resourceName in resources) {
-    if (resources.hasOwnProperty(resourceName)) {
-        const resourceDisplayName = capitalizeFirst(resourceName).split('_').join(' ');
 
-        const resourceElement = document.createElement('p');
-        resourceElement.className = `${resourceName} resource`;
-        resourceElement.id = `resource-${resourceName}`;
+// for (const resourceName in resources) {
+//     if (resources.hasOwnProperty(resourceName)) {
+//         const resourceDisplayName = capitalizeFirst(resourceName).split('_').join(' ');
 
-        const resourceNameSpan = document.createElement('span');
-        resourceNameSpan.className = 'resourceName';
-        resourceNameSpan.textContent = `${resourceDisplayName}:`;
+//         const resourceElement = document.createElement('p');
+//         resourceElement.className = `${resourceName} resource`;
+//         resourceElement.id = `resource-${resourceName}`;
 
-        const resourceValueSpan = document.createElement('span');
-        resourceValueSpan.className = 'resourceValue';
-        resourceValueSpan.id = `${resourceName}Value`;
-        resourceValueSpan.textContent = '0';
+//         const resourceNameSpan = document.createElement('span');
+//         resourceNameSpan.className = 'resourceName';
+//         resourceNameSpan.textContent = `${resourceDisplayName}:`;
 
-        const resourceRateSpan = document.createElement('span');
-        resourceRateSpan.className = 'resourceRate';
-        resourceRateSpan.innerHTML = `(+
-            <span id="${resourceName}IncreaseRate">0</span>/s)`;
+//         const resourceValueSpan = document.createElement('span');
+//         resourceValueSpan.className = 'resourceValue';
+//         resourceValueSpan.id = `${resourceName}Value`;
+//         resourceValueSpan.textContent = '0';
 
-        resourceElement.appendChild(resourceNameSpan);
-        resourceElement.appendChild(resourceValueSpan);
-        resourceElement.appendChild(resourceRateSpan);
+//         const resourceRateSpan = document.createElement('span');
+//         resourceRateSpan.className = 'resourceRate';
+//         resourceRateSpan.innerHTML = `(+
+//             <span id="${resourceName}IncreaseRate">0</span>/s)`;
 
-        resourcesContainer.appendChild(resourceElement);
-    }
-}
+//         resourceElement.appendChild(resourceNameSpan);
+//         resourceElement.appendChild(resourceValueSpan);
+//         resourceElement.appendChild(resourceRateSpan);
+
+//         resourcesContainer.appendChild(resourceElement);
+//     }
+// }
 
 const toolsToStages = {
     'SharpRocks': 'craftRocks',
@@ -434,9 +440,9 @@ const visibilityRules = [
     },
 
     {
-        condition: () => getMaterial('fish') >= 5,
+        condition: () => getMaterial('fish') >= 5 && !ateFish,
         action: () => {
-            document.getElementById('eatFish').display = 'block';
+            document.getElementById('eatFish').style.display = 'block';
             document.getElementById('eatFish').classList.add('visible');
         }
     },
@@ -471,6 +477,7 @@ function render() {
 
     try {
         updateButtonVisibility();
+        if (currentHoverButton !== null) updateTooltip(currentHoverButton);
     } catch (err) {
         console.warn(err);
     }
@@ -478,6 +485,7 @@ function render() {
 }
 
 
+const levelUpMessage = document.getElementById('levelUpMessage');
 
 function updateSkills(resource, num) {
     num = Math.abs(num);
@@ -490,7 +498,14 @@ function updateSkills(resource, num) {
             if (skills[skill].exp >= 100) {
                 skills[skill].level += 1;
                 skills[skill].exp = 0;
-                console.log("Level Up! " + skill + skills[skill].level);
+                // console.log("Level Up! " + skill + skills[skill].level);
+                levelUpMessage.textContent = `Level up! ${skill} → ${skills[skill].level}`;
+                levelUpMessage.classList.remove('hidden');
+                // Hide the message after 3 seconds
+                setTimeout(() => {
+                    // levelUpMessage.style.display = 'none';
+                    levelUpMessage.classList.add('hidden');
+                }, 3000); // 3000 milliseconds (3 seconds)
             }
         }
     }
@@ -588,36 +603,43 @@ function showTab(tabName) {
     // Get the clicked tab button and make it active
     const tabString = `#${tabName}Button`;
     let activeTabButton = document.querySelector(tabString);
-    // console.log(tabString);
+
     if (activeTabButton) activeTabButton.classList.add("active");
 
 
     // Show buttons in the active tab (including those in the three columns)
-    let columnsInActiveTab = activeContent.querySelectorAll('div');
-    for (let column of columnsInActiveTab) {
-        column.classList.add("active");
+    // let columnsInActiveTab = activeContent.querySelectorAll('div');
+    // for (let column of columnsInActiveTab) {
+    //     column.classList.add("active");
 
-        let buttonsInColumn = column.querySelectorAll('button');
-        for (let button of buttonsInColumn) {
-            // console.log(buttons[button.id]);
-            if (buttons[button.id].requirement()) {
-                button.style.display = 'flex'; // Or 'inline-block', or whatever your desired display style is
-                console.log("displaying " + button.id);
-            }
-        }
-    }
+    //     let buttonsInColumn = column.querySelectorAll('button');
+    //     for (let button of buttonsInColumn) {
+    //         // console.log(buttons[button.id]);
+    //         if (buttons[button.id] && buttons[button.id].requirement()) {
+    //             button.style.display = 'flex'; // Or 'inline-block', or whatever your desired display style is
+    //             console.log("displaying " + button.id);
+    //         }
+    //     }
+    // }
 
     // Hide buttons in inactive tabs (including those in the three columns)
-    for (let content of tabContainers) {
-        if (content !== activeContent) {
-            let columnsToHide = content.querySelectorAll('div');
-            for (let column of columnsToHide) {
-                let buttonsToHide = column.querySelectorAll('button');
-                for (let button of buttonsToHide) {
-                    // button.classList.add('button-disabled');
-                }
-            }
-        }
+    // for (let content of tabContainers) {
+    //     if (content !== activeContent) {
+    //         let columnsToHide = content.querySelectorAll('div');
+    //         for (let column of columnsToHide) {
+    //             let buttonsToHide = column.querySelectorAll('button');
+    //             for (let button of buttonsToHide) {
+    //                 // button.classList.add('button-disabled');
+    //             }
+    //         }
+
+    //         if (content.id === "perksTab")
+
+    //     }
+    // }
+
+    if (tabName === 'jobsTab') {
+        drawAllConnections();
     }
 }
 
@@ -637,6 +659,12 @@ document.addEventListener('keydown', function (event) {
             break;
         case '4':
             if (passedStage('jobs-tab')) showTab('jobsTab');
+            break;
+        case '5':
+            if (passedStage('skillsTable')) showTab('skillsTab');
+            break;
+        case '6':
+            if (passedStage('perksTab')) showTab('perksTab');
             break;
         default:
             break;
@@ -664,9 +692,9 @@ function eatFish() {
         // Call this function to start the sequence
         fadeToBlack();
         // Hide fish button
+        ateFish = true;
         const fishButton = document.querySelector("#eatFish");
         fishButton.display = 'none';
-        ateFish = true;
         setTimeout(() => {
             changeMessage("You are with yourself in a forest.", 'with yourself');
             increaseMax('clones', 1);
@@ -849,7 +877,7 @@ function abbreviateNumber(num) {
 
 
 function updateSidebar() {
-    for (const [resourceName, resourceData] of Object.entries(resources)) {
+    for (const [resourceName, resourceConfig] of Object.entries(resources)) {
 
         const parentElement = document.getElementById('resource-' + resourceName);
         if (!parentElement) return;
@@ -859,8 +887,8 @@ function updateSidebar() {
             // console.log('has passed', resourceName, passedStage(c));
             if (passedStage(c)) { shouldHide = false; console.log('dont hide', resourceName, c); }
         }
-        if (resourceData.value > 0) { shouldHide = false; resources[resourceName].isVisible = true; }
-        if (resourceData.isVisible) { shouldHide = false; }
+        if (resourceConfig.value > 0) { shouldHide = false; resources[resourceName].isVisible = true; }
+        if (resourceConfig.isVisible) { shouldHide = false; }
 
         if (shouldHide) {
             parentElement.style.display = 'none';
@@ -868,7 +896,11 @@ function updateSidebar() {
         const displayElem = document.getElementById(resourceName + 'Value');
         if (displayElem) {
             // console.log(abbreviateNumber(resourceData));
-            displayElem.textContent = abbreviateNumber(resourceData.value) + ' / ' + abbreviateNumber(resourceData.max);
+            var color = '#fff';
+            if (resourceConfig.value === getMax(resourceName)) color = '#fcc';
+            else if (resourceConfig.value / getMax(resourceName) > .6) color = '#eeb';
+
+            displayElem.innerHTML = `<span style="color:${color}">${abbreviateNumber(resourceConfig.value)} / ${abbreviateNumber(getMax(resourceName))} </span>`;
         }
     }
 }
@@ -881,15 +913,36 @@ function showTooltip(target, desc, effect, cost) {
     let content = '';
 
     if (desc) {
-        content += `<span >${desc}</span><br>`;
+        content += `<span >${desc}</span><hr>`;
     }
 
     if (effect) {
-        content += `<span style="color:#5DADE2">${effect}</span><br>`;
+        content += `<span style="color:#00ABE7">${effect}</span><hr>`;
     }
 
     if (cost) {
-        content += `<span style="color:#F4D03F">${cost}</span><br>`;
+        // content += `<span style="color:#F4D03F">${cost}</span><br>`;
+        try {
+            var str = '';
+            for (let material in cost) {
+                // const material = req;
+                const amount = cost[material];
+                const hasEnough = getMaterial(material) >= amount;/* Your logic to check if there's enough of the material */;
+                var colorClass = hasEnough ? 'enough' : 'not-enough';
+                if (getMax(material) < amount) colorClass = 'exceeds-max';
+                str += `<span class="tooltip-${material} ${colorClass}">${amount.toFixed(0)} ${material}</span>`;
+                const secondsRemaining = calcSecondsRemaining(material, amount);
+                // console.log(secondsRemaining);
+                if (secondsRemaining > 0 && colorClass != 'exceeds-max') { str += `<span class="time-remaining">(${(secondsRemaining).toFixed(0)} seconds)</span>`; }
+                str += `<br>`;
+            }
+            content += str;
+
+
+        } catch (error) {
+            content += cost;
+            // console.error("Couldn't make normal cost for button: ", target, cost, error);
+        }
     }
     // console.log(target, content);
     tooltip.innerHTML = content;
@@ -903,9 +956,12 @@ function hideTooltip() {
 }
 
 function updateTooltip(button) {
-    const desc = button.getAttribute('data-tooltip-desc');
+    const desc = button.getAttribute('data-tooltip-desc') || button.getAttribute('tooltipDesc');
     const effect = button.getAttribute('data-tooltip-effect');
-    const cost = button.getAttribute('data-tooltip-cost');
+    // const cost = button.getAttribute('data-tooltip-cost');
+    const config = getResourceConfigById(button.id) || getCraftedResourceConfigById(button.id) || buildings[button.getAttribute('data_building')] || ponders[button.getAttribute('unlock')];
+    // console.log(config);
+    const cost = button.getAttribute('tooltipCost') || config.cost;
     showTooltip(button, desc, effect, cost);
 }
 
@@ -945,7 +1001,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
             if (button.getAttribute('data_building') && button.getAttribute('data_building') !== 'undefined' && button.classList.contains('purchasable')) {
                 var building = button.getAttribute('data_building');
-                buyBuilding(building);
+                if (event.shiftKey) {
+                    buyMaxBuildings(building);
+                } else {
+                    buyBuilding(building);
+                }
             }
             if (button.classList.contains('unlock')) {
                 const unlockAttr = button.getAttribute('unlock');
@@ -953,8 +1013,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 console.log(unlockAttr);
                 if (ponders[unlockAttr]) {
                     var canUnlock = true;
-                    for (let req of ponders[unlockAttr].cost) {
-                        if (getMaterial(req.material) < req.amount) {
+                    for (let material in ponders[unlockAttr].cost) {
+                        if (getMaterial(material) < ponders[unlockAttr].cost[material]) {
                             console.log("Cannot unlock " + unlockAttr);
                             canUnlock = false;
                             break;
@@ -962,8 +1022,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     }
 
                     if (canUnlock) {
-                        for (let req of ponders[unlockAttr].cost) {
-                            increaseMaterial(req.material, -req.amount);
+                        for (let material in ponders[unlockAttr].cost) {
+                            increaseMaterial(material, -ponders[unlockAttr].cost[material]);
                         }
                         ponders[unlockAttr].isPondered = true;
                         makeVisible(unlockAttr);
@@ -981,7 +1041,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 console.log(button);
                 if (button.id.slice(0, 6) === "gather") toggleResource(getRKeyFromID(button.id));
 
-                if (button.id.slice(0, 5) === 'craft') craftResource(getCRKeyFromID(button.id));
+                if (button.id.slice(0, 5) === 'craft')
+                    if (event.shiftKey) craftAllResources(getCRKeyFromID(button.id));
+                    else craftResource(getCRKeyFromID(button.id));
 
 
                 if (button.id === 'darkModeToggle') {
@@ -997,7 +1059,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
 
         if (event.target.matches("#alone")) {
-            increaseMaterial('clones', 1);
+            // increaseMaterial('clones', 1);
+            // Hardcoded instead to avoid increase affected by productivity bonuses
+            if (resources['clones'].value < resources['clones'].max) resources['clones'].value += 1;
             updateTotal();
         }
     });
@@ -1010,17 +1074,18 @@ document.addEventListener('DOMContentLoaded', (event) => {
         // console.log(button);
         // Extract the data from your building or any other data - source
         // const content = "Your tooltip content here";
-        button.addEventListener('mousemove', function (e) {
+        button.addEventListener('mouseenter', function (e) {
             updateTooltip(button);
+            currentHoverButton = button;
         });
 
 
         // TODO: move this event listener
-        button.addEventListener('click', function () {
+        button.addEventListener('onclick', function () {
             updateTooltip(button);
         })
 
-        button.addEventListener('mouseleave', hideTooltip);
+        button.addEventListener('mouseleave', function () { hideTooltip(); currentHoverButton = null; });
     });
 
     // Update the jobs counter
@@ -1028,4 +1093,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 
 });
+
+var currentHoverButton = null;
 

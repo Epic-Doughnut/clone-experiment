@@ -1,5 +1,5 @@
 // DEPENDS ON: resources.js
-
+const { updateBuildingButtonCount } = require('./resources');
 /* SAVING */
 var save = {
     resources: resources,
@@ -20,7 +20,9 @@ function saveGame() {
         buildings: {},
         time: {},
         allVisibleButtons: [],
-        message: []
+        message: [],
+        connections: new Map(),
+        perks: []
     };
 
     // Extract exp and level from skills and save to save.skills
@@ -55,6 +57,9 @@ function saveGame() {
     save.tools = playerTools;
     save.stages = stages;
     save.jobs = jobCounts;
+    save.perks = myPerks;
+
+    save.connections = Array.from(connections.entries());
 
     for (let u in ponders) {
         save.unlocks[u] = isPondered(u);
@@ -93,7 +98,9 @@ function saveGame() {
     save.time['total_time'] = total_time;
     save.time['time_of_save'] = Date.now();
     // You can now use the save object to store the data somewhere or display it to the user
+
     console.log(save);
+    // console.log(JSON.stringify(save));
 
     localStorage.setItem("save", JSON.stringify(save));
     return save;
@@ -115,7 +122,7 @@ function loadGame() {
             resources[i].value = savegame.resources[i].value;
             resources[i].max = savegame.resources[i].max;
             console.log("Updating resources for " + i + " to " + savegame.resources[i].value, savegame.resources[i].max);
-            updateDisplayValue(i);
+            if (resources[i].value != 0) updateDisplayValue(i);
         }
     }
 
@@ -177,6 +184,14 @@ function loadGame() {
 
             // Calculate the costs of all the buildings
             recalculateBuildingCost(b);
+
+            // Update the max as influenced by this building
+            // TODO: Don't overwrite existing building boosts
+            // if (buildings[b].effects) {
+            //     for (let mat in buildings[b].effects) {
+            //         setMax(mat, buildings[b].count * buildings[b].effects[mat]);
+            //     }
+            // }
         }
         updateSidebar();
     }
@@ -215,6 +230,28 @@ function loadGame() {
         }
 
     }
+
+    if (typeof savegame.connections !== 'undefined') {
+        connections = new Map(savegame.connections);
+
+        if (connections.size === 0) connections = new Map();
+        console.log(connections);
+    }
+
+
+    for (let job in jobCounts) {
+        distributeWorkers(job, jobCounts[job]);
+    }
+
+    updateEmojiDisplay();
+
+    if (typeof savegame.perks !== 'undefined') {
+        myPerks = savegame.perks;
+        for (let perk in myPerks) {
+            selectCorrectPerkButton(perk);
+        }
+    }
+
 }
 
 

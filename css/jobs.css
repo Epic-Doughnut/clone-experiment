@@ -18,11 +18,25 @@
     /* Some padding to space things out a bit */
     justify-content: space-between;
     /* Spread out the elements inside evenly */
-    margin-bottom: 10px;
+    margin-bottom: 50px;
 }
 
 .job-button.button-disabled {
     pointer-events: none;
+}
+
+.job-button.highlight {
+    background-color: #555;
+    transform: scale(1.05);
+}
+
+.job-button:hover {
+    background-color: #23526b;
+}
+
+canvas#lineCanvas {
+    pointer-events: none;
+    /* Makes sure canvas doesn't interfere with click events on other elements */
 }
 
 .job-name {

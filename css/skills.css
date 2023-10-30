@@ -1,13 +1,14 @@
 #skillsTable {
-    width: calc(100% - 350px);
+    /* width: calc(100% - 350px); */
+    width: 100%;
     /* 200px is the width of your sidebar. Adjust as needed. */
     background-color: #f5f5f5;
     /* Light mode background color */
     color: #333;
     /* Light mode text color */
-    position: fixed;
-    bottom: 0;
-    left: 0;
+    /* position: fixed; */
+    /* bottom: 0; */
+    /* left: 0; */
     transition: 1s;
     border: 1px solid #eee;
 

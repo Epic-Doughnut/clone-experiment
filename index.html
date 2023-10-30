@@ -5,6 +5,8 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Clone Idle</title>
+	<link href="https://fonts.googleapis.com/css2?family=PT+Sans&display=swap" rel="stylesheet">
+
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="css/skills.css">
 	<link rel="stylesheet" href="css/buttons.css">
@@ -21,6 +23,9 @@
 	<button id="saveButton" onclick="saveGame()">Save</button>
 	<button id="deleteSaveButton" onclick="localStorage.removeItem('save'); location.reload();">Delete Save
 		Data</button>
+	<!-- Level up -->
+
+
 	<!-- For cutscenes -->
 	<div id="overlay">
 		<p id="overlay-text">That fish didn't taste too good, hopefully you won't need to pilot any airplanes. Who's
@@ -28,16 +33,38 @@
 		<button id="overlay-button" onclick="hideOverlay()">Continue</button>
 	</div>
 
-	<!-- Tabs navigation -->
-	<div id="tabs">
+	<!-- SIDEBAR -->
+
+	<div id="sidebar">
+		<h4 id='resourcesWords' class='startVisible'>Resources</h4>
+		<div id="resources">
+			<!-- Resource values here -->
+		</div>
+
+		<div id="tools" class='craftRocks'>
+			<hr>
+			<h4>Tools:</h4>
+			<ul id="tools-list">
+				<!-- List of our tools -->
+			</ul>
+		</div>
 	</div>
 
 	<!-- Tab content -->
 	<div class="tab-content" id="main">
-		<h3 class="startVisible" id="message"> You find yourself
-			<span id='alone' title="You feel peckish for some seafood">alone</span>
-			in a forest
-		</h3>
+		<div style="display: flex; flex-direction: column;">
+			<h3 class="startVisible" id="message"> You find yourself
+				<span id='alone' title="You feel peckish for some seafood">alone</span>
+				in a forest
+			</h3>
+			<div id='emojiGatherDisplay'>𓀟</div>
+			<div id="emojiDisplay">𓆮
+			</div>
+
+			<div id="levelUpMessage" class="hidden">
+				<p>Level up!</p>
+			</div>
+		</div>
 		<button class="eatFish" id="eatFish" onclick='eatFish()'>Eat fish</button>
 		<!-- <button onclick="fadeToBlack()">blackout</button> -->
 
@@ -65,36 +92,46 @@
 		<!-- JOBS TAB (4) -->
 		<div id='jobsTab' class='jobs-tab content' data-target='jobsTab'>
 			<p id="jobs-total">Assigned Clones:</p>
-			<!-- <div class="job-button" data-job="gathering">
-				<div class="btn-decrement">-</div>
-				<span class="job-name">Gathering: 0</span>
-				<div class="btn-increment">+</div>
-			</div>
+			<button id="clearJobAssignments" onclick="clearJobAssignments();">Clear Assignments</button>
 
-			<div class="job-button" data-job="masonry">
-				<div class="btn-decrement">-</div>
-				<span class="job-name">Masonry: 0</span>
-				<div class="btn-increment">+</div>
-			</div>
-
-			<div class="job-button wood" data-job="carpentry">
-				<div class="btn-decrement">-</div>
-				<span class="job-name">Carpentry: 0</span>
-				<div class="btn-increment">+</div>
-			</div> -->
-
+			<canvas id="lineCanvas" style="position: absolute; top: 0; left: 0; z-index: -1;"></canvas>
 
 		</div>
 
 
+		<div id="skillsTab" class="skillsTab content" data-target="skillsTab">
 
-		<table id="skillsTable" class='dark-mode'>
-			<tr>
-				<td>
-					<h4 style='display: block;'>Your Skills:</h4>
-				</td>
-			</tr>
-		</table>
+			<table id="skillsTable" class='dark-mode'>
+				<tr>
+					<td>
+						<h4 style='display: block;'>Your Skills:</h4>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<div id="perksTab" class="perksTab content" data-target="perksTab">
+			<div id="tierOneContainer">
+				<button class="tierOneButton tooltip" tooltipCost="Mutually Exclusive!"
+					tooltipDesc="+25% wood & sticks production"
+					onclick="selectAbility('Lumberjack')">Lumberjack</button>
+				<button class="tierOneButton tooltip" tooltipCost="Mutually Exclusive!"
+					tooltipDesc="+25% stone & ore production" onclick="selectAbility('Miner')">Miner</button>
+				<button class="tierOneButton tooltip" tooltipCost="Mutually Exclusive!"
+					tooltipDesc="+25% vines & herbs & wheat production"
+					onclick="selectAbility('Botanist')">Botanist</button>
+				<button class="tierOneButton tooltip" tooltipCost="Mutually Exclusive!"
+					tooltipDesc="+50% clones productivity" onclick="selectAbility('Leader')">Leader</button>
+				<button class="tierOneButton tooltip" tooltipCost="Mutually Exclusive!" tooltipDesc="-25% building cost"
+					onclick="selectAbility('Architect')">Architect</button>
+			</div>
+
+
+		</div>
+	</div>
+
+	<!-- Tabs navigation -->
+	<div id="tabs">
 	</div>
 
 	<!-- TOOL -->
@@ -127,76 +164,6 @@
 
 
 
-	<!-- SIDEBAR -->
-
-	<div id="sidebar">
-		<div id="resources">
-			<h4 class='startVisible'>Resources</h4>
-			<!-- <p class='clone resource' id="resource-clones">
-				<span class="resourceName">Clones:</span>
-				<span class="resourceValue" id="clonesValue">0</span>
-				<span class="resourceRate">(+<span id="clonesIncreaseRate">0</span>/s)</span>
-			</p>
-
-			<p class='start startVisible resource' id="resource-sticks">
-				<span class="resourceName">Sticks:</span>
-				<span class="resourceValue" id="sticksValue">0</span>
-				<span class="resourceRate">(+<span id="sticksIncreaseRate">0</span>/s)</span>
-			</p>
-			<p class='stick resource' id="resource-vines">
-				<span class="resourceName">Vines:</span>
-				<span class="resourceValue" id="vinesValue">0</span>
-				<span class="resourceRate">(+<span id="vinesIncreaseRate">0</span>/s)</span>
-			</p>
-
-			<p class='stick resource' id="resource-rocks">
-				<span class="resourceName">Rocks:</span>
-				<span class="resourceValue" id="rocksValue">0</span>
-				<span class="resourceRate">(+<span id="rocksIncreaseRate">0</span>/s)</span>
-			</p>
-
-			<p class='fishing resource' id="resource-fish">
-				<span class="resourceName">Fish:</span>
-				<span class="resourceValue" id="fishValue">0</span>
-				<span class="resourceRate">(+<span id="fishIncreaseRate">0</span>/s)</span>
-			</p>
-
-			<p class='wood resource' id="resource-wood">
-				<span class="resourceName">Wood:</span>
-				<span class="resourceValue" id="woodValue">0</span>
-				<span class="resourceRate">(+<span id="woodIncreaseRate">0</span>/s)</span>
-			</p>
-
-			<p class='ore resource' id="resource-ore">
-				<span class="resourceName">Ore:</span>
-				<span class="resourceValue" id="oreValue">0</span>
-				<span class="resourceRate">(+<span id="oreIncreaseRate">0</span>/s)</span>
-			</p>
-
-			<p class='clone resource' id="resource-ponder">
-				<span class="resourceName">Ponder:</span>
-				<span class="resourceValue" id="ponderValue">0</span>
-				<span class="resourceRate">(+<span id="ponderIncreaseRate">0</span>/s)</span>
-			</p>
-
-			<p class='sand resource' id="resource-sand">
-				<span class="resourceName">Sand:</span>
-				<span class="resourceValue" id="sandValue">0</span>
-				<span class="resourceRate">(+<span id="sandIncreaseRate">0</span>/s)</span>
-			</p> -->
-
-			<!-- <p class='wood'>Lumberjacks: <span id="lumberjackValue">0</span></p> -->
-		</div>
-
-		<div id="tools" class='craftRocks'>
-			<hr>
-			<h4>Tools</h4>
-			<ul id="tools-list">
-
-			</ul>
-		</div>
-	</div>
-
 	<div id="dynamic-tooltip" class="dynamic-tooltip"></div>
 
 
@@ -210,10 +177,13 @@
 	<script src="scripts/json/craftedResources.js"></script>
 	<script src="scripts/json/skills.js"></script>
 	<script src="scripts/json/ponder.js"></script>
+	<script src="scripts/json/perks.js"></script>
+
 	<script src="scripts/buildings.js"></script>
 	<script src="scripts/ponder.js"></script>
 	<script src="scripts/jobs.js"></script>
 	<script src="scripts/resources.js"></script>
+	<script src="scripts/perks.js"></script>
 	<script src="scripts/saving.js"></script>
 
 	<script src="scripts/main.js"></script>

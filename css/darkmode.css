@@ -29,7 +29,7 @@
 
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'PT Sans', monospace;
     display: flex;
     align-items: start;
     /* background-color: #ddd; */

@@ -1,10 +1,31 @@
 #sidebar {
-    width: 300px;
+    width: 350px;
     height: 100vh;
     background-color: #bbb;
-    border-left: 2px solid #000;
+    border-right: 1px solid #eee;
     padding: 20px;
-    font-size: small;
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+
+#sidebar>#resources {
+    display: flex;
+    flex-direction: column;
+    flex: none;
+}
+
+#sidebar>#resources>* {
+    display: none;
+    order: 1000;
+}
+
+
+
+#sidebar>#resources>.startVisible {
+    display: flex;
+    /* or whatever your desired default display value is */
 }
 
 #sidebar p {
@@ -37,5 +58,41 @@ p.resource {
 
 .resourceRate {
     margin-left: 30px;
-    width: 80px;
+    width: 100px;
+}
+
+#resourcesWords {
+    order: 0;
+}
+
+#resource-clones {
+    order: 1;
+}
+
+#resource-sticks {
+    order: 2;
+}
+
+#resource-vines {
+    order: 3;
+}
+
+#resource-rocks {
+    order: 4;
+}
+
+#resource-fish {
+    order: 5;
+}
+
+#resource-wood {
+    order: 6;
+}
+
+#resource-ore {
+    order: 7;
+}
+
+#resource-ponder {
+    order: 50;
 }

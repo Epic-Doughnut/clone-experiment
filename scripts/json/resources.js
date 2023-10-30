@@ -9,71 +9,78 @@ const resources = {
         "isVisible": false,
         max: 0
     },
-    "wood": {
-        "id": "gatherWood",
-        "isGetting": false,
-        "isVisible": false,
-        "activeText": "Chopping Wood",
-        "defaultText": "Chop Wood",
-        "tools": [{ "tool": "Axe", "val": 1.5 }, { "tool": "Chainsaw", "val": 3 }],
-        "value": 0,
-        max: 40
-    },
 
     "sticks": {
         "id": "gatherSticks",
         "isGetting": false,
         "isVisible": true,
-        "activeText": "Gathering Sticks",
-        "defaultText": "Gather Sticks",
+        "activeText": "𓆱𓀜 Gathering Sticks",
+        "defaultText": "𓆱 Gather Sticks",
         "value": 0,
+        emoji: '𓀝',
         max: 50
     },
     "vines": {
         "id": "gatherVines",
         "isGetting": false,
         "isVisible": false,
-        "activeText": "Gathering Vines",
-        "defaultText": "Gather Vines",
+        "activeText": "𓍯𓀪 Gathering Vines",
+        "defaultText": "𓍯 Gather Vines",
         "tools": [{ "tool": "Axe", "val": 1.5 }],
         "value": 0,
+        emoji: '𓀪',
         max: 50
     },
     "rocks": {
         "id": "gatherRocks",
         "isGetting": false,
         "isVisible": false,
-        "activeText": "Gathering Rocks",
-        "defaultText": "Gather Rocks",
+        "activeText": "𓊖𓀩 Gathering Rocks",
+        "defaultText": "𓊖 Gather Rocks",
         "value": 0,
+        emoji: '𓀩',
         max: 30
     },
     "fish": {
         "id": "gatherFish",
         "isGetting": false,
         "isVisible": false,
-        "activeText": "Gone Fishing",
-        "defaultText": "Go Fish",
+        "activeText": "𓆝𓆟𓆞 𓁃 Gone Fishing",
+        "defaultText": "𓆝𓆟𓆞 Go Fish",
         "value": 0,
+        emoji: '𓁃',
         "tools": [{ "tool": "Spear", "val": 1 }, { "tool": "Fishing Rod", "val": 2 }],
         max: 10
+    },
+    "wood": {
+        "id": "gatherWood",
+        "isGetting": false,
+        "isVisible": false,
+        "activeText": "𓀨 Chopping Wood",
+        "defaultText": "𓌏 Chop Wood",
+        emoji: '𓀨',
+        "tools": [{ "tool": "Axe", "val": 1.5 }, { "tool": "Chainsaw", "val": 3 }],
+        "value": 0,
+        max: 40
     },
     "ponder": {
         "id": "gatherPonder",
         "isGetting": false,
         "isVisible": false,
-        "activeText": "Pondering",
-        "defaultText": "Ponder",
+        "activeText": "𓀁 Pondering",
+        "defaultText": "𓀁 Ponder",
+        emoji: '𓀁',
         "value": 0,
-        max: 50
+        max: 20
     },
     "ore": {
         "value": 0,
         "id": "gatherOre",
         "isGetting": false,
         "isVisible": false,
-        "activeText": "Mining Ore",
-        "defaultText": "Mine Ore",
+        "activeText": "𓉸𓁄 Mining Ore",
+        "defaultText": "𓉸 Mine Ore",
+        emoji: '𓁄',
         max: 20
     },
     "sand": {
@@ -81,8 +88,9 @@ const resources = {
         "id": "gatherSand",
         "isGetting": false,
         "isVisible": false,
-        "activeText": "Scooping Sand",
-        "defaultText": "Scoop Sand",
+        "activeText": "𓀩 Scooping Sand",
+        "defaultText": "𓀩 Scoop Sand",
+        emoji: '𓀩',
         max: 20
     },
     "wheat": {
@@ -90,8 +98,75 @@ const resources = {
         "id": "gatherWheat",
         "isGetting": false,
         "isVisible": false,
-        "activeText": "Mining Ore",
-        "defaultText": "Mine Ore",
+        "activeText": "𓀩 Harvesting Wheat",
+        "defaultText": "𓀩 Harvest Wheat",
+        emoji: '𓀝',
         max: 20
+    },
+    'freshwater': {
+        'value': 0,
+        'id': 'gatherFreshwater',
+        'isGetting': false,
+        'isVisible': false,
+        'activeText': 'water',
+        'defaultText': 'water',
+        emoji: '𓀩',
+        'max': 50
+    },
+    'hides': {
+        'value': 0,
+        'id': 'gatherHides',
+        'isGetting': false,
+        'isVisible': false,
+        'activeText': 'water',
+        'defaultText': 'water',
+        emoji: '𓀎',
+        'max': 50
+
+    },
+    'clay': {
+        'value': 0,
+        'id': 'gatherClay',
+        'isGetting': false,
+        'isVisible': false,
+        'activeText': 'water',
+        'defaultText': 'water',
+        emoji: '𓀩',
+        'max': 50
+    },
+    'berries': {
+
+        'value': 0,
+        'id': 'gatherBerries',
+        'isGetting': false,
+        'isVisible': false,
+        'activeText': 'water',
+        'defaultText': 'water',
+        emoji: '𓀩',
+        'max': 50
+    },
+    'herbs': {
+        'value': 0,
+        'id': 'gatherHerbs',
+        'isGetting': false,
+        'isVisible': false,
+        'activeText': 'water',
+        'defaultText': 'water',
+        emoji: '𓀩',
+        'max': 50
+    },
+    'game': {
+        'value': 0,
+        'id': 'gatherGame',
+        'isGetting': false,
+        'isVisible': false,
+        'activeText': '𓃚𓀎 Hunting',
+        'defaultText': '𓀎 Hunt',
+        emoji: '𓀎',
+        'max': 50
     }
+}
+
+module.exports = {
+    resources: resources
 }

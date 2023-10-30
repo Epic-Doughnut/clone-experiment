@@ -1,0 +1,22 @@
+{
+  "name": "clone-idle",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "setupFiles": [
+      "C:/Users/Alpine Missionary/Documents/GitHub/clone-idle/scripts/__tests__/setupJSDOM.js"
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jsdom": "^22.1.0"
+  }
+}

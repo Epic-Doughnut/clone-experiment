@@ -1,5 +1,10 @@
 // DEPENDS ON: json/buttons.js
 
+module.exports = {
+    capitalizeFirst: capitalizeFirst
+
+};
+
 function isPondered(id) {
     // Check if the id exists in the unlocks map
     // If the id doesn't exist in the map, return false
@@ -19,10 +24,15 @@ function canUnlock(unlockId) {
             unlockKey = unlock;
         }
     }
+
+    if (unlockKey === '') {
+        console.warn("invalid unlock id: ", unlockId);
+        return false;
+    }
     // Check if we have enough resources
     var canBuy = true;
-    for (let req of ponders[unlockKey].cost) {
-        if (getMaterial(req.material) < req.amount) {
+    for (let material in ponders[unlockKey].cost) {
+        if (getMaterial(material) < ponders[unlockKey].cost[material]) {
             // console.log("Cannot unlock " + unlockId);
             canBuy = false;
             break;
@@ -43,22 +53,19 @@ function generatePonderButtons(ponderObjects) {
 
         buttons[buttonKey] = {
             class: 'tooltip unlock',
-            text: ponderObj.text,
-            tooltipDesc: ponderObj.tooltipDesc,
+            text: ponderObj.text || 'Ponder a Mystery?',
+            tooltipDesc: ponderObj.tooltipDesc || "Who knows what you'll discover",
             tooltipCost: ponderObj.tooltipCost,
             tab: 'ponder',
             unlock: ponderKey,
             requirement: () => {
-                if (Array.isArray(ponderObj.cost)) {
-                    return ponderObj.cost.every(cost => getMaterial(cost.material) >= cost.amount);
-                } else {
-                    return getMaterial(ponderObj.cost.material) >= ponderObj.cost.amount;
-                }
+                return getMax('ponder') >= ponders[ponderKey].cost['ponder'] / 2
+
             },
             hide: () => isPondered(ponderKey)
         };
 
-        console.log(buttonKey, buttons[buttonKey]);
+        // console.log(buttonKey, buttons[buttonKey]);
 
     }
 

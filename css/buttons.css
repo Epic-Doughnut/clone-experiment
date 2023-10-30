@@ -7,9 +7,10 @@ button {
     color: white;
     outline: none;
     display: block;
+    font-size: medium;
     margin-bottom: 10px;
     border-radius: 4px;
-    width: 200px;
+    width: min(200px, 100%);
     text-align: justify;
 }
 

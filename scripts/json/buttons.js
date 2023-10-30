@@ -5,7 +5,7 @@ const buttons = {
     'gatherSticks': {
         class: 'tooltip startVisible',
         tab: 'production',
-        text: 'Gather Sticks',
+        text: '𓀝 Gather Sticks',
         tooltipDesc: 'Five, Six, Pick up sticks.',
         tooltipCost: 'Free',
         requirement: () => true,
@@ -14,7 +14,7 @@ const buttons = {
     'gatherVines': {
         class: 'tooltip stick',
         tab: 'production',
-        text: 'Gather Vines',
+        text: '𓍯 Gather Vines',
         tooltipDesc: 'Some vines are rubbery, others are gummy.',
         tooltipCost: 'Free',
         requirement: () => getMaterial('sticks') >= 10 || passedStage('vines'),
@@ -23,7 +23,7 @@ const buttons = {
     'gatherRocks': {
         class: 'tooltip stick',
         tab: 'production',
-        text: 'Gather Rocks',
+        text: '𓊖𓀩 Gather Rocks',
         tooltipDesc: 'Not a single window to throw them through.',
         tooltipCost: 'Free',
         requirement: () => getMaterial('vines') >= 10 || passedStage('rocks'),
@@ -32,7 +32,7 @@ const buttons = {
     'gatherFish': {
         class: 'tooltip fishing',
         tab: 'production',
-        text: 'Go Fish',
+        text: '𓆝 𓆟 𓆞 Go Fish',
         tooltipDesc: 'Got any tuna?',
         tooltipCost: 'Free',
         requirement: () => hasTool('Spear') || hasTool("Fishing Rod") || passedStage('fishing'),
@@ -41,15 +41,16 @@ const buttons = {
     'gatherWood': {
         class: 'woodToggle wood',
         tab: 'production',
-        text: 'Chop Wood',
+        text: '𓌏 Chop Wood',
         tooltipDesc: 'An axe hurts way less than using your hands.',
+        tooltipCost: '',
         requirement: () => hasTool('Axe') || passedStage('wood'),
         hide: () => false
     },
     'gatherOre': {
         "class": "tooltip ",
         "tab": "production",
-        "text": "Mine Ore",
+        "text": "⛏ Mine Ore",
         "tooltipDesc": "Diggy Diggy Hole",
         "tooltipCost": "Free",
         requirement: () => hasTool('Pickaxe') || passedStage('ore'),
@@ -91,6 +92,22 @@ const buttons = {
         requirement: () => passedStage('jobs-tab'),
         hide: () => false
     },
+    'skillsTabButton': {
+        class: 'tab-button',
+        text: 'Skills',
+        showTab: 'skillsTab',
+        tab: 'tabs',
+        requirement: () => passedStage('skillsTable'),
+        hide: () => false
+    },
+    'perksTabButton': {
+        class: 'tab-button',
+        text: 'Perks',
+        showTab: 'perksTab',
+        tab: 'tabs',
+        requirement: () => passedStage('perksTab'),
+        hide: () => false
+    },
 
     /* PONDER TAB */
     'gatherPonder': {
@@ -102,35 +119,8 @@ const buttons = {
         requirement: () => passedStage('ponder-tab'),
         hide: () => false
     },
-    // 'ponderClones1': {
-    //     class: 'tooltip unlock',
-    //     text: 'Understand Cloning',
-    //     tooltipDesc: 'Why are there two of you?',
-    //     tooltipCost: 'Sanity (20 Ponder)',
-    //     tab: 'ponder',
-    //     unlock: 'jobs-tab',
-    //     requirement: () => (getMaterial('ponder') >= 10),
-    //     hide: () => passedStage('jobs-tab') || isPondered('jobs-tab')
-    // },
-    // 'ponderSkills': {
-    //     class: 'tooltip unlock',
-    //     text: 'Notice Improvement',
-    //     tooltipDesc: "You're starting to learn things, right?",
-    //     tooltipCost: '40 Ponder',
-    //     tab: 'ponder',
-    //     unlock: 'skillsTable',
-    //     requirement: () => (getMaterial('ponder') >= 25),
-    //     hide: () => passedStage('skillsTable') || isPondered('skillsTable')
-    // },
-    // 'ponderFishing': {
-    //     class: 'tooltip unlock',
-    //     text: 'Think about Fishing',
-    //     tooltipDesc: 'What if you could make your clones fish?',
-    //     tooltipCost: '60 Ponder, 50 Fish',
-    //     tab: 'ponder',
-    //     unlock: 'fishing',
-    //     requirement: () => getMaterial('fish') >= 40,
-    //     hide: () => isPondered('fishing')
-
-    // }
 }
+
+module.exports = {
+    buttons: buttons
+};
