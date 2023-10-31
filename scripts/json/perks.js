@@ -44,3 +44,7 @@ const perks = {
     'tier1': ['Lumberjack', 'Miner', 'Botanist', 'Leader', 'Architect'],
     'tier2': ['Thinker', 'General', 'Merchant', 'Generalist', 'Specialist']
 };
+
+module.exports = {
+    perks: perks
+}

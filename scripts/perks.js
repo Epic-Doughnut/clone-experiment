@@ -73,3 +73,12 @@ function selectCorrectPerkButton(abilityName) {
     selectedButton.removeAttribute('disabled');
     selectedButton.classList.add('selected');
 }
+
+
+module.exports = {
+    hasPerk,
+    addPerk,
+    selectCorrectPerkButton,
+    selectAbility,
+    getPerkFromTier
+}

@@ -1,9 +1,5 @@
 // DEPENDS ON: json/buttons.js
-
-module.exports = {
-    capitalizeFirst: capitalizeFirst
-
-};
+const { capitalizeFirst } = require('./main');
 
 function isPondered(id) {
     // Check if the id exists in the unlocks map
@@ -12,9 +8,7 @@ function isPondered(id) {
     return ponders[id] ? ponders[id].isPondered : false;
 
 }
-function capitalizeFirst(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-}
+
 function canUnlock(unlockId) {
     // Get the key from this id
     // console.log('can unlock? ', unlockId);

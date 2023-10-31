@@ -1,4 +1,12 @@
 const { buttons } = require('./json/buttons');
+const { craftedResources } = require('./json/craftedResources');
+const { buildings } = require("./json/buildings");
+const { ponders } = require("./json/ponder");
+
+const { saveGame, loadGame } = require("./saving");
+const { getMaterial, createResourceTag } = require('./resources');
+const { recalculateBuildingCost } = require('./buildings');
+const { hasPerk } = require('./perks');
 /* MY CODE STARTS HERE */
 
 
@@ -13,7 +21,14 @@ let stages = [];
 
 
 
-
+/**
+ * 
+ * @param {string} str stringExample
+ * @returns StringExample
+ */
+function capitalizeFirst(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
 
 
@@ -178,7 +193,7 @@ function generateButtons() {
         if (building) {
             // console.log(building, key);
             // btn.tooltipCost = generateBuildingTooltipCost(buildings[building].cost);
-            recalculateBuildingCost(key);
+            recalculateBuildingCost(key, buildings, hasPerk);
         }
         // Hide the buttons we shouldn't see yet
         // console.log(btn);
@@ -974,6 +989,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
     updateSidebar();
 
     showTab('productionTab');
+    createResourceTag('sticks');
+    appendCraftedResourceButtons();
 
     function getRKeyFromID(id) {
         for (let r in resources) {
@@ -1096,3 +1113,15 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 var currentHoverButton = null;
 
+module.exports = {
+    capitalizeFirst,
+    updateSidebar,
+    updateUI,
+    updateSkills,
+    passedStage,
+    makeVisible,
+
+    total_time,
+    currentHoverButton
+
+};

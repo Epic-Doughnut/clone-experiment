@@ -206,3 +206,8 @@ let ponders = {
     //     }]
     // }
 };
+
+
+module.exports = {
+    ponders: ponders
+};

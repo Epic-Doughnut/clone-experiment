@@ -47,3 +47,7 @@ const skills = {
         affectedResources: ['hides', 'game']
     }
 };
+
+module.exports = {
+    skills: skills
+};

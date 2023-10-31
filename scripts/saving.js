@@ -1,12 +1,22 @@
 // DEPENDS ON: resources.js
-const { updateBuildingButtonCount } = require('./resources');
+const { updateBuildingButtonCount } = require('./buildings');
+const { updateDisplayValue } = require('./resources');
+
+const { craftedResources } = require('./json/craftedResources');
+const { buildings } = require("./json/buildings");
+const { ponders } = require("./json/ponder");
+const { resources } = require('./json/resources');
+const { skills } = require("./json/skills");
+const { jobCounts } = require('./jobs');
+const { total_time } = require('./main');
+// import jobCounts;
 /* SAVING */
-var save = {
-    resources: resources,
-    craftedResources: craftedResources,
-    skills: skills,
-    playerTools: playerTools
-}
+// var save = {
+//     resources: resources,
+//     craftedResources: craftedResources,
+//     skills: skills,
+//     playerTools: playerTools
+// }
 
 function saveGame() {
     let save = {
@@ -257,3 +267,7 @@ function loadGame() {
 
 // save the time when the player exits the browser tab
 // window.addEventListener("beforeunload", () => saveGame());
+module.exports = {
+    saveGame: saveGame,
+    loadGame: loadGame
+}

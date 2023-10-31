@@ -1,5 +1,5 @@
 // DEPENDS ON: skills.js, ponder.js
-
+const { skills } = require('./json/skills');
 /* JOBS FUNCTIONALITY */
 
 
@@ -330,4 +330,13 @@ function switchJob(oldJobId, newJobId) {
     jobCounts[newJobId] += workers;
     updateDisplay(oldJobId);
     updateDisplay(newJobId);
+}
+
+
+module.exports = {
+    clearJobAssignments,
+    reassignJobsBasedOnResources,
+    switchJob,
+    drawAllConnections,
+    getWorkers
 }

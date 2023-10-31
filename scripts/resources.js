@@ -1,7 +1,11 @@
 
 // DEPENDS ON: tools.js, jobs.js
 const { resources } = require("./json/resources");
+const { craftedResources } = require('./json/craftedResources');
 const { capitalizeFirst } = require('./main');
+const { getWorkers } = require('./jobs');
+console.log(capitalizeFirst);
+
 /**
  * 
  * @param {string} job 
@@ -202,7 +206,7 @@ function createResourceTag(resourceName) {
 
 }
 
-createResourceTag('sticks');
+
 
 function updateDisplayValue(material) {
     const element = resourcesContainer.querySelector(`#${material}Value`);
@@ -359,7 +363,6 @@ function appendCraftedResourceButton(name) {
 }
 
 // Call the function to replace <p> elements with the buttons
-appendCraftedResourceButtons();
 // appendCraftedResourceButton('sticks');
 
 function generateTooltipCost(requirements) {
@@ -541,5 +544,20 @@ function craftResource(resourceKey) {
 
 
 module.exports = {
-    getMaterial: getMaterial
+    getMaterial,
+    increaseMaterial,
+    getMax,
+    setMax,
+    increaseMax,
+    craftAllResources,
+    craftResource,
+    updateEmojiDisplay,
+    updateDisplayValue,
+    getAffectedResources,
+    isResource,
+    getCraftedResourceKeyByConfig, getResourceConfigById, getCraftedResourceConfigById,
+    calcSecondsRemaining,
+    createResourceTag,
+    appendCraftedResourceButtons
+
 };

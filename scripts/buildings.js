@@ -2,6 +2,7 @@
 const { buildings } = require('./json/buildings');
 const { buttons } = require('./json/buttons');
 const { getMaterial } = require('./resources');
+const { capitalizeFirst } = require('./main');
 /* BUILDINGS */
 
 function getBuildingCount(buildingName) {
@@ -217,7 +218,8 @@ function doubleStorageEffectsIfPassed() {
 
 
 module.exports = {
-    recalculateBuildingCost: recalculateBuildingCost,
-    generateBuildingTooltipCost: generateBuildingTooltipCost,
-    createBuildingButton, createBuildingButton
+    recalculateBuildingCost,
+    generateBuildingTooltipCost,
+    createBuildingButton,
+    updateBuildingButtonCount
 };

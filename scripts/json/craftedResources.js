@@ -155,3 +155,6 @@ const craftedResources = {
     }
 }
 
+module.exports = {
+    craftedResources
+};
