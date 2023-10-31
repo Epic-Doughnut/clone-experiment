@@ -1,5 +1,9 @@
 // DEPENDS ON: json/buttons.js
-const { capitalizeFirst } = require('./main');
+const { capitalizeFirst } = require('./helper');
+const { ponders } = require('./json/ponder');
+const { getMaterial, getMax } = require('./helper');
+const { resources } = require('./json/resources');
+const { buttons } = require('./json/buttons');
 
 function isPondered(id) {
     // Check if the id exists in the unlocks map
@@ -26,7 +30,7 @@ function canUnlock(unlockId) {
     // Check if we have enough resources
     var canBuy = true;
     for (let material in ponders[unlockKey].cost) {
-        if (getMaterial(material) < ponders[unlockKey].cost[material]) {
+        if (getMaterial(material, resources) < ponders[unlockKey].cost[material]) {
             // console.log("Cannot unlock " + unlockId);
             canBuy = false;
             break;
@@ -53,7 +57,7 @@ function generatePonderButtons(ponderObjects) {
             tab: 'ponder',
             unlock: ponderKey,
             requirement: () => {
-                return getMax('ponder') >= ponders[ponderKey].cost['ponder'] / 2
+                return getMax('ponder') >= ponders[ponderKey].cost['ponder'] / 2;
 
             },
             hide: () => isPondered(ponderKey)
@@ -66,6 +70,9 @@ function generatePonderButtons(ponderObjects) {
     // return generatedButtons;
 }
 
-// Call the function to generate and add ponder buttons to the 'buttons' map
-const ponderButtons = generatePonderButtons(ponders);
 
+module.exports = {
+    canUnlock,
+    isPondered,
+    generatePonderButtons
+};

@@ -2,8 +2,18 @@
 // DEPENDS ON: tools.js, jobs.js
 const { resources } = require("./json/resources");
 const { craftedResources } = require('./json/craftedResources');
-const { capitalizeFirst } = require('./main');
-const { getWorkers } = require('./jobs');
+const { buildings, getBoost } = require("./json/buildings");
+// @ts-ignore
+const { ponders } = require("./json/ponder");
+const { buttons } = require("./json/buttons");
+const { skills } = require('./json/skills');
+
+const { getWorkers, updateTotal, reassignJobsBasedOnResources } = require('./jobs');
+const { hasTool, getToolValueForResource } = require('./tools');
+const { getMaterial, updateSidebar, updateSkills, capitalizeFirst } = require("./helper");
+const { hasPerk } = require('./perks');
+const { isPondered } = require('./ponder');
+const { getCraftedResource } = require("./helper");
 console.log(capitalizeFirst);
 
 /**
@@ -12,6 +22,7 @@ console.log(capitalizeFirst);
  * @param {string} resource 
  * @returns 
  */
+// @ts-ignore
 function isResourceAffectedByJob(job, resource) {
     const skill = skills[job];
     if (!skill) return false;
@@ -42,33 +53,6 @@ function isResourceAffectedByJob(job, resource) {
 
 
 
-// Get function for materials
-/**
- * 
- * @param {string} material 
- * @returns 
- */
-function getMaterial(material, resources) {
-    if (resources.hasOwnProperty(material)) {
-        return resources[material].value;
-    } else {
-        // console.error("Invalid material:", material);  // For debugging
-        return getCraftedResource(material);
-
-    }
-}
-/**
- * 
- * @param {string} material 
- * @returns Max of material or Infinity
- */
-function getMax(material) {
-    if (resources.hasOwnProperty(material)) {
-        return resources[material].max;
-    } else {
-        return Infinity;
-    }
-}
 
 
 // Clones work at 1/4 the speed by default
@@ -225,7 +209,8 @@ function updateDisplayValue(material) {
         }
 
         if (resources[material].isGetting) {
-            const sidebarText = sidebarParent.querySelector('#resource-' + material);
+            const sidebarText = document.querySelector("#resources").querySelector('#resource-' + material);
+            // @ts-ignore
             if (sidebarText) sidebarText.style.fontWeight = 'bold';
 
         }
@@ -305,12 +290,14 @@ function increaseMaterial(material, num) {
 }
 
 
+// @ts-ignore
 function updateResourceIncreaseRates() {
     // const resources = ["clones", "sticks", "vines", "rocks", "fish", "wood", "ponder"];
     for (let resource in resources) {
         // console.log("increase of " + resource);
         const rate = calcIncrease(resource, 1000);
         var rateElement = document.getElementById(`${resource}IncreaseRate`);
+        // @ts-ignore
         if (rateElement) rateElement.textContent = rate;
     }
 }
@@ -324,11 +311,13 @@ function createCraftedResourceButton(config) {
     const button = document.createElement('button');
     button.className = config.class + ' tooltip';
     button.setAttribute('id', config.id);
+    // @ts-ignore
     button.requirement = config.requirement;
     const resourceName = Object.keys(craftedResources).find(key => craftedResources[key] === config);
     const cleanCount = parseFloat(craftedResources[resourceName].value).toFixed(0);
     button.innerHTML = `${config.text || capitalizeFirst(resourceName)}: <span id="${resourceName + "Value"}">${cleanCount}</span>`;
     // button.tooltipDesc = config.tooltipDesc; 
+    // @ts-ignore
     button.tab = 'experiment';
 
     return button;
@@ -351,6 +340,7 @@ function appendCraftedResourceButtons() {
     }
 }
 
+// @ts-ignore
 function appendCraftedResourceButton(name) {
 
     const button = createCraftedResourceButton(craftedResources[name]);
@@ -408,27 +398,8 @@ function getCraftedResourceKeyByConfig(config) {
     return null;
 }
 
-/**
- * 
- * @param {string} material 
- * @returns 
- */
-function getCraftedResource(material) {
-    // try {
-    material = material.toLowerCase();
-    // } catch (error) {
-    //     console.warn(material, error);
-    //     return null;
-    // }
-
-    if (craftedResources.hasOwnProperty(material)) {
-        return craftedResources[material].value;
-    } else {
-        throw ("Invalid crafted resource:" + material);  // For debugging
-    }
-}
-
 // Calculate the final number of crafted goods from bonuses
+// @ts-ignore
 function calcCraftBonus(resourceKey) {
     return 1;
 }
@@ -546,7 +517,6 @@ function craftResource(resourceKey) {
 module.exports = {
     getMaterial,
     increaseMaterial,
-    getMax,
     setMax,
     increaseMax,
     craftAllResources,
@@ -555,9 +525,11 @@ module.exports = {
     updateDisplayValue,
     getAffectedResources,
     isResource,
+    generateTooltipCost,
     getCraftedResourceKeyByConfig, getResourceConfigById, getCraftedResourceConfigById,
     calcSecondsRemaining,
     createResourceTag,
-    appendCraftedResourceButtons
+    appendCraftedResourceButtons,
+    calcIncrease
 
 };

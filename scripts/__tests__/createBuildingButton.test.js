@@ -2,17 +2,7 @@ const { JSDOM } = require('jsdom');
 const { createBuildingButton } = require('../buildings');
 const { getMaterial } = require('../resources');
 
-const dom = new JSDOM(`<!doctype html><html>
-<body>
-	<div id="sidebar">
-		<h4 id='resourcesWords' class='startVisible'>Resources</h4>
-		<div id="resources">
-</div></div>
-		<div id="productionTab" class="content active" data-target='productionTab'></div>
-</body>
-</html>`);
-global.document = dom.window.document;
-global.window = dom.window;
+
 
 describe("createBuildingButton", () => {
     let mockBuildings = {};

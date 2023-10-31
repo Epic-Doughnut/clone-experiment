@@ -1,14 +1,20 @@
 // DEPENDS ON: resources.js
-const { updateBuildingButtonCount } = require('./buildings');
-const { updateDisplayValue } = require('./resources');
+const { updateBuildingButtonCount, recalculateBuildingCost } = require('./buildings');
+const { updateDisplayValue, calcIncrease, updateEmojiDisplay } = require('./resources');
+const { addTool, getAllTools } = require('./tools');
+const { makeVisible, getAllStages, allVisibleButtons, getMaterial, updateSidebar, populateSkillsTable, getCraftedResource } = require('./helper');
+const { getAllPerks, selectCorrectPerkButton, addPerk, hasPerk } = require('./perks');
+const { isPondered } = require('./ponder');
+const { jobCounts, setConnections, getConnections, distributeWorkers, updateDisplay } = require('./jobs');
+const { total_time, setTotalTime, setAteFish, getAteFish, changeMessage: setMessage, getMessage } = require('./main');
+
 
 const { craftedResources } = require('./json/craftedResources');
 const { buildings } = require("./json/buildings");
 const { ponders } = require("./json/ponder");
 const { resources } = require('./json/resources');
 const { skills } = require("./json/skills");
-const { jobCounts } = require('./jobs');
-const { total_time } = require('./main');
+
 // import jobCounts;
 /* SAVING */
 // var save = {
@@ -64,12 +70,13 @@ function saveGame() {
         save.resources[item].max = resources[item].max;
     }
 
-    save.tools = playerTools;
-    save.stages = stages;
+    save.tools = getAllTools();
+    save.stages = getAllStages();
     save.jobs = jobCounts;
-    save.perks = myPerks;
+    save.perks = getAllPerks();
 
-    save.connections = Array.from(connections.entries());
+    // @ts-ignore
+    save.connections = Array.from(getConnections().entries());
 
     for (let u in ponders) {
         save.unlocks[u] = isPondered(u);
@@ -96,7 +103,7 @@ function saveGame() {
         return [textContent, spanText];
     }
 
-    const htmlString = message.innerHTML;
+    const htmlString = getMessage().innerHTML;
 
     save.message = extractTextFromHTML(htmlString); // [message, span]
 
@@ -128,7 +135,7 @@ function loadGame() {
     }
     if (typeof savegame.resources !== "undefined") {
         for (let i in savegame.resources) {
-            if (i.value === "undefined" || i === null) continue;
+            if (i.valueOf() === "undefined" || i === null) continue;
             resources[i].value = savegame.resources[i].value;
             resources[i].max = savegame.resources[i].max;
             console.log("Updating resources for " + i + " to " + savegame.resources[i].value, savegame.resources[i].max);
@@ -155,12 +162,15 @@ function loadGame() {
     if (typeof savegame.tools !== 'undefined') {
         // playerTools = savegame.tools;
         // Union the tool lists together
-        let union = [...new Set([...playerTools, ...savegame.tools])];
-        playerTools = union;
-
-        for (let t in playerTools) {
-            updateToolUI(playerTools[t]);
+        let union = [...new Set([...getAllTools(), ...savegame.tools])];
+        // playerTools = union;
+        for (let tool in union) {
+            addTool(tool);
         }
+
+        // for (let t in playerTools) {
+        //     updateToolUI(playerTools[t]);
+        // }
     }
 
     if (typeof savegame.stages !== 'undefined') {
@@ -193,7 +203,7 @@ function loadGame() {
             updateBuildingButtonCount(b, buildings[b].count);
 
             // Calculate the costs of all the buildings
-            recalculateBuildingCost(b);
+            recalculateBuildingCost(b, buildings, hasPerk);
 
             // Update the max as influenced by this building
             // TODO: Don't overwrite existing building boosts
@@ -207,23 +217,24 @@ function loadGame() {
     }
 
     // If we have a clone, then we ate fish
-    ateFish = resources.clones.max >= 1;
+    setAteFish(resources.clones.max >= 1);
     // console.log('atefish', ateFish);
-    if (ateFish) {
+    if (getAteFish()) {
         const fishButton = document.querySelector("#eatFish");
+        // @ts-ignore
         fishButton.style.display = 'none';
     }
     // Change the message to the latest one
     if (typeof savegame.message !== 'undefined') {
         // [full message, span]
-        changeMessage(savegame.message[0], savegame.message[1]);
+        setMessage(savegame.message[0], savegame.message[1]);
 
     }
 
 
     // Calculate resources earned while away
     if (typeof savegame.time !== 'undefined') {
-        total_time = savegame.time[total_time];
+        setTotalTime(savegame.time[total_time]);
         const time_difference = Date.now() - savegame.time['time_of_save'];
         for (let r in resources) {
             const inc = calcIncrease(r, time_difference);
@@ -242,10 +253,10 @@ function loadGame() {
     }
 
     if (typeof savegame.connections !== 'undefined') {
-        connections = new Map(savegame.connections);
+        setConnections(new Map(savegame.connections));
 
-        if (connections.size === 0) connections = new Map();
-        console.log(connections);
+        if (getConnections().size === 0) setConnections(new Map());
+        console.log(getConnections());
     }
 
 
@@ -256,8 +267,9 @@ function loadGame() {
     updateEmojiDisplay();
 
     if (typeof savegame.perks !== 'undefined') {
-        myPerks = savegame.perks;
-        for (let perk in myPerks) {
+        // myPerks = savegame.perks;
+        for (let perk in savegame.perks) {
+            addPerk(perk);
             selectCorrectPerkButton(perk);
         }
     }
@@ -270,4 +282,4 @@ function loadGame() {
 module.exports = {
     saveGame: saveGame,
     loadGame: loadGame
-}
+};

@@ -1,5 +1,13 @@
+// @ts-nocheck
 // DEPENDS ON: skills.js, ponder.js
 const { skills } = require('./json/skills');
+const { resources } = require('./json/resources');
+
+
+const { getMaterial } = require('./helper');
+const { updateEmojiDisplay } = require('./resources');
+const { isPondered } = require("./ponder");
+
 /* JOBS FUNCTIONALITY */
 
 
@@ -8,14 +16,7 @@ for (let skill in skills) {
     jobCounts[skill] = 0;
 }
 
-const jobRequiredPonders = {
-    'thinking': 'thinking',
-    'fishing': 'fishing',
-    'smithing': 'not-unlockable',
-    'farming': 'agriculture',
-    'combat': 'combat',
-    'hunting': 'hunting'
-};
+
 
 const jobsTab = document.getElementById('jobsTab');
 
@@ -49,7 +50,7 @@ Object.keys(skills).forEach(skill => {
 document.querySelectorAll('.btn-increment').forEach(btn => {
     btn.addEventListener('click', function () {
         const jobType = this.closest('.job-button').getAttribute('data-job');
-        if (getMaterial('clones') > getTotalJobs()) {
+        if (getMaterial('clones', resources) > getTotalJobs()) {
             jobCounts[jobType]++;
             // increaseMaterial('clones', -1);
         }
@@ -146,7 +147,7 @@ function updateDisplay(jobType) {
 
 function updateTotal() {
     const totalElement = document.querySelector('#jobs-total');
-    totalElement.textContent = "Assigned Clones: " + getTotalJobs() + " / " + getMaterial('clones');
+    totalElement.textContent = "Assigned Clones: " + getTotalJobs() + " / " + getMaterial('clones', resources);
 }
 
 
@@ -154,9 +155,23 @@ let startButton = null;
 let connections = new Map();  // Map to store connections
 let management = { 'connections': connections, 'mins': {}, 'maxes': {}, 'triggers': {} };
 let canvas = document.getElementById('lineCanvas');
+
+function setConnections(newConnections) {
+    connections = newConnections;
+}
+
+function getConnections() {
+    return connections;
+}
+
+// if (canvas) {
+// @ts-ignore
 let ctx = canvas.getContext('2d');
+// @ts-ignore
 canvas.width = window.innerWidth;
+// @ts-ignore
 canvas.height = window.innerHeight;
+// }
 
 document.addEventListener('DOMContentLoaded', function () {
     let buttons = document.querySelectorAll('.job-button');
@@ -338,5 +353,11 @@ module.exports = {
     reassignJobsBasedOnResources,
     switchJob,
     drawAllConnections,
-    getWorkers
-}
+    getWorkers,
+    updateTotal,
+    setConnections,
+    getConnections,
+    distributeWorkers,
+    updateDisplay,
+    jobCounts
+};

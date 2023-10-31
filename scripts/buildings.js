@@ -1,8 +1,10 @@
-// DEPENDS ON resources.js
 const { buildings } = require('./json/buildings');
 const { buttons } = require('./json/buttons');
-const { getMaterial } = require('./resources');
-const { capitalizeFirst } = require('./main');
+const { resources } = require('./json/resources');
+const { increaseMaterial, increaseMax } = require('./resources');
+const { capitalizeFirst, getMaterial, updateSidebar } = require('./helper');
+const { updateTotal } = require('./jobs');
+const { hasPerk } = require('./perks');
 /* BUILDINGS */
 
 function getBuildingCount(buildingName) {
@@ -20,7 +22,7 @@ function getBoost(buildingName, resource) {
 
 /**
  * 
- * @param {string} building 
+ * @param {Object} building 
  * @returns 
  */
 function generateEffectString(building) {
@@ -34,13 +36,9 @@ function generateEffectString(building) {
     }
 
     for (let [resource, boost] of Object.entries(building.boost)) {
-        // for (let [key, value] of Object.entries(boost)) {
-        // if (key === "multiplier") {
         let percentageBoost = Math.round((boost - 1) * 100);
         effectParts.push(`+${percentageBoost}% ${resource} production`);
-        // }
-        // Similarly, add more conditions here for new types of boosts
-        // }
+
     }
 
     return effectParts.join(', ');
@@ -67,11 +65,14 @@ function recalculateBuildingCost(buildingKey, buildings, hasPerk) {
     // Update tooltip cost
     const myButton = document.querySelector('#' + buildingKey);
     var newText = generateBuildingTooltipCost(building.cost);
-    myButton.setAttribute('data-tooltip-cost', newText);
-    // map(([material, amount]) => `${amount.toFixed(2)} ${material}`).join(', ');
-    const effectString = generateEffectString(building);
-    myButton.setAttribute('data-tooltip-effect', effectString);
-    // console.log(effectString);
+    if (myButton) {
+        myButton.setAttribute('data-tooltip-cost', newText);
+        const effectString = generateEffectString(building);
+        myButton.setAttribute('data-tooltip-effect', effectString);
+
+    }
+    else { throw "Button not found for " + buildingKey; }
+
 }
 
 
@@ -79,6 +80,10 @@ function generateBuildingTooltipCost(cost) {
     return Object.entries(cost).map(([material, amount]) => `${amount.toFixed(2)} ${material}`).join('\n');
 }
 
+
+// function createBuildingButton(buildingKey) {
+//     return createBuildingButton(buildingKey, buildings);
+// }
 
 function createBuildingButton(buildingKey, buildings) {
     const building = buildings[buildingKey];
@@ -195,6 +200,7 @@ function buyMaxBuildings(buildingName) {
 }
 
 function updateBuildingButtonCount(buildingName, buildingCount) {
+    // @ts-ignore
     document.getElementById(`${buildingName}`).textContent = `${capitalizeFirst(buildingName).split('_').join(' ')} (${buildingCount})`;
 
 }
@@ -202,24 +208,26 @@ function updateBuildingButtonCount(buildingName, buildingCount) {
 
 
 
-function doubleStorageEffectsIfPassed() {
-    if (passedStage("doubleStorage1")) {
-        for (let buildingKey in buildings) {
-            let building = buildings[buildingKey];
+// function doubleStorageEffectsIfPassed() {
+//     if (passedStage("doubleStorage1")) {
+//         for (let buildingKey in buildings) {
+//             let building = buildings[buildingKey];
 
-            if (building.effects) {
-                for (let material in building.effects) {
-                    building.effects[material].max *= 2;
-                }
-            }
-        }
-    }
-}
+//             if (building.effects) {
+//                 for (let material in building.effects) {
+//                     building.effects[material].max *= 2;
+//                 }
+//             }
+//         }
+//     }
+// }
 
 
 module.exports = {
     recalculateBuildingCost,
     generateBuildingTooltipCost,
     createBuildingButton,
-    updateBuildingButtonCount
+    updateBuildingButtonCount,
+    getBoost,
+    getBuildingCount
 };

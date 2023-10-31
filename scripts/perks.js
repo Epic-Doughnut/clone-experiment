@@ -1,3 +1,6 @@
+const { buildings } = require('./json/buildings');
+const { recalculateBuildingCost } = require('./buildings');
+const { perks } = require('./json/perks');
 let myPerks = [];
 
 /**
@@ -9,6 +12,9 @@ function hasPerk(perkName) {
     return myPerks.includes(perkName);
 }
 
+function getAllPerks() {
+    return myPerks;
+}
 /**
  * 
  * @param {string} perkName Perk to add
@@ -20,7 +26,7 @@ function addPerk(perkName) {
     switch (perkName) {
         case 'Architect':
             for (let b in buildings) {
-                recalculateBuildingCost(b);
+                recalculateBuildingCost(b, buildings, hasPerk);
 
             }
             break;
@@ -31,7 +37,7 @@ function addPerk(perkName) {
 
 /**
  * 
- * @param {int} tierNum 
+ * @param {Number} tierNum 
  */
 function getPerkFromTier(tierNum) {
     for (let perk in perks['tier' + tierNum]) {
@@ -58,7 +64,7 @@ function selectAbility(abilityName) {
 }
 /**
  * 
- * @param {int} tierNum 
+ * @param {string} abilityName 
  */
 function selectCorrectPerkButton(abilityName) {
     // Disable all buttons
@@ -80,5 +86,6 @@ module.exports = {
     addPerk,
     selectCorrectPerkButton,
     selectAbility,
-    getPerkFromTier
-}
+    getPerkFromTier,
+    getAllPerks
+};

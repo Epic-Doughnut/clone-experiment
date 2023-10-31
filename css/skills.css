@@ -24,4 +24,5 @@ body.dark-mode #skillsTable {
 
 .progressBar {
     transition: width 0.3s linear;
+    background-color: #228B22;
 }

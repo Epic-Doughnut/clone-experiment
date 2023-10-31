@@ -345,9 +345,22 @@ const buildings = {
         "ratio": 1.2,
         tooltipDesc: "A writer's block is no match for armor-piercing pencils!"
     }
+};
+
+function getBuildingCount(buildingName) {
+    return buildings[buildingName].count;
 }
+function getBoost(buildingName, resource) {
+    const building = buildings[buildingName];
 
-
+    if (building && building.boost) {
+        if (building.boost[resource]) return building.boost[resource];
+        if (building.boost['all']) return building.boost['all'];
+    }
+    return null;
+}
 module.exports = {
-    buildings: buildings
+    buildings: buildings,
+    getBuildingCount,
+    getBoost
 };

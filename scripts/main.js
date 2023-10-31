@@ -1,34 +1,32 @@
-const { buttons } = require('./json/buttons');
+
 const { craftedResources } = require('./json/craftedResources');
 const { buildings } = require("./json/buildings");
 const { ponders } = require("./json/ponder");
+const { buttons } = require("./json/buttons");
+const { resources } = require('./json/resources');
 
 const { saveGame, loadGame } = require("./saving");
-const { getMaterial, createResourceTag } = require('./resources');
+const { createResourceTag, generateTooltipCost } = require('./resources');
 const { recalculateBuildingCost } = require('./buildings');
 const { hasPerk } = require('./perks');
+const { capitalizeFirst, passedStage, makeVisible, getMaterial, updateSidebar, updateButtonVisibility, getCraftedResource } = require('./helper');
+
+const { canUnlock, isPondered, generatePonderButtons } = require("./ponder");
+const { hasTool, addTool } = require('./tools');
+
 /* MY CODE STARTS HERE */
 
 
 
 // Initialize values
 // let skilled = false;
-let hasGeneratedSkillTable = false;
-
-let allVisibleButtons = new Set(['gatherSticks']);
-
-let stages = [];
 
 
-
-/**
- * 
- * @param {string} str stringExample
- * @returns StringExample
- */
-function capitalizeFirst(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
+function setTotalTime(time) {
+    total_time = time;
 }
+
+
 
 
 
@@ -47,7 +45,9 @@ function stopAllGathering() {
         if (rButton) rButton.textContent = resources[key].defaultText;
 
         // Set sidebar to not bold
+        // @ts-ignore
         const sidebarText = sidebarParent.querySelector('#resource-' + key);
+        // @ts-ignore
         if (sidebarText) sidebarText.style.fontWeight = 'normal';
 
     }
@@ -59,19 +59,25 @@ function toggleResource(resourceKey) {
 
     // emojiDiv.textContent = '𓆮';
     const sidebarParent = document.querySelector("#resources");
+    // @ts-ignore
     const sidebarText = sidebarParent.querySelector('#resource-' + resourceKey);
     const resourceButton = document.querySelector('#gather' + resourceKey.charAt(0).toUpperCase() + resourceKey.slice(1));
 
     if (!resource.isGetting) {
         stopAllGathering(); // Stop all gathering actions
         resource.isGetting = true;
+        // @ts-ignore
         resourceButton.textContent = resource.activeText;
+        // @ts-ignore
         if (sidebarText) sidebarText.style.fontWeight = 'bold';
+        // @ts-ignore
         emojiGatherDiv.textContent = resource.emoji;
         console.log(resource.emoji);
     } else {
         resource.isGetting = false;
+        // @ts-ignore
         resourceButton.textContent = resource.defaultText;
+        // @ts-ignore
         if (sidebarText) sidebarText.style.fontWeight = 'normal';
     }
 }
@@ -118,6 +124,7 @@ function generateButtons() {
 
     const tabsContainer = document.getElementById('tabs');
     const productionContainer = document.getElementById('productionTab');
+    // @ts-ignore
     const experimentContainer = document.getElementById('experimentTab').querySelector('.button-columns');
     const ponderContainer = document.getElementById('ponderTab');
     // const jobContainer = document.getElementById('jobsTab');
@@ -132,6 +139,7 @@ function generateButtons() {
     let productionColumnIndex = 0;
     let experimentColumnIndex = 0;
     let ponderColumnIndex = 0;
+    // @ts-ignore
     let jobColumnIndex = 0;
 
     // Add counters for other tabs as needed
@@ -178,6 +186,7 @@ function generateButtons() {
             experimentColumns[experimentColumnIndex].appendChild(buttonElement);
             experimentColumnIndex = (experimentColumnIndex + 1) % 3;
         } else if (btn.tab === 'tabs') {
+            // @ts-ignore
             tabsContainer.appendChild(buttonElement);
         } else if (btn.tab === 'ponder') {
             ponderColumns[ponderColumnIndex].appendChild(buttonElement);
@@ -208,211 +217,6 @@ function generateButtons() {
     }
 }
 
-
-
-// Attach event listeners for gathering
-// for (let key in resources) {
-//     let resource = resources[key];
-//     let button = document.getElementById(resource.id);
-//     if (button) {
-//         button.addEventListener('click', () => toggleResource(key));
-//         resource.button = button; // Store the button reference in the object
-//     }
-
-//     if (craftedResources[key]) {
-//         resource.tooltipCost = generateTooltipCost(craftedResources[key].requires);
-//     }
-// }
-
-// Automatically add event listeners
-// for (let key in craftedResources) {
-//     let resource = craftedResources[key];
-//     let button = document.getElementById(resource.id);
-//     if (button) {
-//         button.addEventListener('click', () => craftResource(key));
-//     }
-// }
-
-
-
-function passedStage(stage) {
-    return stages.includes(stage);
-}
-
-// Make everything with the class "stage" visible
-function makeVisible(stage) {
-    if (!passedStage(stage)) {
-        stages.push(stage);
-    }
-    const stageElements = document.querySelectorAll("p." + stage);
-    stageElements.forEach(element => element.classList.add('visible'));
-    stageElements.forEach(element => element.style.display = '');
-    updateButtonVisibility();
-}
-
-function updateButtonVisibility() {
-    const selectButtons = document.querySelectorAll('button'); // Adjust the selector accordingly
-
-    selectButtons.forEach(button => {
-        const buttonConfig = buttons[button.id]; /* get the button's configuration using its data attribute or ID, etc. */;
-        if (!buttonConfig) return;
-        // console.log(buttonConfig.data_building, buttonConfig.requirement);
-        // Reset all states first
-        button.classList.remove('hidden', 'purchasable', 'button-disabled');
-
-        var state = 'hidden';
-
-        if (button.id && allVisibleButtons.has(button.id)) state = 'button-disabled';
-
-        // If requirement is met, it should be visible
-        try {
-            if (buttonConfig.requirement()) {
-                state = 'button-disabled';
-                // always purchasable gather buttons
-                if (buttonConfig.tab && !buttonConfig.data_building) {
-                    // console.log(buttonConfig);
-                    if (buttonConfig.tab === 'production') state = 'purchasable';
-                }
-
-                // ponder button
-                if (button.id && button.id === 'gatherPonder') {
-                    state = 'purchasable';
-                }
-
-                // ponder unlocks
-                if (buttonConfig.tab && buttonConfig.tab === 'ponder') {
-                    // console.log(button.classList);
-                    if (button.id && button.classList.contains('unlock')) {
-                        // console.log(button);
-                        if (canUnlock(button.id)) state = 'purchasable';
-                        // If a ponder button is unlocked, hide it
-                        if (isPondered(button.getAttribute('unlock'))) state = 'hidden';
-                        // console.log(button, state);
-                    }
-                }
-
-                // tab buttons always either hidden or enabled
-                if (buttonConfig.tab && buttonConfig.tab === 'tabs') {
-                    state = 'visible';
-                }
-            }
-        } catch (err) {
-            console.warn('Error with checking requirement of button: ', buttonConfig, err);
-        }
-
-        if (buttonConfig.id && buttonConfig.id.slice(0, 5) === 'craft') {
-            // never hide this button once its been unlocked
-            if (buttonConfig.craftedOnce) state = 'button-disabled';
-
-
-            // If we can afford this craft, it should be purchasable
-            var crafted = getCraftedResourceConfigById(buttonConfig.id);
-            // console.log(crafted);
-            if (crafted.value > 0) state = 'button-disabled';
-
-            const key = getCraftedResourceKeyByConfig(crafted);
-            // console.log(key);
-            if (canCraft(key)) state = 'purchasable';
-        }
-
-        // If we can afford this building, it should be purchasable
-        // console.log(buttonConfig);
-        if (buttonConfig.data_building) {
-            // If we've already purchased a building, it should be visible
-            state = getBuildingCount(buttonConfig.data_building) ? 'button-disabled' : state;
-            // Find the building cost
-            // console.log(buttonConfig);
-            state = canBuyBuilding(buttonConfig.data_building) ? 'purchasable' : state;
-        }
-
-        // If hidden is met, it should be hidden
-        if (buttonConfig.hide) {
-            state = buttonConfig.hide() ? 'hidden' : state;
-        }
-
-
-
-
-
-        // Add the current state
-        if (state !== '') button.classList.add(state);
-
-        // If the state is not-purchasable, disable the button
-        // button.disabled = state === 'button-disabled';
-
-        // Update the tooltip for this button if its active
-        // if (button === currentHoverButton) updateTooltip(button);
-
-        // If the state is hidden, set the button's display to none
-        if (state === 'hidden') {
-            // console.log('hiding',button);
-            button.style.display = 'none';
-        } else {
-            // console.log('all visible ', button.id);
-            allVisibleButtons.add(button.id);
-            button.style.display = ''; // This will revert it back to its original display state or default (e.g., 'block' or 'inline-block')
-        }
-    });
-
-    document.querySelectorAll('.job-button').forEach(button => {
-        const job = button.getAttribute('data-job');
-        button.classList.remove('hidden', 'purchasable', 'button-disabled');
-
-        var state = 'purchasable';
-        const reqPonder = jobRequiredPonders[job];
-        if (reqPonder === null || reqPonder === undefined) state = 'purchasable';
-        else if (isPondered(reqPonder)) state = 'purchasable';
-        else if (reqPonder === 'not-unlockable') state = 'hidden';
-        else state = 'button-disabled';
-
-
-        // console.log(job, button, reqPonder, state);
-        // button.classList.
-        if (state === 'hidden') {
-            // console.log('hiding',button);
-            button.style.display = 'none';
-        } else {
-            // console.log('all visible ', button.id);
-            allVisibleButtons.add(button.id);
-            button.classList.add(state);
-            button.style.display = ''; // This will revert it back to its original display state or default (e.g., 'block' or 'inline-block')
-        }
-    });
-}
-
-
-
-
-// for (const resourceName in resources) {
-//     if (resources.hasOwnProperty(resourceName)) {
-//         const resourceDisplayName = capitalizeFirst(resourceName).split('_').join(' ');
-
-//         const resourceElement = document.createElement('p');
-//         resourceElement.className = `${resourceName} resource`;
-//         resourceElement.id = `resource-${resourceName}`;
-
-//         const resourceNameSpan = document.createElement('span');
-//         resourceNameSpan.className = 'resourceName';
-//         resourceNameSpan.textContent = `${resourceDisplayName}:`;
-
-//         const resourceValueSpan = document.createElement('span');
-//         resourceValueSpan.className = 'resourceValue';
-//         resourceValueSpan.id = `${resourceName}Value`;
-//         resourceValueSpan.textContent = '0';
-
-//         const resourceRateSpan = document.createElement('span');
-//         resourceRateSpan.className = 'resourceRate';
-//         resourceRateSpan.innerHTML = `(+
-//             <span id="${resourceName}IncreaseRate">0</span>/s)`;
-
-//         resourceElement.appendChild(resourceNameSpan);
-//         resourceElement.appendChild(resourceValueSpan);
-//         resourceElement.appendChild(resourceRateSpan);
-
-//         resourcesContainer.appendChild(resourceElement);
-//     }
-// }
-
 const toolsToStages = {
     'SharpRocks': 'craftRocks',
     'Spear': 'fishing',
@@ -424,24 +228,24 @@ const toolsToStages = {
 // Update visibility of assets
 const visibilityRules = [
     {
-        condition: () => getMaterial("sticks") >= 1,
+        condition: () => getMaterial("sticks", resources) >= 1,
         action: () => makeVisible("stick")
     },
     {
-        condition: () => getMaterial('sticks') >= 10,
+        condition: () => getMaterial('sticks', resources) >= 10,
         action: () => makeVisible('vines')
     },
     {
-        condition: () => getMaterial('vines') >= 10,
+        condition: () => getMaterial('vines', resources) >= 10,
         action: () => makeVisible('rocks')
     },
     {
-        condition: () => getMaterial("rocks") >= 1,
+        condition: () => getMaterial("rocks", resources) >= 1,
         action: () => { makeVisible("tab-button"); makeVisible('craftRocks'); }
     },
 
     {
-        condition: () => getMaterial("fish") >= 1,
+        condition: () => getMaterial("fish", resources) >= 1,
         action: () => makeVisible('fishing')
     },
 
@@ -455,9 +259,11 @@ const visibilityRules = [
     },
 
     {
-        condition: () => getMaterial('fish') >= 5 && !ateFish,
+        condition: () => getMaterial('fish', resources) >= 5 && !ateFish,
         action: () => {
+            // @ts-ignore
             document.getElementById('eatFish').style.display = 'block';
+            // @ts-ignore
             document.getElementById('eatFish').classList.add('visible');
         }
     },
@@ -484,13 +290,16 @@ function render() {
     });
 
     for (let tool in toolsToStages) {
+        // @ts-ignore
         if (!hasTool(tool) && getCraftedResource(tool) > 0) {
+            // @ts-ignore
             addTool(tool);
             makeVisible(toolsToStages[tool]);
         }
     }
 
     try {
+        // @ts-ignore
         updateButtonVisibility();
         if (currentHoverButton !== null) updateTooltip(currentHoverButton);
     } catch (err) {
@@ -500,97 +309,7 @@ function render() {
 }
 
 
-const levelUpMessage = document.getElementById('levelUpMessage');
 
-function updateSkills(resource, num) {
-    num = Math.abs(num);
-    if (isPondered('fasterSkills')) num *= 1.05;
-    for (let skill in skills) {
-        if (skills[skill].affectedResources.includes(resource)) {
-            skills[skill].exp += num / Math.pow(1.1, skills[skill].level);
-            // console.log("Updating skill:" + skill + " to " + skills[skill].exp)
-
-            if (skills[skill].exp >= 100) {
-                skills[skill].level += 1;
-                skills[skill].exp = 0;
-                // console.log("Level Up! " + skill + skills[skill].level);
-                levelUpMessage.textContent = `Level up! ${skill} → ${skills[skill].level}`;
-                levelUpMessage.classList.remove('hidden');
-                // Hide the message after 3 seconds
-                setTimeout(() => {
-                    // levelUpMessage.style.display = 'none';
-                    levelUpMessage.classList.add('hidden');
-                }, 3000); // 3000 milliseconds (3 seconds)
-            }
-        }
-    }
-    if (passedStage('skillsTable')) {
-        populateSkillsTable();
-    }
-}
-
-
-function populateSkillsTable() {
-    const table = document.getElementById('skillsTable');
-
-    // If the table is empty, create the rows and progress bars
-    if (!hasGeneratedSkillTable) {
-        console.log("Generating table for the first time");
-        hasGeneratedSkillTable = true;
-        for (let skill in skills) {
-            let tr = document.createElement('tr');
-            tr.id = 'tr-' + skill;
-            let tdProgress = document.createElement('td');
-            tdProgress.style.position = 'relative';
-
-            let progressBar = document.createElement('div');
-            progressBar.setAttribute('class', 'progressBar');
-            if (isDark) {
-                progressBar.style.backgroundColor = '#228B22';
-            }
-            else {
-                progressBar.style.backgroundColor = '#50C878';
-            }
-            progressBar.style.height = '20px';
-            progressBar.setAttribute('data-skill', skill); // Assign a data attribute for identification
-
-            let skillText = document.createElement('span');
-
-            skillText.textContent = '[' + skills[skill].level + ']   ' + skill;
-            skillText.setAttribute('id', 'level-' + skill);
-            skillText.style.position = 'absolute';
-            skillText.style.left = '10px';
-            skillText.style.top = '50%';
-            skillText.style.transform = 'translateY(-50%)';
-
-            if (skills[skill].exp == 0 && skills[skill].level == 0) {
-                tr.style.display = 'none';
-            }
-            tdProgress.appendChild(progressBar);
-            tdProgress.appendChild(skillText);
-            tr.appendChild(tdProgress);
-
-            table.appendChild(tr);
-
-        }
-    }
-
-    else {
-        // Display everything we can
-        for (let skill in skills) {
-            if (skills[skill].exp > 0 || skills[skill].level > 0) {
-                document.querySelector('#tr-' + skill).style.display = '';
-            }
-            let progressBar = document.querySelector(`.progressBar[data-skill="${skill}"]`);
-            if (progressBar) {
-                progressBar.style.width = skills[skill].exp + '%';
-                let skillName = document.querySelector("#level-" + skill);
-                skillName.textContent = '[' + skills[skill].level + ']   ' + skill;
-            }
-        }
-    }
-
-}
 
 
 
@@ -613,6 +332,7 @@ function showTab(tabName) {
 
     // Show the clicked tab's main container div and make the tab button active
     let activeContent = document.getElementById(tabName);
+    // @ts-ignore
     activeContent.classList.add("active");
 
     // Get the clicked tab button and make it active
@@ -654,6 +374,7 @@ function showTab(tabName) {
     // }
 
     if (tabName === 'jobsTab') {
+        // @ts-ignore
         drawAllConnections();
     }
 }
@@ -694,25 +415,32 @@ document.addEventListener('keydown', function (event) {
 const darkModeToggle = document.getElementById("darkModeToggle");
 const body = document.body;
 body.classList.toggle('dark-mode');
+// @ts-ignore
 darkModeToggle.classList.toggle('dark');
 let isDark = true;
 
 
 /* CUTSCENES */
 
+// @ts-ignore
 function eatFish() {
+    // @ts-ignore
     if (!ateFish && getMaterial('fish') >= 1) {
         // eat a fish and blackout
+        // @ts-ignore
         increaseMaterial('fish', -1);
         // Call this function to start the sequence
         fadeToBlack();
         // Hide fish button
         ateFish = true;
         const fishButton = document.querySelector("#eatFish");
+        // @ts-ignore
         fishButton.display = 'none';
         setTimeout(() => {
             changeMessage("You are with yourself in a forest.", 'with yourself');
+            // @ts-ignore
             increaseMax('clones', 1);
+            // @ts-ignore
             increaseMaterial('clones', 1);
         }, 1000); // delay of 1s
 
@@ -725,19 +453,24 @@ function fadeToBlack() {
     const overlayText = document.getElementById('overlay-text');
     const overlayButton = document.getElementById('overlay-button');
 
+    // @ts-ignore
     overlay.style.display = 'flex';
 
     setTimeout(() => {
+        // @ts-ignore
         overlayText.style.opacity = '1';
     }, 2000);
 
     setTimeout(() => {
+        // @ts-ignore
         overlayButton.style.display = 'block';
     }, 5000);
 }
 
 const overlay = document.getElementById('overlay');
+// @ts-ignore
 function hideOverlay() {
+    // @ts-ignore
     overlay.style.display = 'none';
 }
 
@@ -746,9 +479,12 @@ function hideOverlay() {
 const messageElement = document.getElementById('message');
 function changeMessage(newMessage, cloneWords) {
     const modifiedMessage = newMessage.replace(cloneWords, `<span id="alone" title="You feel peckish for some seafood">${cloneWords}</span>`);
+    // @ts-ignore
     messageElement.innerHTML = modifiedMessage;
 }
-
+function getMessage() {
+    return messageElement;
+}
 
 /* GAME LOOP */
 
@@ -792,8 +528,10 @@ function update(delta_time, total_time) {
 
     for (let key in resources) {
         // console.log("updating " + key);
+        // @ts-ignore
         increaseMaterial(key, calcIncrease(key, delta_time));
     }
+    // @ts-ignore
     updateResourceIncreaseRates();
 
     render();
@@ -820,15 +558,23 @@ function update(delta_time, total_time) {
 //     document.getElementById("resourceForm").style.display = "block";
 // });
 
+// @ts-ignore
 function addResource() {
+    // @ts-ignore
     const resourceName = document.getElementById("resourceName").value;
+    // @ts-ignore
     const activeText = document.getElementById("resourceActiveText").value;
+    // @ts-ignore
     const defaultText = document.getElementById("resourceDefaultText").value;
 
+    // @ts-ignore
     const btnText = document.getElementById("btnText").value;
+    // @ts-ignore
     const btnTooltipDesc = document.getElementById("btnTooltipDesc").value;
+    // @ts-ignore
     const btnTooltipCost = document.getElementById("btnTooltipCost").value;
 
+    // @ts-ignore
     var newResource = myResources[resourceName] = {
         value: 0,
         id: "gather" + resourceName,
@@ -852,6 +598,7 @@ function addResource() {
     console.log(newButton);
 
     // Hide form once resource is added
+    // @ts-ignore
     document.getElementById("resourceForm").style.display = "none";
 
     // Optionally, you can update the UI to show the added resource
@@ -868,57 +615,9 @@ function updateUI(resourceName) {
 }
 
 
-function abbreviateNumber(num) {
-    function format(value, unit) {
-        if (value < 10) return roundToDecimals(value, 3) + unit;
-        if (value < 100) return roundToDecimals(value, 2) + unit;
-        if (value < 1000) return roundToDecimals(value, 1) + unit;
-        return Math.round(value) + unit;
-    }
-
-    function roundToDecimals(number, decimals) {
-        const factor = Math.pow(10, decimals);
-        return (Math.round(number * factor) / factor).toFixed(decimals);
-    }
-
-    if (num < 1e3) return roundToDecimals(num, 2); // If less than 1,000
-    if (num < 1e6) return format(num / 1e3, 'K'); // Thousands
-    if (num < 1e9) return format(num / 1e6, 'M'); // Millions
-    if (num < 1e12) return format(num / 1e9, 'B'); // Billions
-    // Add more cases for larger numbers if needed
-    return num.toString();
-}
 
 
 
-function updateSidebar() {
-    for (const [resourceName, resourceConfig] of Object.entries(resources)) {
-
-        const parentElement = document.getElementById('resource-' + resourceName);
-        if (!parentElement) return;
-        // console.log(parentElement);
-        var shouldHide = true;
-        for (let c in parentElement.classList) {
-            // console.log('has passed', resourceName, passedStage(c));
-            if (passedStage(c)) { shouldHide = false; console.log('dont hide', resourceName, c); }
-        }
-        if (resourceConfig.value > 0) { shouldHide = false; resources[resourceName].isVisible = true; }
-        if (resourceConfig.isVisible) { shouldHide = false; }
-
-        if (shouldHide) {
-            parentElement.style.display = 'none';
-        }
-        const displayElem = document.getElementById(resourceName + 'Value');
-        if (displayElem) {
-            // console.log(abbreviateNumber(resourceData));
-            var color = '#fff';
-            if (resourceConfig.value === getMax(resourceName)) color = '#fcc';
-            else if (resourceConfig.value / getMax(resourceName) > .6) color = '#eeb';
-
-            displayElem.innerHTML = `<span style="color:${color}">${abbreviateNumber(resourceConfig.value)} / ${abbreviateNumber(getMax(resourceName))} </span>`;
-        }
-    }
-}
 
 
 
@@ -942,10 +641,13 @@ function showTooltip(target, desc, effect, cost) {
             for (let material in cost) {
                 // const material = req;
                 const amount = cost[material];
+                // @ts-ignore
                 const hasEnough = getMaterial(material) >= amount;/* Your logic to check if there's enough of the material */;
                 var colorClass = hasEnough ? 'enough' : 'not-enough';
+                // @ts-ignore
                 if (getMax(material) < amount) colorClass = 'exceeds-max';
                 str += `<span class="tooltip-${material} ${colorClass}">${amount.toFixed(0)} ${material}</span>`;
+                // @ts-ignore
                 const secondsRemaining = calcSecondsRemaining(material, amount);
                 // console.log(secondsRemaining);
                 if (secondsRemaining > 0 && colorClass != 'exceeds-max') { str += `<span class="time-remaining">(${(secondsRemaining).toFixed(0)} seconds)</span>`; }
@@ -960,13 +662,18 @@ function showTooltip(target, desc, effect, cost) {
         }
     }
     // console.log(target, content);
+    // @ts-ignore
     tooltip.innerHTML = content;
+    // @ts-ignore
     tooltip.style.left = (target.getBoundingClientRect().right + 5) + 'px';
+    // @ts-ignore
     tooltip.style.top = (target.getBoundingClientRect().top - tooltip.offsetHeight / 2) + 'px';
+    // @ts-ignore
     tooltip.style.display = 'block';
 }
 
 function hideTooltip() {
+    // @ts-ignore
     tooltip.style.display = 'none';
 }
 
@@ -974,6 +681,7 @@ function updateTooltip(button) {
     const desc = button.getAttribute('data-tooltip-desc') || button.getAttribute('tooltipDesc');
     const effect = button.getAttribute('data-tooltip-effect');
     // const cost = button.getAttribute('data-tooltip-cost');
+    // @ts-ignore
     const config = getResourceConfigById(button.id) || getCraftedResourceConfigById(button.id) || buildings[button.getAttribute('data_building')] || ponders[button.getAttribute('unlock')];
     // console.log(config);
     const cost = button.getAttribute('tooltipCost') || config.cost;
@@ -983,13 +691,15 @@ function updateTooltip(button) {
 
 generateButtons(); // Call this once on page load or game initialization
 // After all has been loaded
+// @ts-ignore
 document.addEventListener('DOMContentLoaded', (event) => {
 
     loadGame();
     updateSidebar();
-
+    generatePonderButtons(ponders);
     showTab('productionTab');
     createResourceTag('sticks');
+    // @ts-ignore
     appendCraftedResourceButtons();
 
     function getRKeyFromID(id) {
@@ -1007,6 +717,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         return '';
     }
     document.addEventListener("click", (event) => {
+        // @ts-ignore
         if (event.target.matches("button")) {
             // one of our buttons was clicked
             const button = event.target;
@@ -1016,21 +727,28 @@ document.addEventListener('DOMContentLoaded', (event) => {
             // if (button.classList.contains('tooltip')) updateTooltip(button);
             // updateTooltip(button);
 
+            // @ts-ignore
             if (button.getAttribute('data_building') && button.getAttribute('data_building') !== 'undefined' && button.classList.contains('purchasable')) {
+                // @ts-ignore
                 var building = button.getAttribute('data_building');
                 if (event.shiftKey) {
+                    // @ts-ignore
                     buyMaxBuildings(building);
                 } else {
+                    // @ts-ignore
                     buyBuilding(building);
                 }
             }
+            // @ts-ignore
             if (button.classList.contains('unlock')) {
+                // @ts-ignore
                 const unlockAttr = button.getAttribute('unlock');
                 // console.log('click');
                 console.log(unlockAttr);
                 if (ponders[unlockAttr]) {
                     var canUnlock = true;
                     for (let material in ponders[unlockAttr].cost) {
+                        // @ts-ignore
                         if (getMaterial(material) < ponders[unlockAttr].cost[material]) {
                             console.log("Cannot unlock " + unlockAttr);
                             canUnlock = false;
@@ -1040,12 +758,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
                     if (canUnlock) {
                         for (let material in ponders[unlockAttr].cost) {
+                            // @ts-ignore
                             increaseMaterial(material, -ponders[unlockAttr].cost[material]);
                         }
                         ponders[unlockAttr].isPondered = true;
                         makeVisible(unlockAttr);
                         // document.querySelector("#" + resourceKey + "Value").textContent = craftedResources[resourceKey].value.toFixed(2);
                         // make this button disappear
+                        // @ts-ignore
                         button.display = 'none';
 
                         console.log("Unlocking " + unlockAttr);
@@ -1054,20 +774,28 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
             }
 
+            // @ts-ignore
             if (button.id !== 'undefined') {
                 console.log(button);
+                // @ts-ignore
                 if (button.id.slice(0, 6) === "gather") toggleResource(getRKeyFromID(button.id));
 
+                // @ts-ignore
                 if (button.id.slice(0, 5) === 'craft')
+                    // @ts-ignore
                     if (event.shiftKey) craftAllResources(getCRKeyFromID(button.id));
+                    // @ts-ignore
                     else craftResource(getCRKeyFromID(button.id));
 
 
+                // @ts-ignore
                 if (button.id === 'darkModeToggle') {
                     body.classList.toggle('dark-mode');
+                    // @ts-ignore
                     darkModeToggle.classList.toggle('dark');
                     isDark = !isDark;
-                    darkModeToggle.textContent = isDark ? "Light Mode" : "Dark Mode"
+                    // @ts-ignore
+                    darkModeToggle.textContent = isDark ? "Light Mode" : "Dark Mode";
 
                 }
 
@@ -1075,10 +803,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
         }
 
+        // @ts-ignore
         if (event.target.matches("#alone")) {
             // increaseMaterial('clones', 1);
             // Hardcoded instead to avoid increase affected by productivity bonuses
             if (resources['clones'].value < resources['clones'].max) resources['clones'].value += 1;
+            // @ts-ignore
             updateTotal();
         }
     });
@@ -1091,6 +821,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         // console.log(button);
         // Extract the data from your building or any other data - source
         // const content = "Your tooltip content here";
+        // @ts-ignore
         button.addEventListener('mouseenter', function (e) {
             updateTooltip(button);
             currentHoverButton = button;
@@ -1100,27 +831,40 @@ document.addEventListener('DOMContentLoaded', (event) => {
         // TODO: move this event listener
         button.addEventListener('onclick', function () {
             updateTooltip(button);
-        })
+        });
 
         button.addEventListener('mouseleave', function () { hideTooltip(); currentHoverButton = null; });
     });
 
     // Update the jobs counter
+    // @ts-ignore
     updateTotal();
 
 
 });
 
+function setAteFish(bool) {
+    ateFish = bool;
+    return ateFish;
+}
+
+function getAteFish() {
+    return ateFish;
+}
+
+
 var currentHoverButton = null;
 
 module.exports = {
-    capitalizeFirst,
+
     updateSidebar,
     updateUI,
-    updateSkills,
     passedStage,
-    makeVisible,
-
+    setTotalTime,
+    changeMessage,
+    setAteFish,
+    getAteFish,
+    getMessage,
     total_time,
     currentHoverButton
 

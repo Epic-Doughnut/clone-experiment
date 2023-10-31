@@ -1,4 +1,7 @@
 /* CRAFTING RESOURCES */
+const { getMaterial, passedStage, getCraftedResource } = require('../helper');
+const { resources } = require('./resources');
+
 
 const craftedResources = {
     'sharprocks': {
@@ -7,7 +10,7 @@ const craftedResources = {
         value: 0,
         cost: { 'rocks': 2 },
         craftedOnce: false,
-        requirement: () => getMaterial('rocks') >= 5,
+        requirement: () => getMaterial('rocks', resources) >= 5,
         tooltipDesc: 'Craft a rock using nothing but rocks!',
         tooltipCost: 'Rocks: 5',
         class: 'craftRocks'
@@ -18,7 +21,7 @@ const craftedResources = {
         value: 0,
         cost: { 'vines': 3 },
         craftedOnce: false,
-        requirement: () => getMaterial('vines') >= 3,
+        requirement: () => getMaterial('vines', resources) >= 3,
         tooltipDesc: 'The basis of attaching things to other things.',
         tooltipCost: 'Vines: 3',
         class: 'rope'
@@ -149,12 +152,21 @@ const craftedResources = {
         value: 0,
         cost: { 'clay': 15 },
         craftedOnce: false,
-        requirement: () => getMaterial('clay') > 5,
+        requirement: () => getMaterial('clay', resources) > 5,
         tooltipDesc: "Leave some clay by the fire",
         tooltipCost: ''
     }
+};
+
+function getCraftedResourceConfigById(id) {
+    for (let c in craftedResources) {
+        if (craftedResources[c].id === id) {
+            return craftedResources[c];
+        }
+    }
+    return null;
 }
 
 module.exports = {
-    craftedResources
+    craftedResources, getCraftedResourceConfigById
 };

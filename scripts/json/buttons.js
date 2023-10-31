@@ -1,3 +1,7 @@
+const { getMaterial, passedStage } = require('../helper');
+const { hasTool } = require('../tools');
+const { resources } = require('./resources');
+
 /* BUTTONS */
 const buttons = {
 
@@ -17,7 +21,7 @@ const buttons = {
         text: '𓍯 Gather Vines',
         tooltipDesc: 'Some vines are rubbery, others are gummy.',
         tooltipCost: 'Free',
-        requirement: () => getMaterial('sticks') >= 10 || passedStage('vines'),
+        requirement: () => getMaterial('sticks', resources) >= 10 || passedStage('vines'),
         hide: () => false
     },
     'gatherRocks': {
@@ -26,7 +30,7 @@ const buttons = {
         text: '𓊖𓀩 Gather Rocks',
         tooltipDesc: 'Not a single window to throw them through.',
         tooltipCost: 'Free',
-        requirement: () => getMaterial('vines') >= 10 || passedStage('rocks'),
+        requirement: () => getMaterial('vines', resources) >= 10 || passedStage('rocks'),
         hide: () => false
     },
     'gatherFish': {
@@ -119,7 +123,7 @@ const buttons = {
         requirement: () => passedStage('ponder-tab'),
         hide: () => false
     },
-}
+};
 
 module.exports = {
     buttons: buttons

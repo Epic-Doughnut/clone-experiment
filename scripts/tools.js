@@ -23,12 +23,16 @@ function addTool(tool) {
     }
 }
 
+function getAllTools() {
+    return playerTools;
+}
+
 function updateToolUI(tool) {
     // Update the UI
     var ul = document.getElementById("tools-list");
     var li = document.createElement("li");
     li.appendChild(document.createTextNode(tool));
-    ul.appendChild(li);
+    if (ul) ul.appendChild(li);
 }
 
 function getToolValueForResource(resource) {
@@ -47,4 +51,11 @@ function getToolValueForResource(resource) {
 
     // If none of the tools are found, return the default value
     return 1;
+}
+
+module.exports = {
+    hasTool,
+    addTool,
+    getAllTools,
+    getToolValueForResource
 }

@@ -1,52 +1,7 @@
 const { JSDOM } = require('jsdom');
 const { recalculateBuildingCost } = require('../buildings'); // adjust the path accordingly
 
-// let dom;
-// let container;
 
-// beforeEach(() => {
-//     // A mock HTML structure for the test
-//     const html = `
-//         <div>
-//             <button id="vineyard" data-tooltip-cost="" data-tooltip-effect=""></button>
-//         </div>
-//     `;
-
-//     dom = new JSDOM(html, { runScripts: "outside-only" });
-//     container = dom.window.document;
-
-//     // Mock the global document with our test document
-//     global.document = container;
-//     // Mock other properties or methods as needed
-//     global.window = dom.window;
-
-//     // Example buildings object
-//     global.buildings = {
-//         "vineyard": {
-//             basecost: {
-//                 wood: 20,
-//                 vines: 50
-//             },
-//             ratio: 1.2,
-//             count: 0,
-//             cost: {}
-//         }
-//     };
-
-//     // Mock any other functions like hasPerk
-//     global.hasPerk = (perkName) => true;
-// });
-
-// test('recalculateBuildingCost updates cost based on building count and ratio', () => {
-//     recalculateBuildingCost('vineyard');
-//     const myButton = document.querySelector('#vineyard');
-//     expect(myButton.getAttribute('data-tooltip-cost')).not.toBe(""); // or other assertions based on your logic
-// });
-
-// // You can add more tests to check different scenarios...
-
-
-// const { JSDOM } = require('jsdom');
 const dom = new JSDOM(`<!doctype html><html>
 <body>
 <button id="someBuilding" data-tooltip-cost="" data-tooltip-effect=""></button>
@@ -80,7 +35,7 @@ const hasPerk = jest.fn();
 // const recalculateBuildingCost = require('../recalculateBuildingCost');
 
 test('recalculateBuildingCost calculates cost without architect perk', () => {
-    hasPerk.mockImplementation((p) => { return false; })
+    hasPerk.mockImplementation((p) => { return false; });
     recalculateBuildingCost('someBuilding', buildings, hasPerk);
     expect(buildings.someBuilding.cost.wood).toBe(120);
     expect(buildings.someBuilding.cost.stone).toBe(60);
