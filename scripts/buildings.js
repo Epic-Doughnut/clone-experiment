@@ -74,10 +74,6 @@ function generateBuildingTooltipCost(cost) {
 }
 
 
-// function createBuildingButton(buildingKey) {
-//     return createBuildingButton(buildingKey, buildings);
-// }
-
 function createBuildingButton(buildingKey, buildings) {
     const building = buildings[buildingKey];
 
@@ -106,7 +102,7 @@ function createBuildingButton(buildingKey, buildings) {
         'text': `${buildingKey.charAt(0).toUpperCase() + buildingKey.slice(1)}`,
         'tooltipDesc': buildings[buildingKey].tooltipDesc || "A mysterious building with untold benefits.",
         'tooltipCost': costs,
-        'requirement': requirementFunction(),
+        'requirement': () => requirementFunction(),
         'data_building': buildingKey,
     };
 
