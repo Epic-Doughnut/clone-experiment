@@ -2,9 +2,11 @@ const { buildings } = require('./json/buildings');
 const { buttons } = require('./json/buttons');
 const { resources } = require('./json/resources');
 const { increaseMaterial, increaseMax } = require('./resources');
-const { capitalizeFirst, canBuyBuilding, updateSidebar } = require('./helper');
+const { canBuyBuilding, updateSidebar } = require('./helper');
 const { updateTotal } = require('./jobs');
 const { hasPerk } = require('./perks');
+const { capitalizeFirst } = require('./capitalizeFirst');
+
 /* BUILDINGS */
 
 
@@ -170,7 +172,6 @@ function buyMaxBuildings(buildingName) {
 }
 
 function updateBuildingButtonCount(buildingName, buildingCount) {
-    // @ts-ignore
     document.getElementById(`${buildingName}`).textContent = `${capitalizeFirst(buildingName).split('_').join(' ')} (${buildingCount})`;
 
 }

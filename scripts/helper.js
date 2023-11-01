@@ -14,14 +14,6 @@ exports.allVisibleButtons = allVisibleButtons;
 
 /**
  * 
- * @param {string} str stringExample
- * @returns StringExample
- */
-function capitalizeFirst(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-}
-/**
- * 
  * @param {string} buildingName 
  * @returns 
  */
@@ -259,7 +251,6 @@ function setVisibleButton(id) {
 }
 
 module.exports = {
-    capitalizeFirst,
     passedStage,
     getMaterial,
     getMax,
