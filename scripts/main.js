@@ -17,6 +17,7 @@ const { getMaterial } = require('./getMaterial');
 const { canUnlock, isPondered, generatePonderButtons } = require("./ponder");
 const { hasTool, addTool } = require('./tools');
 const { getAteFish, setAteFish } = require('./ateFish');
+const { drawAllConnections } = require('./jobs');
 /* MY CODE STARTS HERE */
 
 
@@ -377,7 +378,6 @@ function showTab(tabName) {
     // }
 
     if (tabName === 'jobsTab') {
-        // @ts-ignore
         drawAllConnections();
     }
 }
