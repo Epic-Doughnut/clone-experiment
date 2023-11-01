@@ -93,7 +93,7 @@ function saveGame() {
     }
 
     // console.log(allVisibleButtons.values());
-    for (let a of allVisibleButtons) {
+    for (let a in allVisibleButtons) {
         // console.log(a);
         save.allVisibleButtons.push(a);
         // console.log(save.allVisibleButtons);

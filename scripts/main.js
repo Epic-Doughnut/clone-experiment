@@ -14,6 +14,7 @@ const { makeVisible } = require('./makeVisible');
 const { updateButtonVisibility } = require('./updateButtonVisibility');
 const { getCraftedResource } = require('./getCraftedResource');
 const { getMaterial } = require('./getMaterial');
+// @ts-ignore
 const { canUnlock, isPondered, generatePonderButtons } = require("./ponder");
 const { hasTool, addTool } = require('./tools');
 const { getAteFish, setAteFish } = require('./ateFish');
@@ -144,6 +145,7 @@ function generateButtons() {
     let productionColumnIndex = 0;
     let experimentColumnIndex = 0;
     let ponderColumnIndex = 0;
+    // @ts-ignore
     // @ts-ignore
     let jobColumnIndex = 0;
 
@@ -427,6 +429,7 @@ let isDark = true;
 /* CUTSCENES */
 
 // @ts-ignore
+// @ts-ignore
 function eatFish() {
     // @ts-ignore
     if (!getAteFish() && getMaterial('fish') >= 1) {
@@ -472,6 +475,7 @@ function fadeToBlack() {
 }
 
 const overlay = document.getElementById('overlay');
+// @ts-ignore
 // @ts-ignore
 function hideOverlay() {
     // @ts-ignore
@@ -562,6 +566,7 @@ function update(delta_time, total_time) {
 //     document.getElementById("resourceForm").style.display = "block";
 // });
 
+// @ts-ignore
 // @ts-ignore
 function addResource() {
     // @ts-ignore
@@ -693,6 +698,7 @@ function updateTooltip(button) {
 
 // After all has been loaded
 // @ts-ignore
+// @ts-ignore
 document.addEventListener('DOMContentLoaded', (event) => {
     generateButtons(); // Call this once on page load or game initialization
 
@@ -776,13 +782,18 @@ document.addEventListener('DOMContentLoaded', (event) => {
             // @ts-ignore
             if (button.id !== 'undefined') {
                 console.log(button);
+                // @ts-ignore
                 if (button.id.slice(0, 6) === "gather") toggleResource(getRKeyFromID(button.id));
 
                 // @ts-ignore
                 if (button.id.slice(0, 5) === 'craft')
+                    // @ts-ignore
                     if (event.shiftKey) craftAllResources(getCRKeyFromID(button.id));
+                    // @ts-ignore
                     else craftResource(getCRKeyFromID(button.id));
 
+                // @ts-ignore
+                if (button.id === 'saveButton') saveGame();
 
                 // @ts-ignore
                 if (button.id === 'darkModeToggle') {
@@ -817,6 +828,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         // console.log(button);
         // Extract the data from your building or any other data - source
         // const content = "Your tooltip content here";
+        // @ts-ignore
         // @ts-ignore
         button.addEventListener('mouseenter', function (e) {
             updateTooltip(button);

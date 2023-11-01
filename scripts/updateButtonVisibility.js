@@ -3,7 +3,7 @@ const { getCraftedResourceConfigById } = require('./json/craftedResources');
 const { getBuildingCount } = require('./json/buildings');
 const { isPondered, canUnlock } = require('./ponder');
 const { getCraftedResourceKeyByConfig } = require("./json/craftedResources");
-const { isButtonIdVisible, canBuyBuilding, setVisibleButton } = require('./helper');
+const { isButtonIdVisible, canBuyBuilding, setVisibleButton, passedStage } = require('./helper');
 const { canCraft } = require('./canCraft');
 const { getMaterial } = require('./getMaterial');
 /**
@@ -25,6 +25,7 @@ function updateButtonVisibility() {
 
         // If requirement is met, it should be visible
         try {
+            // let getMaterial = require('./getMaterial').getMaterial;
             if (buttonConfig.requirement()) {
                 state = 'button-disabled';
                 // always purchasable gather buttons
@@ -56,7 +57,7 @@ function updateButtonVisibility() {
                 }
             }
         } catch (err) {
-            console.warn('Error with checking requirement of button: ', buttonConfig, err);
+            // console.warn('Error with checking requirement of button: ', buttonConfig, err);
         }
 
         if (buttonConfig.id && buttonConfig.id.slice(0, 5) === 'craft') {
