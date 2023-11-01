@@ -72,7 +72,7 @@ function saveGame() {
             save.resources[item] = { value: 0, max: 0 };
         }
 
-        save.resources[item].value = getMaterial(item);
+        save.resources[item].value = getMaterial(item, resources);
         save.resources[item].max = resources[item].max;
     }
 

@@ -7,6 +7,7 @@ const { updateTotal } = require('./jobs');
 const { hasPerk } = require('./perks');
 const { capitalizeFirst } = require('./capitalizeFirst');
 const { getMaterial } = require('./getMaterial');
+const { passedStage } = require('./stages');
 
 /* BUILDINGS */
 
@@ -87,16 +88,17 @@ function createBuildingButton(buildingKey, buildings) {
         .map(([material, amount]) => `${material}: ${amount}`)
         .join(', ');
 
-    const halfCostRequirement = Object.entries(building.cost)
-        .map(([material, amount]) => `getMaterial('${material},resources') >= ${Math.floor(amount / 2)}`)
-        .join(' && ');
+    // const halfCostRequirement = Object.entries(building.cost)
+    //     .map(([material, amount]) => `getMaterial('${material},resources') >= ${Math.floor(amount / 2)}`)
+    //     .join(' && ');
 
-    let requirementString = `return ${halfCostRequirement}`;
+    // let requirementString = `return ${halfCostRequirement}`;
 
     // Check if the building has an effect on clones max
-    if (building.effects && building.effects['clones']) {
-        requirementString += ` && passedStage('clones')`;
-    }
+    // if (building.effects && building.effects['clones']) {
+    //     requirementString += ` && passedStage('clones')`;
+    // }
+    const requirementFunction = createRequirementFunction(building.cost, building);
 
     const button = {
         'class': 'tooltip ' + buildingKey,
@@ -104,11 +106,22 @@ function createBuildingButton(buildingKey, buildings) {
         'text': `${buildingKey.charAt(0).toUpperCase() + buildingKey.slice(1)}`,
         'tooltipDesc': buildings[buildingKey].tooltipDesc || "A mysterious building with untold benefits.",
         'tooltipCost': costs,
-        'requirement': new Function(requirementString),
+        'requirement': requirementFunction(),
         'data_building': buildingKey,
     };
 
     return button;
+}
+
+function createRequirementFunction(costs, building) {
+    return function (resources) {
+        const costCondition = Object.entries(costs)
+            .every(([material, amount]) => getMaterial(material, resources) >= Math.floor(amount / 2));
+
+        const cloneCondition = !building.effects || !building.effects['clones'] || passedStage('clones');
+
+        return costCondition && cloneCondition;
+    };
 }
 
 

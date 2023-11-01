@@ -1,7 +1,6 @@
 // DEPENDS ON: json/buttons.js
 const { capitalizeFirst } = require('./capitalizeFirst');
 const { ponders } = require('./json/ponder');
-const { getMax } = require('./helper');
 const { getMaterial } = require('./getMaterial');
 
 const { resources } = require('./json/resources');
@@ -59,7 +58,7 @@ function generatePonderButtons(ponderObjects) {
             tab: 'ponder',
             unlock: ponderKey,
             requirement: () => {
-                return getMax('ponder') >= ponders[ponderKey].cost['ponder'] / 2;
+                return require('./helper').getMax('ponder') >= ponders[ponderKey].cost['ponder'] / 2;
 
             },
             hide: () => isPondered(ponderKey)

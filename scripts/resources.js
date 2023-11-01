@@ -18,7 +18,7 @@ const { getMaterial } = require('./getMaterial');
 const { hasPerk } = require('./perks');
 const { isPondered } = require('./ponder');
 const { getCraftedResource } = require('./getCraftedResource');
-console.log(capitalizeFirst);
+// console.log(capitalizeFirst);
 
 /**
  * 

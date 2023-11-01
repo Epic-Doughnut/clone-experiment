@@ -1,3 +1,4 @@
+// @ts-nocheck
 
 const { craftedResources, getCraftedResourceConfigById } = require('./json/craftedResources');
 const { buildings } = require("./json/buildings");
@@ -6,7 +7,7 @@ const { buttons } = require("./json/buttons");
 const { resources, getResourceConfigById } = require('./json/resources');
 
 const { saveGame, loadGame } = require("./saving");
-const { createResourceTag, generateTooltipCost, appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource, calcIncrease, updateResourceIncreaseRates, calcSecondsRemaining } = require('./resources');
+const { createResourceTag, generateTooltipCost, appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource, calcIncrease, updateResourceIncreaseRates, calcSecondsRemaining, increaseMax } = require('./resources');
 const { recalculateBuildingCost, buyMaxBuildings, buyBuilding } = require('./buildings');
 const { hasPerk } = require('./perks');
 const { updateSidebar, getMax } = require('./helper');
@@ -220,7 +221,7 @@ function generateButtons() {
                 buttonElement.style.display = 'none';
             }
         } catch (err) {
-            console.warn('Error with requirement while generating buttons: ', btn, err);
+            // console.warn('Error with requirement while generating buttons: ', btn, err);
         }
     }
 }
@@ -400,8 +401,7 @@ let isDark = true;
 // @ts-ignore
 // @ts-ignore
 function eatFish() {
-    // @ts-ignore
-    if (!getAteFish() && getMaterial('fish') >= 1) {
+    if (!getAteFish() && getMaterial('fish', resources) >= 1) {
         // eat a fish and blackout
         // @ts-ignore
         increaseMaterial('fish', -1);
@@ -414,9 +414,7 @@ function eatFish() {
         fishButton.display = 'none';
         setTimeout(() => {
             changeMessage("You are with yourself in a forest.", 'with yourself');
-            // @ts-ignore
             increaseMax('clones', 1);
-            // @ts-ignore
             increaseMaterial('clones', 1);
         }, 1000); // delay of 1s
 
@@ -669,14 +667,14 @@ function updateTooltip(button) {
 // @ts-ignore
 // @ts-ignore
 document.addEventListener('DOMContentLoaded', (event) => {
+    generatePonderButtons(ponders);
+    appendCraftedResourceButtons();
     generateButtons(); // Call this once on page load or game initialization
 
     loadGame();
     updateSidebar();
-    generatePonderButtons(ponders);
     showTab('productionTab');
     createResourceTag('sticks');
-    appendCraftedResourceButtons();
 
     function getRKeyFromID(id) {
         for (let r in resources) {
@@ -751,19 +749,21 @@ document.addEventListener('DOMContentLoaded', (event) => {
             // @ts-ignore
             if (button.id !== 'undefined') {
                 console.log(button);
-                // @ts-ignore
                 if (button.id.slice(0, 6) === "gather") toggleResource(getRKeyFromID(button.id));
 
-                // @ts-ignore
                 if (button.id.slice(0, 5) === 'craft')
-                    // @ts-ignore
                     if (event.shiftKey) craftAllResources(getCRKeyFromID(button.id));
-                    // @ts-ignore
                     else craftResource(getCRKeyFromID(button.id));
 
-                // @ts-ignore
                 if (button.id === 'saveButton') saveGame();
 
+                if (button.id === 'eatFish') eatFish();
+
+                if (button.id === 'overlay-button') hideOverlay();
+
+                if (button.id === 'deleteSaveButton') {
+                    localStorage.removeItem('save'); location.reload();
+                }
                 // @ts-ignore
                 if (button.id === 'darkModeToggle') {
                     body.classList.toggle('dark-mode');

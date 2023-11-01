@@ -8,7 +8,7 @@ const { getCraftedResource } = require('./getCraftedResource');
  * @returns Value of material
 */
 function getMaterial(material, resources) {
-    if (!resources) return null;
+    if (!resources) resources = require('./json/resources').resources;
     if (resources.hasOwnProperty(material)) {
         return resources[material].value;
     } else {
