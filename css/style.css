@@ -15,6 +15,7 @@
     cursor: copy;
     padding: .25em;
     user-select: none;
+    color: aliceblue;
     /* padding-bottom: .5em; */
 }
 

@@ -411,7 +411,7 @@ function eatFish() {
         setAteFish(true);
         const fishButton = document.querySelector("#eatFish");
         // @ts-ignore
-        fishButton.display = 'none';
+        fishButton.style.display = 'none';
         setTimeout(() => {
             changeMessage("You are with yourself in a forest.", 'with yourself');
             increaseMax('clones', 1);

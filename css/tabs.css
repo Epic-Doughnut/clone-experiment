@@ -5,6 +5,12 @@
     display: none;
 }
 
+#tabs {
+    position: fixed;
+    right: 10px;
+    top: 10px;
+}
+
 #tabs>*.visible {
     transform: translateX(0);
     display: block;
