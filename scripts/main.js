@@ -6,8 +6,8 @@ const { buttons } = require("./json/buttons");
 const { resources } = require('./json/resources');
 
 const { saveGame, loadGame } = require("./saving");
-const { createResourceTag, generateTooltipCost } = require('./resources');
-const { recalculateBuildingCost } = require('./buildings');
+const { createResourceTag, generateTooltipCost, appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource } = require('./resources');
+const { recalculateBuildingCost, buyMaxBuildings, buyBuilding } = require('./buildings');
 const { hasPerk } = require('./perks');
 const { passedStage, updateSidebar } = require('./helper');
 const { makeVisible } = require('./makeVisible');
@@ -17,7 +17,8 @@ const { getMaterial } = require('./getMaterial');
 const { canUnlock, isPondered, generatePonderButtons } = require("./ponder");
 const { hasTool, addTool } = require('./tools');
 const { getAteFish, setAteFish } = require('./ateFish');
-const { drawAllConnections } = require('./jobs');
+const { drawAllConnections, updateTotal } = require('./jobs');
+const { capitalizeFirst } = require('./capitalizeFirst');
 /* MY CODE STARTS HERE */
 
 
@@ -702,7 +703,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
     generatePonderButtons(ponders);
     showTab('productionTab');
     createResourceTag('sticks');
-    // @ts-ignore
     appendCraftedResourceButtons();
 
     function getRKeyFromID(id) {
@@ -735,10 +735,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 // @ts-ignore
                 var building = button.getAttribute('data_building');
                 if (event.shiftKey) {
-                    // @ts-ignore
+
                     buyMaxBuildings(building);
                 } else {
-                    // @ts-ignore
+
                     buyBuilding(building);
                 }
             }
@@ -751,8 +751,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 if (ponders[unlockAttr]) {
                     var canUnlock = true;
                     for (let material in ponders[unlockAttr].cost) {
-                        // @ts-ignore
-                        if (getMaterial(material) < ponders[unlockAttr].cost[material]) {
+                        if (getMaterial(material, resources) < ponders[unlockAttr].cost[material]) {
                             console.log("Cannot unlock " + unlockAttr);
                             canUnlock = false;
                             break;
@@ -761,7 +760,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
                     if (canUnlock) {
                         for (let material in ponders[unlockAttr].cost) {
-                            // @ts-ignore
                             increaseMaterial(material, -ponders[unlockAttr].cost[material]);
                         }
                         ponders[unlockAttr].isPondered = true;
@@ -780,14 +778,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
             // @ts-ignore
             if (button.id !== 'undefined') {
                 console.log(button);
-                // @ts-ignore
                 if (button.id.slice(0, 6) === "gather") toggleResource(getRKeyFromID(button.id));
 
                 // @ts-ignore
                 if (button.id.slice(0, 5) === 'craft')
-                    // @ts-ignore
                     if (event.shiftKey) craftAllResources(getCRKeyFromID(button.id));
-                    // @ts-ignore
                     else craftResource(getCRKeyFromID(button.id));
 
 
@@ -811,7 +806,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             // increaseMaterial('clones', 1);
             // Hardcoded instead to avoid increase affected by productivity bonuses
             if (resources['clones'].value < resources['clones'].max) resources['clones'].value += 1;
-            // @ts-ignore
+
             updateTotal();
         }
     });
@@ -840,7 +835,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
     });
 
     // Update the jobs counter
-    // @ts-ignore
     updateTotal();
 
 
