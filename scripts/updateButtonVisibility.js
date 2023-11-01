@@ -4,7 +4,7 @@ const { getBuildingCount } = require('./json/buildings');
 const { isPondered, canUnlock } = require('./ponder');
 const { getCraftedResourceKeyByConfig } = require("./json/craftedResources");
 const { isButtonIdVisible, canCraft, canBuyBuilding, setVisibleButton } = require('./helper');
-
+const { getMaterial } = require('./getMaterial');
 /**
  * Changes the states of buttons between 'hidden', 'purchasable', and 'button-disabled'
  */

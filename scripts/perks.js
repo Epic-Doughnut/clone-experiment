@@ -1,6 +1,7 @@
 const { buildings } = require('./json/buildings');
 const { recalculateBuildingCost } = require('./buildings');
 const { perks } = require('./json/perks');
+const { selectCorrectPerkButton } = require('./selectCorrectPerkButton');
 let myPerks = [];
 
 /**
@@ -62,29 +63,9 @@ function selectAbility(abilityName) {
 
     // myPerks.push(abilityName);
 }
-/**
- * 
- * @param {string} abilityName 
- */
-function selectCorrectPerkButton(abilityName) {
-    // Disable all buttons
-    let buttons = document.querySelectorAll('.tierOneButton');
-    buttons.forEach(button => {
-        button.setAttribute('disabled', 'true');
-    });
-
-    // Enable and highlight the selected button
-    let selectedButton = document.querySelector('.tierOneButton[onclick="selectAbility(\'' + abilityName + '\')"]');
-    console.log(selectedButton, abilityName);
-    selectedButton.removeAttribute('disabled');
-    selectedButton.classList.add('selected');
-}
-
-
 module.exports = {
     hasPerk,
     addPerk,
-    selectCorrectPerkButton,
     selectAbility,
     getPerkFromTier,
     getAllPerks
