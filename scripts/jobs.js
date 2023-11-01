@@ -105,7 +105,7 @@ function distributeWorkers(skill, totalWorkers) {
     //         ++i;
     //     }
     // }
-    console.log(affectedResources);
+    // console.log(affectedResources);
     let numberOfResources = affectedResources.length;
 
     // Initial even distribution
@@ -125,7 +125,7 @@ function distributeWorkers(skill, totalWorkers) {
         }
     }
 
-    console.log(workersDistribution);
+    // console.log(workersDistribution);
 }
 
 

@@ -1,0 +1,22 @@
+.trading-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    max-width: 500px;
+    margin: auto;
+}
+
+#trading-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#trading-container table thead tr th,
+#trading-container table thead tr td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.gold-container {
+    margin-bottom: 20px;
+}

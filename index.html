@@ -92,7 +92,7 @@
 		<!-- JOBS TAB (4) -->
 		<div id='jobsTab' class='jobs-tab content' data-target='jobsTab'>
 			<p id="jobs-total">Assigned Clones:</p>
-			<button id="clearJobAssignments" onclick="clearJobAssignments();">Clear Assignments</button>
+			<button id="clearJobAssignments">Clear Assignments</button>
 
 			<canvas id="lineCanvas" style="position: absolute; top: 0; left: 0; z-index: -1;"></canvas>
 
@@ -127,6 +127,24 @@
 			</div>
 
 
+		</div>
+
+		<div id='tradeTab' class="tradeTab content" data-targe="tradeTab">
+			<div class="trading-container">
+				<div class="gold-container">
+					Gold: <span id="goldAmount">1000</span> <!-- Sample initial value -->
+				</div>
+				<table>
+					<thead>
+						<tr>
+							<th>Resource</th>
+							<th>Price</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody id="resourceList"></tbody>
+				</table>
+			</div>
 		</div>
 	</div>
 

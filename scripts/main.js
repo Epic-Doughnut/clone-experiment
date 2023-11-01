@@ -484,7 +484,7 @@ function loop(current_time) {
     let normalRate = milliseconds_per_frame;
     // simulate with less fidelity to make up time
     while (accumulated_lag >= 100 * milliseconds_per_frame) {
-        milliseconds_per_frame *= 10;
+        milliseconds_per_frame *= 100;
     }
     while (accumulated_lag >= milliseconds_per_frame) {
 
@@ -674,7 +674,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
     loadGame();
     updateSidebar();
     showTab('productionTab');
-    createResourceTag('sticks');
+    require('./trade').generateTradeTable(resources);
+    // createResourceTag('sticks');
 
     function getRKeyFromID(id) {
         for (let r in resources) {
@@ -764,6 +765,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 if (button.id === 'deleteSaveButton') {
                     localStorage.removeItem('save'); location.reload();
                 }
+                if (button.id === 'clearJobAssignments') clearJobAssignments();
                 // @ts-ignore
                 if (button.id === 'darkModeToggle') {
                     body.classList.toggle('dark-mode');
