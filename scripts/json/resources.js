@@ -167,7 +167,8 @@ const resources = {
     }
 };
 function isResource(resource) {
-    return resources[resource] !== null;
+    // return resources[resource] !== null;
+    return resource in resources;
 }
 
 
