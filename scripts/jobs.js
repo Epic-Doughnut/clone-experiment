@@ -172,52 +172,52 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 // }
 
-document.addEventListener('DOMContentLoaded', function () {
-    let buttons = document.querySelectorAll('.job-button');
+// document.addEventListener('DOMContentLoaded', function () {
+//     let buttons = document.querySelectorAll('.job-button');
 
-    buttons.forEach(button => {
-        button.addEventListener('click', function (e) {
-            if (e.target.closest('.btn-decrement') || e.target.closest('.btn-increment')) return;
+//     buttons.forEach(button => {
+//         button.addEventListener('click', function (e) {
+//             if (e.target.closest('.btn-decrement') || e.target.closest('.btn-increment')) return;
 
-            if (!isPondered('management')) return;
+//             if (!isPondered('management')) return;
 
-            let jobButton = e.target.closest('.job-button');
+//             let jobButton = e.target.closest('.job-button');
 
-            if (jobButton) {
-                if (!startButton) {
-                    startButton = jobButton;
-                    startButton.classList.add('highlight');
-                } else if (startButton.id && jobButton.id) { // Ensure both IDs are available
-                    connections.set(startButton.id, jobButton.id);
+//             if (jobButton) {
+//                 if (!startButton) {
+//                     startButton = jobButton;
+//                     startButton.classList.add('highlight');
+//                 } else if (startButton.id && jobButton.id) { // Ensure both IDs are available
+//                     connections.set(startButton.id, jobButton.id);
 
-                    // Draw all connections
-                    drawAllConnections();
+//                     // Draw all connections
+//                     drawAllConnections();
 
-                    // Reset
-                    startButton.classList.remove('highlight');
-                    startButton = null;
-                } else {
-                    console.error('Missing ID for one of the buttons:', startButton, jobButton);
-                }
-            } else {
-                console.error('Clicked element is not inside a job button:', e.target);
-            }
-        });
+//                     // Reset
+//                     startButton.classList.remove('highlight');
+//                     startButton = null;
+//                 } else {
+//                     console.error('Missing ID for one of the buttons:', startButton, jobButton);
+//                 }
+//             } else {
+//                 console.error('Clicked element is not inside a job button:', e.target);
+//             }
+//         });
 
-    });
+//     });
 
-    document.addEventListener('mousemove', function (e) {
-        if (startButton) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+//     document.addEventListener('mousemove', function (e) {
+//         if (startButton) {
+//             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Draw existing connections
-            drawAllConnections();
+//             // Draw existing connections
+//             drawAllConnections();
 
-            // Draw the line from startButton to current mouse position
-            drawLine(startButton, e.clientX, e.clientY);
-        }
-    });
-});
+//             // Draw the line from startButton to current mouse position
+//             drawLine(startButton, e.clientX, e.clientY);
+//         }
+//     });
+// });
 
 function drawAllConnections() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);

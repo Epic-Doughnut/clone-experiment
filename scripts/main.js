@@ -483,8 +483,11 @@ function loop(current_time) {
     // Catch up all the missed ticks
     let normalRate = milliseconds_per_frame;
     // simulate with less fidelity to make up time
-    while (accumulated_lag >= 100 * milliseconds_per_frame) {
-        milliseconds_per_frame *= 100;
+    // while (accumulated_lag >= 100 * milliseconds_per_frame) {
+    //     milliseconds_per_frame *= 100;
+    // }
+    if (accumulated_lag >= 1000 * milliseconds_per_frame) {
+        milliseconds_per_frame = accumulated_lag / 1000;
     }
     while (accumulated_lag >= milliseconds_per_frame) {
 
@@ -674,7 +677,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     loadGame();
     updateSidebar();
     showTab('productionTab');
-    require('./trade').generateTradeTable(resources);
+    // require('./trade').generateTradeTable(resources);
     // createResourceTag('sticks');
 
     function getRKeyFromID(id) {
