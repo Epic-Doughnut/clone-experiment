@@ -119,7 +119,7 @@ const buildings = {
     "grove": {
         basecost: { 'wood': 20, 'vines': 20 },
         effects: {},
-        boost: { 'wood': 1.1 },
+        boost: { 'wood': 1.1, 'sticks': 1.2 },
         count: 0,
         ratio: 1.2,
         tooltipDesc: "A nice grove of trees to find wood faster."
@@ -303,6 +303,18 @@ const buildings = {
     /**
      * PONDER
      */
+    'telescope': {
+        basecost: {
+            glass: 1,
+            wood: 10,
+            ponder: 10
+        },
+        effects: {},
+        boost: { ponder: 1.05 },
+        count: 0,
+        ratio: 1.2,
+        tooltipDesc: "Look, up in the sky! It's a star!"
+    },
     "observatory": {
         "basecost": {
             "rocks": 70,
