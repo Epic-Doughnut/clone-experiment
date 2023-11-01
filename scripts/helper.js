@@ -231,7 +231,6 @@ function setVisibleButton(id) {
 }
 
 module.exports = {
-    passedStage,
     getMaterial,
     getMax,
     updateSidebar,

@@ -1,4 +1,5 @@
-const { getMaterial, passedStage } = require('../helper');
+const { passedStage } = require('../stages');
+const { getMaterial } = require('../getMaterial');
 const { hasTool } = require('../tools');
 const { resources } = require('./resources');
 

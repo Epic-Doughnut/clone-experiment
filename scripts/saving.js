@@ -10,7 +10,7 @@ const { getMaterial } = require('./getMaterial');
 const { getAllPerks, addPerk, hasPerk } = require('./perks');
 const { isPondered } = require('./ponder');
 const { jobCounts, setConnections, getConnections, distributeWorkers, updateDisplay } = require('./jobs');
-const { total_time, getMessage } = require('./main');
+const { total_time } = require('./main');
 const { setAteFish, getAteFish } = require('./ateFish');
 
 
@@ -109,7 +109,7 @@ function saveGame() {
         return [textContent, spanText];
     }
 
-    const htmlString = getMessage().innerHTML;
+    const htmlString = require('./main').getMessage().innerHTML;
 
     save.message = extractTextFromHTML(htmlString); // [message, span]
 

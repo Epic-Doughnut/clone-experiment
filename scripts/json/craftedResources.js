@@ -1,7 +1,8 @@
 /* CRAFTING RESOURCES */
-const { getMaterial, passedStage, } = require('../helper');
+const { getMaterial, } = require('../helper');
 const { getCraftedResource } = require('../getCraftedResource');
 const { resources } = require('./resources');
+const { passedStage } = require('../stages');
 
 
 const craftedResources = {

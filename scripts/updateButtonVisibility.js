@@ -3,7 +3,7 @@ const { getCraftedResourceConfigById } = require('./json/craftedResources');
 const { getBuildingCount } = require('./json/buildings');
 const { isPondered, canUnlock } = require('./ponder');
 const { getCraftedResourceKeyByConfig } = require("./json/craftedResources");
-const { isButtonIdVisible, canBuyBuilding, setVisibleButton, passedStage } = require('./helper');
+const { isButtonIdVisible, canBuyBuilding, setVisibleButton } = require('./helper');
 const { canCraft } = require('./canCraft');
 const { getMaterial } = require('./getMaterial');
 /**

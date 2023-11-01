@@ -9,7 +9,7 @@ const { saveGame, loadGame } = require("./saving");
 const { createResourceTag, generateTooltipCost, appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource, calcIncrease, updateResourceIncreaseRates, calcSecondsRemaining } = require('./resources');
 const { recalculateBuildingCost, buyMaxBuildings, buyBuilding } = require('./buildings');
 const { hasPerk } = require('./perks');
-const { passedStage, updateSidebar, getMax } = require('./helper');
+const { updateSidebar, getMax } = require('./helper');
 const { makeVisible } = require('./makeVisible');
 const { updateButtonVisibility } = require('./updateButtonVisibility');
 const { getCraftedResource } = require('./getCraftedResource');
@@ -20,6 +20,7 @@ const { hasTool, addTool } = require('./tools');
 const { getAteFish, setAteFish } = require('./ateFish');
 const { drawAllConnections, updateTotal } = require('./jobs');
 const { capitalizeFirst } = require('./capitalizeFirst');
+const { passedStage } = require('./stages');
 /* MY CODE STARTS HERE */
 
 
@@ -347,38 +348,6 @@ function showTab(tabName) {
     let activeTabButton = document.querySelector(tabString);
 
     if (activeTabButton) activeTabButton.classList.add("active");
-
-
-    // Show buttons in the active tab (including those in the three columns)
-    // let columnsInActiveTab = activeContent.querySelectorAll('div');
-    // for (let column of columnsInActiveTab) {
-    //     column.classList.add("active");
-
-    //     let buttonsInColumn = column.querySelectorAll('button');
-    //     for (let button of buttonsInColumn) {
-    //         // console.log(buttons[button.id]);
-    //         if (buttons[button.id] && buttons[button.id].requirement()) {
-    //             button.style.display = 'flex'; // Or 'inline-block', or whatever your desired display style is
-    //             console.log("displaying " + button.id);
-    //         }
-    //     }
-    // }
-
-    // Hide buttons in inactive tabs (including those in the three columns)
-    // for (let content of tabContainers) {
-    //     if (content !== activeContent) {
-    //         let columnsToHide = content.querySelectorAll('div');
-    //         for (let column of columnsToHide) {
-    //             let buttonsToHide = column.querySelectorAll('button');
-    //             for (let button of buttonsToHide) {
-    //                 // button.classList.add('button-disabled');
-    //             }
-    //         }
-
-    //         if (content.id === "perksTab")
-
-    //     }
-    // }
 
     if (tabName === 'jobsTab') {
         drawAllConnections();

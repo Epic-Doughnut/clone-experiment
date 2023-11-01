@@ -1,5 +1,5 @@
-const { passedStage } = require('./helper');
-const { setStage } = require('./stages');
+
+const { setStage, passedStage } = require('./stages');
 const { updateButtonVisibility } = require('./updateButtonVisibility');
 
 /**
