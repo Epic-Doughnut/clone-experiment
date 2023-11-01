@@ -4,7 +4,7 @@ const { skills } = require('./json/skills');
 const { resources } = require('./json/resources');
 
 
-const { getMaterial } = require('./helper');
+const { getMaterial } = require('./getMaterial');
 const { updateEmojiDisplay } = require('./resources');
 const { isPondered } = require("./ponder");
 

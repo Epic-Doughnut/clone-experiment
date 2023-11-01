@@ -9,8 +9,9 @@ const { saveGame, loadGame } = require("./saving");
 const { createResourceTag, generateTooltipCost } = require('./resources');
 const { recalculateBuildingCost } = require('./buildings');
 const { hasPerk } = require('./perks');
-const { capitalizeFirst, passedStage, makeVisible, getMaterial, updateSidebar, updateButtonVisibility, getCraftedResource } = require('./helper');
-
+const { capitalizeFirst, passedStage, makeVisible, updateSidebar, updateButtonVisibility, } = require('./helper');
+const { getCraftedResource } = require('./getCraftedResource');
+const { getMaterial } = require('./getMaterial');
 const { canUnlock, isPondered, generatePonderButtons } = require("./ponder");
 const { hasTool, addTool } = require('./tools');
 

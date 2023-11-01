@@ -2,10 +2,11 @@ const { resources } = require('./json/resources');
 const { buttons } = require('./json/buttons');
 const { skills } = require('./json/skills');
 const { getCraftedResourceConfigById } = require('./json/craftedResources');
-const { getBuildingCount } = require('./json/buildings');
+const { getBuildingCount, buildings } = require('./json/buildings');
 
 const { isPondered, canUnlock } = require('./ponder');
-const { craftedResources } = require("./json/craftedResources");
+const { craftedResources, getCraftedResourceKeyByConfig } = require("./json/craftedResources");
+const { getMaterial } = require('./getMaterial');
 
 let stages = [];
 let allVisibleButtons = new Set(['gatherSticks']);
@@ -32,6 +33,7 @@ function makeVisible(stage) {
     const stageElements = document.querySelectorAll("p." + stage);
     stageElements.forEach(element => element.classList.add('visible'));
     // 
+    // @ts-ignore
     stageElements.forEach(element => element.style.display = '');
     updateButtonVisibility();
 }
@@ -48,7 +50,26 @@ function passedStage(stage) {
 function getAllStages() {
     return stages;
 }
+/**
+ * 
+ * @param {string} buildingName 
+ * @returns 
+ */
+function canBuyBuilding(buildingName) {
+    // Check if we have enough resources
+    let canBuy = true;
+    const building = buildings[buildingName];
 
+    for (const resource in building.cost) {
+        if (building.cost[resource] > getMaterial(resource, resources)) {
+            canBuy = false;
+            break;
+        }
+    }
+
+    // console.log('can we buy ',buildingName,canBuy);
+    return canBuy;
+}
 /**
  * A map of all jobs that require a ponder to be unlocked
  *
@@ -190,33 +211,57 @@ function updateButtonVisibility() {
         if (state === 'hidden') {
             // console.log('hiding',button);
             // 
+            // @ts-ignore
             button.style.display = 'none';
         } else {
             // console.log('all visible ', button.id);
             allVisibleButtons.add(button.id);
             button.classList.add(state);
-            // 
+            // @ts-ignore
             button.style.display = ''; // This will revert it back to its original display state or default (e.g., 'block' or 'inline-block')
         }
     });
 }
 
-// Get function for materials
-/**
- *
- * @param {string} material
- * @returns
-*/
-function getMaterial(material, resources) {
-    if (resources.hasOwnProperty(material)) {
-        return resources[material].value;
-    } else {
-        // console.error("Invalid material:", material);  // For debugging
-        return getCraftedResource(material);
 
-    }
+
+
+
+
+// Calculate the final number of crafted goods from bonuses
+// @ts-ignore
+// @ts-ignore
+function calcCraftBonus(resourceKey) {
+    return 1;
 }
 
+
+function canCraft(resourceKey) {
+    let canCraft = true;
+    let requirements = craftedResources[resourceKey].cost;
+
+    // Check if all requirements are met
+    try {
+        for (let mat in requirements) {
+            if (getMaterial(mat, resources) < requirements[mat]) {
+                canCraft = false;
+                break;
+            }
+        }
+    } catch (err) {
+        console.warn('Error in calculating requirements: ', resourceKey, requirements, err);
+    }
+
+    return canCraft;
+}
+
+// @ts-ignore
+function getAffectedResources(skill) {
+    if (skills[skill]) {
+        return skills[skill].affectedResources;
+    }
+    return null;  // or an empty array [], based on your preference
+}
 /**
  * 
  * @param {string} material 
@@ -377,11 +422,13 @@ function populateSkillsTable() {
 
             if (skills[skill].exp > 0 || skills[skill].level > 0) {
                 // 
+                // @ts-ignore
                 document.querySelector('#tr-' + skill).style.display = '';
             }
             let progressBar = document.querySelector(`.progressBar[data-skill="${skill}"]`);
             if (progressBar) {
                 // 
+                // @ts-ignore
                 progressBar.style.width = skills[skill].exp + '%';
                 let skillName = document.querySelector("#level-" + skill);
                 skillName.textContent = '[' + skills[skill].level + ']   ' + skill;
@@ -401,25 +448,8 @@ module.exports = {
     updateSkills,
     populateSkillsTable,
     getAllStages,
-    updateButtonVisibility,
+    updateButtonVisibility, canCraft, calcCraftBonus,
+    canBuyBuilding,
     hasGeneratedSkillTable
 };
-/**
- *
- * @param {string} material
- * @returns
- */
-function getCraftedResource(material) {
-    // try {
-    material = material.toLowerCase();
-    // } catch (error) {
-    //     console.warn(material, error);
-    //     return null;
-    // }
-    if (craftedResources.hasOwnProperty(material)) {
-        return craftedResources[material].value;
-    } else {
-        throw ("Invalid crafted resource:" + material); // For debugging
-    }
-}
-exports.getCraftedResource = getCraftedResource;
+

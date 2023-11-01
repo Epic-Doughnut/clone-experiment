@@ -1,5 +1,6 @@
 /* CRAFTING RESOURCES */
-const { getMaterial, passedStage, getCraftedResource } = require('../helper');
+const { getMaterial, passedStage, } = require('../helper');
+const { getCraftedResource } = require('../getCraftedResource');
 const { resources } = require('./resources');
 
 
@@ -167,6 +168,16 @@ function getCraftedResourceConfigById(id) {
     return null;
 }
 
+function getCraftedResourceKeyByConfig(config) {
+    for (let k in craftedResources) {
+        // console.log(k);
+        if (craftedResources[k].id === config.id) return k;
+    }
+    return null;
+}
+
 module.exports = {
-    craftedResources, getCraftedResourceConfigById
+    craftedResources,
+    getCraftedResourceConfigById,
+    getCraftedResourceKeyByConfig
 };

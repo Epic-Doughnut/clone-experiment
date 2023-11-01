@@ -2,23 +2,12 @@ const { buildings } = require('./json/buildings');
 const { buttons } = require('./json/buttons');
 const { resources } = require('./json/resources');
 const { increaseMaterial, increaseMax } = require('./resources');
-const { capitalizeFirst, getMaterial, updateSidebar } = require('./helper');
+const { capitalizeFirst, canBuyBuilding, updateSidebar } = require('./helper');
 const { updateTotal } = require('./jobs');
 const { hasPerk } = require('./perks');
 /* BUILDINGS */
 
-function getBuildingCount(buildingName) {
-    return buildings[buildingName].count;
-}
-function getBoost(buildingName, resource) {
-    const building = buildings[buildingName];
 
-    if (building && building.boost) {
-        if (building.boost[resource]) return building.boost[resource];
-        if (building.boost['all']) return building.boost['all'];
-    }
-    return null;
-}
 
 /**
  * 
@@ -136,26 +125,7 @@ for (let buildingKey in buildings) {
 function getBuildingCost(buildingName) {
     return buildings[buildingName].cost;
 }
-/**
- * 
- * @param {string} buildingName 
- * @returns 
- */
-function canBuyBuilding(buildingName) {
-    // Check if we have enough resources
-    let canBuy = true;
-    const building = buildings[buildingName];
 
-    for (const resource in building.cost) {
-        if (building.cost[resource] > getMaterial(resource, resources)) {
-            canBuy = false;
-            break;
-        }
-    }
-
-    // console.log('can we buy ',buildingName,canBuy);
-    return canBuy;
-}
 
 function buyBuilding(buildingName) {
     console.log("Buying building " + buildingName);
@@ -228,6 +198,4 @@ module.exports = {
     generateBuildingTooltipCost,
     createBuildingButton,
     updateBuildingButtonCount,
-    getBoost,
-    getBuildingCount
 };

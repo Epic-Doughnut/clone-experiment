@@ -2,7 +2,10 @@
 const { updateBuildingButtonCount, recalculateBuildingCost } = require('./buildings');
 const { updateDisplayValue, calcIncrease, updateEmojiDisplay } = require('./resources');
 const { addTool, getAllTools } = require('./tools');
-const { makeVisible, getAllStages, allVisibleButtons, getMaterial, updateSidebar, populateSkillsTable, getCraftedResource } = require('./helper');
+const { makeVisible, getAllStages, allVisibleButtons, updateSidebar, populateSkillsTable, } = require('./helper');
+const { getCraftedResource } = require('./getCraftedResource');
+const { getMaterial } = require('./getMaterial');
+
 const { getAllPerks, selectCorrectPerkButton, addPerk, hasPerk } = require('./perks');
 const { isPondered } = require('./ponder');
 const { jobCounts, setConnections, getConnections, distributeWorkers, updateDisplay } = require('./jobs');

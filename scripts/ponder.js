@@ -1,7 +1,9 @@
 // DEPENDS ON: json/buttons.js
 const { capitalizeFirst } = require('./helper');
 const { ponders } = require('./json/ponder');
-const { getMaterial, getMax } = require('./helper');
+const { getMax } = require('./helper');
+const { getMaterial } = require('./getMaterial');
+
 const { resources } = require('./json/resources');
 const { buttons } = require('./json/buttons');
 

@@ -165,8 +165,23 @@ const resources = {
         emoji: '𓀎',
         'max': 50
     }
+};
+function isResource(resource) {
+    return resources[resource] !== null;
 }
 
-module.exports = {
-    resources: resources
+
+
+function getResourceConfigById(id) {
+    for (let r in resources) {
+        if (resources[r].id === id) {
+            return resources[r];
+        }
+    }
+    return null;
 }
+module.exports = {
+    resources: resources,
+    isResource,
+    getResourceConfigById
+};

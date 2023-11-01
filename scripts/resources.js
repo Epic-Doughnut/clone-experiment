@@ -10,10 +10,12 @@ const { skills } = require('./json/skills');
 
 const { getWorkers, updateTotal, reassignJobsBasedOnResources } = require('./jobs');
 const { hasTool, getToolValueForResource } = require('./tools');
-const { getMaterial, updateSidebar, updateSkills, capitalizeFirst } = require("./helper");
+const { updateSidebar, updateSkills, capitalizeFirst, canCraft, calcCraftBonus } = require("./helper");
+const { getMaterial } = require('./getMaterial');
+
 const { hasPerk } = require('./perks');
 const { isPondered } = require('./ponder');
-const { getCraftedResource } = require("./helper");
+const { getCraftedResource } = require('./getCraftedResource');
 console.log(capitalizeFirst);
 
 /**
@@ -367,69 +369,7 @@ function generateTooltipCost(requirements) {
     return str;
 }
 
-function isResource(resource) {
-    return resources[resource] !== null;
-}
 
-function getCraftedResourceConfigById(id) {
-    for (let c in craftedResources) {
-        if (craftedResources[c].id === id) {
-            return craftedResources[c];
-        }
-    }
-    return null;
-}
-
-function getResourceConfigById(id) {
-    for (let r in resources) {
-        if (resources[r].id === id) {
-            return resources[r];
-        }
-    }
-    return null;
-}
-
-
-function getCraftedResourceKeyByConfig(config) {
-    for (let k in craftedResources) {
-        // console.log(k);
-        if (craftedResources[k].id === config.id) return k;
-    }
-    return null;
-}
-
-// Calculate the final number of crafted goods from bonuses
-// @ts-ignore
-function calcCraftBonus(resourceKey) {
-    return 1;
-}
-
-
-function canCraft(resourceKey) {
-    let canCraft = true;
-    let requirements = craftedResources[resourceKey].cost;
-
-    // Check if all requirements are met
-    try {
-        for (let mat in requirements) {
-            if (getMaterial(mat, resources) < requirements[mat]) {
-                canCraft = false;
-                break;
-            }
-        }
-    } catch (err) {
-        console.warn('Error in calculating requirements: ', resourceKey, requirements, err);
-    }
-
-    return canCraft;
-}
-
-function getAffectedResources(skill) {
-    if (skills[skill]) {
-        return skills[skill].affectedResources;
-    }
-    return null;  // or an empty array [], based on your preference
-}
 
 const emojiDisplay = document.getElementById('emojiDisplay');
 function updateEmojiDisplay() {
@@ -523,10 +463,7 @@ module.exports = {
     craftResource,
     updateEmojiDisplay,
     updateDisplayValue,
-    getAffectedResources,
-    isResource,
     generateTooltipCost,
-    getCraftedResourceKeyByConfig, getResourceConfigById, getCraftedResourceConfigById,
     calcSecondsRemaining,
     createResourceTag,
     appendCraftedResourceButtons,

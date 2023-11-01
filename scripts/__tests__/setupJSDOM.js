@@ -1,3 +1,4 @@
+// @ts-nocheck
 const { JSDOM } = require('jsdom');
 
 const jsdom = new JSDOM(`<!doctype html><html><body>
