@@ -20,7 +20,7 @@ const buildings = {
         tooltipDesc: 'A cozy, idyllic chunk of wood.'
     },
     "house": {
-        "basecost": { "wood": 50, "rocks": 20 },
+        "basecost": { "wood": 50, "rocks": 20, 'fish': 10 },
         "effects": { "clones": 2 },
         "boost": {},
         "count": 0,
@@ -28,7 +28,7 @@ const buildings = {
         tooltipDesc: "Every clone's dream. Minus the white picket fence."
     },
     'teepee': {
-        basecost: { 'wood': 10, 'hides': 25 },
+        basecost: { 'wood': 10, 'hides': 25, 'fish': 15 },
         effects: { 'clones': 2 },
         boost: {},
         count: 0,

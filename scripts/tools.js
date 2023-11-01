@@ -16,6 +16,12 @@ function hasTool(tool) {
 
 // Function to add a tool if it's not already present
 function addTool(tool) {
+    // Ignore tools that are just numbers
+    if (!isNaN(tool) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+        !isNaN(parseFloat(tool))) // ...and ensure strings of whitespace fail
+    {
+        return;
+    }
     if (!hasTool(tool)) {
         playerTools.push(tool);
 
@@ -58,4 +64,4 @@ module.exports = {
     addTool,
     getAllTools,
     getToolValueForResource
-}
+};
