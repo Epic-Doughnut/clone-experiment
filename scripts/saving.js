@@ -2,7 +2,7 @@
 const { updateBuildingButtonCount, recalculateBuildingCost } = require('./buildings');
 const { updateDisplayValue, calcIncrease, updateEmojiDisplay } = require('./resources');
 const { addTool, getAllTools } = require('./tools');
-const { allVisibleButtons, updateSidebar, populateSkillsTable, } = require('./helper');
+const { allVisibleButtons, updateSidebar, populateSkillsTable, setVisibleButton } = require('./helper');
 const { makeVisible } = require('./makeVisible');
 const { getCraftedResource } = require('./getCraftedResource');
 const { getMaterial } = require('./getMaterial');
@@ -253,7 +253,7 @@ function loadGame() {
     if (typeof savegame.allVisibleButtons !== 'undefined') {
         console.log(savegame.allVisibleButtons);
         for (let a in savegame.allVisibleButtons) {
-            allVisibleButtons.add(a);
+            setVisibleButton(a);
         }
 
     }
@@ -286,6 +286,6 @@ function loadGame() {
 // save the time when the player exits the browser tab
 // window.addEventListener("beforeunload", () => saveGame());
 module.exports = {
-    saveGame: saveGame,
-    loadGame: loadGame
+    saveGame,
+    loadGame
 };
