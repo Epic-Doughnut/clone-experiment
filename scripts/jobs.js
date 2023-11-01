@@ -5,7 +5,6 @@ const { resources } = require('./json/resources');
 
 
 const { getMaterial } = require('./getMaterial');
-const { updateEmojiDisplay } = require('./resources');
 const { isPondered } = require("./ponder");
 
 /* JOBS FUNCTIONALITY */
@@ -141,7 +140,7 @@ function updateDisplay(jobType) {
     const jobElement = thisJobButton.querySelector(`.job-name`);
     if (jobElement) jobElement.textContent = `${jobType.charAt(0).toUpperCase() + jobType.slice(1)}: ${jobCounts[jobType]}`;
 
-    updateEmojiDisplay();
+    require('./resources').updateEmojiDisplay();
 }
 
 

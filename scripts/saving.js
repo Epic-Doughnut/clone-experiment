@@ -2,14 +2,16 @@
 const { updateBuildingButtonCount, recalculateBuildingCost } = require('./buildings');
 const { updateDisplayValue, calcIncrease, updateEmojiDisplay } = require('./resources');
 const { addTool, getAllTools } = require('./tools');
-const { makeVisible, getAllStages, allVisibleButtons, updateSidebar, populateSkillsTable, } = require('./helper');
+const { allVisibleButtons, updateSidebar, populateSkillsTable, } = require('./helper');
+const { makeVisible } = require('./makeVisible');
 const { getCraftedResource } = require('./getCraftedResource');
 const { getMaterial } = require('./getMaterial');
 
 const { getAllPerks, selectCorrectPerkButton, addPerk, hasPerk } = require('./perks');
 const { isPondered } = require('./ponder');
 const { jobCounts, setConnections, getConnections, distributeWorkers, updateDisplay } = require('./jobs');
-const { total_time, setTotalTime, setAteFish, getAteFish, changeMessage: setMessage, getMessage } = require('./main');
+const { total_time, getMessage } = require('./main');
+const { setAteFish, getAteFish } = require('./ateFish');
 
 
 const { craftedResources } = require('./json/craftedResources');
@@ -17,6 +19,7 @@ const { buildings } = require("./json/buildings");
 const { ponders } = require("./json/ponder");
 const { resources } = require('./json/resources');
 const { skills } = require("./json/skills");
+const { getAllStages } = require('./stages');
 
 // import jobCounts;
 /* SAVING */
@@ -230,14 +233,14 @@ function loadGame() {
     // Change the message to the latest one
     if (typeof savegame.message !== 'undefined') {
         // [full message, span]
-        setMessage(savegame.message[0], savegame.message[1]);
+        require('./main').changeMessage(savegame.message[0], savegame.message[1]);
 
     }
 
 
     // Calculate resources earned while away
     if (typeof savegame.time !== 'undefined') {
-        setTotalTime(savegame.time[total_time]);
+        require('./main').setTotalTime(savegame.time[total_time]);
         const time_difference = Date.now() - savegame.time['time_of_save'];
         for (let r in resources) {
             const inc = calcIncrease(r, time_difference);

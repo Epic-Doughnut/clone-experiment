@@ -1,4 +1,5 @@
 const { getCraftedResource } = require('./getCraftedResource');
+const { craftedResources } = require('./json/craftedResources');
 
 // Get function for materials
 /**
@@ -11,7 +12,7 @@ function getMaterial(material, resources) {
         return resources[material].value;
     } else {
         // console.error("Invalid material:", material);  // For debugging
-        return getCraftedResource(material);
+        return getCraftedResource(material, craftedResources);
 
     }
 }

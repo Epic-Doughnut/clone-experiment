@@ -9,12 +9,14 @@ const { saveGame, loadGame } = require("./saving");
 const { createResourceTag, generateTooltipCost } = require('./resources');
 const { recalculateBuildingCost } = require('./buildings');
 const { hasPerk } = require('./perks');
-const { capitalizeFirst, passedStage, makeVisible, updateSidebar, updateButtonVisibility, } = require('./helper');
+const { capitalizeFirst, passedStage, updateSidebar } = require('./helper');
+const { makeVisible } = require('./makeVisible');
+const { updateButtonVisibility } = require('./updateButtonVisibility');
 const { getCraftedResource } = require('./getCraftedResource');
 const { getMaterial } = require('./getMaterial');
 const { canUnlock, isPondered, generatePonderButtons } = require("./ponder");
 const { hasTool, addTool } = require('./tools');
-
+const { getAteFish, setAteFish } = require('./ateFish');
 /* MY CODE STARTS HERE */
 
 
@@ -83,7 +85,7 @@ function toggleResource(resourceKey) {
     }
 }
 
-var ateFish = false;
+
 
 
 
@@ -260,7 +262,7 @@ const visibilityRules = [
     },
 
     {
-        condition: () => getMaterial('fish', resources) >= 5 && !ateFish,
+        condition: () => getMaterial('fish', resources) >= 5 && !getAteFish(),
         action: () => {
             // @ts-ignore
             document.getElementById('eatFish').style.display = 'block';
@@ -269,7 +271,7 @@ const visibilityRules = [
         }
     },
     {
-        condition: () => ateFish,
+        condition: () => getAteFish(),
         action: () => { makeVisible('clone'); makeVisible('ponder-tab'); }
     },
     // {
@@ -426,14 +428,14 @@ let isDark = true;
 // @ts-ignore
 function eatFish() {
     // @ts-ignore
-    if (!ateFish && getMaterial('fish') >= 1) {
+    if (!getAteFish() && getMaterial('fish') >= 1) {
         // eat a fish and blackout
         // @ts-ignore
         increaseMaterial('fish', -1);
         // Call this function to start the sequence
         fadeToBlack();
         // Hide fish button
-        ateFish = true;
+        setAteFish(true);
         const fishButton = document.querySelector("#eatFish");
         // @ts-ignore
         fishButton.display = 'none';
@@ -690,10 +692,10 @@ function updateTooltip(button) {
 }
 
 
-generateButtons(); // Call this once on page load or game initialization
 // After all has been loaded
 // @ts-ignore
 document.addEventListener('DOMContentLoaded', (event) => {
+    generateButtons(); // Call this once on page load or game initialization
 
     loadGame();
     updateSidebar();
@@ -844,16 +846,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 });
 
-function setAteFish(bool) {
-    ateFish = bool;
-    return ateFish;
-}
-
-function getAteFish() {
-    return ateFish;
-}
-
-
 var currentHoverButton = null;
 
 module.exports = {
@@ -863,8 +855,7 @@ module.exports = {
     passedStage,
     setTotalTime,
     changeMessage,
-    setAteFish,
-    getAteFish,
+
     getMessage,
     total_time,
     currentHoverButton

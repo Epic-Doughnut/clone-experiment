@@ -7,7 +7,8 @@ const dom = new JSDOM(`<!doctype html><html>
 <button id="someBuilding" data-tooltip-cost="" data-tooltip-effect=""></button>
 </body>
 </html>`);
-global.document = dom.window.document;
+global.document = dom.window._document;
+// @ts-ignore
 global.window = dom.window;
 
 // Mocking buildings object and hasPerk function

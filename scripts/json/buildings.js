@@ -359,6 +359,8 @@ function getBoost(buildingName, resource) {
     }
     return null;
 }
+
+
 module.exports = {
     buildings: buildings,
     getBuildingCount,
