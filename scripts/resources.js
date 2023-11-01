@@ -380,7 +380,7 @@ function updateEmojiDisplay() {
     for (let resource in resources) {
         // let resource = resources[getAffectedResources(job)[0]];
         let count = getWorkers(resource);
-        console.log(resource, count);
+        // console.log(resource, count);
         if (count === undefined || count == 0) continue;
         let emoji = resources[resource].emoji || '𓀟';  // get the emoji corresponding to the job from the resources map
         // console.log(job, emoji);

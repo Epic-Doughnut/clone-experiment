@@ -6,6 +6,7 @@ const { canBuyBuilding, updateSidebar } = require('./helper');
 const { updateTotal } = require('./jobs');
 const { hasPerk } = require('./perks');
 const { capitalizeFirst } = require('./capitalizeFirst');
+const { getMaterial } = require('./getMaterial');
 
 /* BUILDINGS */
 

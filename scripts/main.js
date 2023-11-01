@@ -825,7 +825,6 @@ module.exports = {
 
     updateSidebar,
     updateUI,
-    passedStage,
     setTotalTime,
     changeMessage,
 

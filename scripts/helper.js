@@ -2,9 +2,7 @@ const { resources } = require('./json/resources');
 const { skills } = require('./json/skills');
 const { buildings } = require('./json/buildings');
 
-const { isPondered, } = require('./ponder');
 const { getMaterial } = require('./getMaterial');
-const { passedStage } = require('./stages');
 
 
 let allVisibleButtons = new Set(['gatherSticks']);
@@ -69,7 +67,7 @@ function updateSidebar() {
         var shouldHide = true;
         for (let c in parentElement.classList) {
             // console.log('has passed', resourceName, passedStage(c));
-            if (passedStage(c)) { shouldHide = false; console.log('dont hide', resourceName, c); }
+            if (require('./stages').passedStage(c)) { shouldHide = false; console.log('dont hide', resourceName, c); }
         }
         if (resourceConfig.value > 0) { shouldHide = false; resources[resourceName].isVisible = true; }
         if (resourceConfig.isVisible) { shouldHide = false; }
@@ -115,7 +113,7 @@ const levelUpMessage = document.getElementById('levelUpMessage');
 
 function updateSkills(resource, num) {
     num = Math.abs(num);
-    if (isPondered('fasterSkills')) num *= 1.05;
+    if (require('./ponder').isPondered('fasterSkills')) num *= 1.05;
     // 
     for (let skill in skills) {
         // 
@@ -144,7 +142,7 @@ function updateSkills(resource, num) {
             }
         }
     }
-    if (passedStage('skillsTable')) {
+    if (require('./stages').passedStage('skillsTable')) {
         populateSkillsTable();
     }
 }
