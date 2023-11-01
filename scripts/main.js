@@ -1,15 +1,15 @@
 
-const { craftedResources } = require('./json/craftedResources');
+const { craftedResources, getCraftedResourceConfigById } = require('./json/craftedResources');
 const { buildings } = require("./json/buildings");
 const { ponders } = require("./json/ponder");
 const { buttons } = require("./json/buttons");
-const { resources } = require('./json/resources');
+const { resources, getResourceConfigById } = require('./json/resources');
 
 const { saveGame, loadGame } = require("./saving");
-const { createResourceTag, generateTooltipCost, appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource } = require('./resources');
+const { createResourceTag, generateTooltipCost, appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource, calcIncrease, updateResourceIncreaseRates, calcSecondsRemaining } = require('./resources');
 const { recalculateBuildingCost, buyMaxBuildings, buyBuilding } = require('./buildings');
 const { hasPerk } = require('./perks');
-const { passedStage, updateSidebar } = require('./helper');
+const { passedStage, updateSidebar, getMax } = require('./helper');
 const { makeVisible } = require('./makeVisible');
 const { updateButtonVisibility } = require('./updateButtonVisibility');
 const { getCraftedResource } = require('./getCraftedResource');
@@ -532,10 +532,10 @@ function update(delta_time, total_time) {
 
     for (let key in resources) {
         // console.log("updating " + key);
-        // @ts-ignore
+
         increaseMaterial(key, calcIncrease(key, delta_time));
     }
-    // @ts-ignore
+
     updateResourceIncreaseRates();
 
     render();
@@ -645,13 +645,11 @@ function showTooltip(target, desc, effect, cost) {
             for (let material in cost) {
                 // const material = req;
                 const amount = cost[material];
-                // @ts-ignore
-                const hasEnough = getMaterial(material) >= amount;/* Your logic to check if there's enough of the material */;
+                const hasEnough = getMaterial(material, resources) >= amount;/* Your logic to check if there's enough of the material */;
                 var colorClass = hasEnough ? 'enough' : 'not-enough';
-                // @ts-ignore
                 if (getMax(material) < amount) colorClass = 'exceeds-max';
                 str += `<span class="tooltip-${material} ${colorClass}">${amount.toFixed(0)} ${material}</span>`;
-                // @ts-ignore
+
                 const secondsRemaining = calcSecondsRemaining(material, amount);
                 // console.log(secondsRemaining);
                 if (secondsRemaining > 0 && colorClass != 'exceeds-max') { str += `<span class="time-remaining">(${(secondsRemaining).toFixed(0)} seconds)</span>`; }
@@ -685,7 +683,7 @@ function updateTooltip(button) {
     const desc = button.getAttribute('data-tooltip-desc') || button.getAttribute('tooltipDesc');
     const effect = button.getAttribute('data-tooltip-effect');
     // const cost = button.getAttribute('data-tooltip-cost');
-    // @ts-ignore
+
     const config = getResourceConfigById(button.id) || getCraftedResourceConfigById(button.id) || buildings[button.getAttribute('data_building')] || ponders[button.getAttribute('unlock')];
     // console.log(config);
     const cost = button.getAttribute('tooltipCost') || config.cost;

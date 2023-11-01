@@ -293,7 +293,6 @@ function increaseMaterial(material, num) {
 }
 
 
-// @ts-ignore
 function updateResourceIncreaseRates() {
     // const resources = ["clones", "sticks", "vines", "rocks", "fish", "wood", "ponder"];
     for (let resource in resources) {
@@ -468,6 +467,7 @@ module.exports = {
     calcSecondsRemaining,
     createResourceTag,
     appendCraftedResourceButtons,
-    calcIncrease
+    calcIncrease,
+    updateResourceIncreaseRates
 
 };
