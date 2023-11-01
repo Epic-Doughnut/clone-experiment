@@ -10,7 +10,8 @@ const { skills } = require('./json/skills');
 
 const { getWorkers, updateTotal, reassignJobsBasedOnResources } = require('./jobs');
 const { hasTool, getToolValueForResource } = require('./tools');
-const { updateSidebar, updateSkills, canCraft, calcCraftBonus } = require("./helper");
+const { updateSidebar, updateSkills, calcCraftBonus } = require("./helper");
+const { canCraft } = require('./canCraft');
 const { capitalizeFirst } = require('./capitalizeFirst');
 const { getMaterial } = require('./getMaterial');
 

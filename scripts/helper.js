@@ -3,7 +3,6 @@ const { skills } = require('./json/skills');
 const { buildings } = require('./json/buildings');
 
 const { isPondered, } = require('./ponder');
-const { craftedResources, } = require("./json/craftedResources");
 const { getMaterial } = require('./getMaterial');
 const { passedStage } = require('./stages');
 
@@ -39,25 +38,6 @@ function calcCraftBonus(resourceKey) {
     return 1;
 }
 
-
-function canCraft(resourceKey) {
-    let canCraft = true;
-    let requirements = craftedResources[resourceKey].cost;
-
-    // Check if all requirements are met
-    try {
-        for (let mat in requirements) {
-            if (getMaterial(mat, resources) < requirements[mat]) {
-                canCraft = false;
-                break;
-            }
-        }
-    } catch (err) {
-        console.warn('Error in calculating requirements: ', resourceKey, requirements, err);
-    }
-
-    return canCraft;
-}
 
 // @ts-ignore
 function getAffectedResources(skill) {
@@ -257,7 +237,7 @@ module.exports = {
     updateSidebar,
     updateSkills,
     populateSkillsTable,
-    canCraft, calcCraftBonus,
+    calcCraftBonus,
     isButtonIdVisible,
     setVisibleButton,
     canBuyBuilding,
