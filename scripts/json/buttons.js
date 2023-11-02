@@ -113,6 +113,14 @@ const buttons = {
         requirement: () => passedStage('perksTab'),
         hide: () => false
     },
+    'tradeTabButton': {
+        class: 'tab-button',
+        text: 'Trade',
+        showTab: 'tradeTab',
+        tab: 'tabs',
+        requirement: () => passedStage('tradeTab'),
+        hide: () => false
+    },
 
     /* PONDER TAB */
     'gatherPonder': {

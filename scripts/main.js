@@ -379,7 +379,7 @@ document.addEventListener('keydown', function (event) {
             if (passedStage('perksTab')) showTab('perksTab');
             break;
         case '7':
-            if (true) showTab('tradeTab');
+            if (passedStage('trading')) showTab('tradeTab');
             break;
         default:
             break;
