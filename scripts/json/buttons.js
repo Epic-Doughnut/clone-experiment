@@ -55,7 +55,7 @@ const buttons = {
     'gatherOre': {
         "class": "tooltip ",
         "tab": "production",
-        "text": "⛏ Mine Ore",
+        "text": "𓉸 Mine Ore",
         "tooltipDesc": "Diggy Diggy Hole",
         "tooltipCost": "Free",
         requirement: () => hasTool('Pickaxe') || passedStage('ore'),
