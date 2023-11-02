@@ -158,7 +158,7 @@ function createResourceTag(resourceName) {
     const resourceValueSpan = document.createElement('span');
     resourceValueSpan.className = 'resourceValue';
     resourceValueSpan.id = `${resourceName}Value`;
-    resourceValueSpan.textContent = `${resources[resourceName].value.toFixed(1)} / ${resources[resourceName].max.toFixed(1)}`;
+    resourceValueSpan.textContent = `${resources[resourceName].value.toFixed(2)} / ${resources[resourceName].max.toFixed(2)}`;
 
     const resourceRateSpan = document.createElement('span');
     resourceRateSpan.className = 'resourceRate';
@@ -214,7 +214,7 @@ function updateDisplayValue(material) {
 
     if (element) {
         try {
-            element.textContent = `${resources[material].value.toFixed(1)} / ${resources[material].max.toFixed(1)}`;
+            element.textContent = `${resources[material].value.toFixed(2)} / ${resources[material].max.toFixed(2)}`;
 
         } catch (error) {
             console.error(element, material, error);
