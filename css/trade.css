@@ -1,8 +1,9 @@
 .trading-container {
-    background-color: #fff;
+    background-color: #1d1d1d;
     padding: 20px;
     border-radius: 5px;
-    max-width: 500px;
+    /* max-width: 500px; */
+    width: 100%;
     margin: auto;
 }
 
@@ -14,7 +15,7 @@
 #trading-container table thead tr th,
 #trading-container table thead tr td {
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #353535;
 }
 
 .gold-container {

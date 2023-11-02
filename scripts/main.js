@@ -378,6 +378,9 @@ document.addEventListener('keydown', function (event) {
         case '6':
             if (passedStage('perksTab')) showTab('perksTab');
             break;
+        case '7':
+            if (true) showTab('tradeTab');
+            break;
         default:
             break;
     }
@@ -677,7 +680,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     loadGame();
     updateSidebar();
     showTab('productionTab');
-    // require('./trade').generateTradeTable(resources);
+    require('./trade').generateTradeTable(resources);
     // createResourceTag('sticks');
 
     function getRKeyFromID(id) {
