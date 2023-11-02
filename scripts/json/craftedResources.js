@@ -109,6 +109,7 @@ const craftedResources = {
         value: 0,
         cost: { 'sand': 10 },
         craftedOnce: false,
+        tooltipDesc: 'You can see right through it!',
         requirement: () => passedStage("glassBlowing")
     },
     'paper': {
@@ -116,6 +117,7 @@ const craftedResources = {
         value: 0,
         cost: { 'wood': 12 },
         craftedOnce: false,
+        tooltipDesc: 'Outsource your memory',
         requirement: () => passedStage('paper'),
     },
     'gold': {
