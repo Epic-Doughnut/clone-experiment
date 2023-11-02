@@ -152,6 +152,8 @@ let ponders = {
     'trading': {
         id: 'ponderTrading',
         isPondered: false,
+        text: "Trading",
+        tooltipDesc: "You met someone! Time to trade with them.",
         cost: { 'gold': 20, 'ponder': 400 }
     },
     // 'science': {
