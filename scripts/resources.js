@@ -93,7 +93,7 @@ function calcIncrease(resourceName, delta_time) {
     // Apply skills to all clones
     for (let skill in skills) {
         if (skills[skill].affectedResources.includes(resourceName)) {
-            let skillRatio = 1.2;
+            let skillRatio = 1.06;
             var mult = 1 + (Math.pow(skillRatio, skills[skill].level) - 1) / 100;
             // console.log("Multiplying gain by " + mult);
             total *= mult;
@@ -187,8 +187,16 @@ function createResourceTag(resourceName) {
     changeResourceOrder("resource-vines", 3); // Move "Vines" to order 3
     changeResourceOrder("resource-rocks", 4);
     changeResourceOrder("resource-fish", 5);
+    changeResourceOrder("resource-freshwater", 5.5);
     changeResourceOrder("resource-wood", 6);
     changeResourceOrder("resource-ore", 7);
+    changeResourceOrder("resource-sand", 8);
+    changeResourceOrder("resource-clay", 9);
+    changeResourceOrder("resource-wheat", 10);
+    changeResourceOrder("resource-hides", 11);
+    changeResourceOrder("resource-game", 12);
+    changeResourceOrder("resource-herbs", 13);
+    changeResourceOrder("resource-berries", 14);
     changeResourceOrder("resource-ponder", 50);
 
 

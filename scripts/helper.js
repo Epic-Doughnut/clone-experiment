@@ -118,11 +118,17 @@ function updateSkills(resource, num) {
     for (let skill in skills) {
         // 
         if (skills[skill].affectedResources.includes(resource)) {
+            // max level 100
+            if (skills[skill].level >= 100) {
+                skills[skill].level = 100;
+                skills[skill].exp = 0;
+                continue;
+            }
             // 
-            skills[skill].exp += num / Math.pow(1.1, skills[skill].level);
+            skills[skill].exp += num / Math.pow(1.4, skills[skill].level);
             // console.log("Updating skill:" + skill + " to " + skills[skill].exp)
 
-            // 
+
             if (skills[skill].exp >= 100) {
                 // 
                 skills[skill].level += 1;

@@ -486,8 +486,8 @@ function loop(current_time) {
     // while (accumulated_lag >= 100 * milliseconds_per_frame) {
     //     milliseconds_per_frame *= 100;
     // }
-    if (accumulated_lag >= 1000 * milliseconds_per_frame) {
-        milliseconds_per_frame = accumulated_lag / 1000;
+    if (accumulated_lag >= 10 * milliseconds_per_frame) {
+        milliseconds_per_frame = accumulated_lag / 10;
     }
     while (accumulated_lag >= milliseconds_per_frame) {
 
