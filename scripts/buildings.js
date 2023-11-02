@@ -155,10 +155,8 @@ function buyBuilding(buildingName) {
     }
     // Add the effects
     for (const resource in building.effects) {
-        // if (building.effects[effect]) {
         increaseMax(resource, building.effects[resource]);
-        // }
-        // Additional logic can be added here for other effects (e.g., increase production rates)
+
     }
 
 
