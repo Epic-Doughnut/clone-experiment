@@ -12,7 +12,7 @@
 
 
 #alone {
-    cursor: copy;
+    cursor: pointer;
     padding: .25em;
     user-select: none;
     color: aliceblue;
