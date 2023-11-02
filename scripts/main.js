@@ -782,7 +782,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
             }
 
-            if (button.classList.includes('tierOneButton')) {
+            if (button.classList.contains('tierOneButton')) {
                 let perk = button.textContent;
                 selectAbility(perk);
             }

@@ -1,7 +1,5 @@
 const { buildings } = require('./json/buildings');
-const { recalculateBuildingCost } = require('./buildings');
 const { perks } = require('./json/perks');
-const { selectCorrectPerkButton } = require('./selectCorrectPerkButton');
 let myPerks = [];
 
 /**
@@ -27,7 +25,7 @@ function addPerk(perkName) {
     switch (perkName) {
         case 'Architect':
             for (let b in buildings) {
-                recalculateBuildingCost(b, buildings, hasPerk);
+                require('./buildings').recalculateBuildingCost(b, buildings, hasPerk);
 
             }
             break;
@@ -59,7 +57,7 @@ function selectAbility(abilityName) {
     addPerk(abilityName);
 
     // for (let i = 1; i <= 1; ++i)
-    selectCorrectPerkButton(abilityName);
+    require('./selectCorrectPerkButton').selectCorrectPerkButton(abilityName);
 
     // myPerks.push(abilityName);
 }
