@@ -442,8 +442,9 @@ function craftAllResources(resourceKey) {
             sufficientResources.push(getMaterial(mat, resources) / cost[mat]);
             // }
         }
-
-        craftResourceQuantity(Math.min(...sufficientResources));
+        let min = Math.floor(Math.min(...sufficientResources));
+        console.log(resourceKey, min);
+        craftResourceQuantity(resourceKey, min);
 
 
     } catch (error) {
@@ -455,28 +456,46 @@ function craftResourceQuantity(resourceKey, quantity) {
     if (!craftedResources.hasOwnProperty(resourceKey)) throw "Invalid craft for missing resource: " + resourceKey;
 
     if (!canCraft(resourceKey)) return; // Takes care of quantity < 1
+    let cost = craftedResources[resourceKey].cost;
+    // let craftBonus = calcCraftBonus(resourceKey);
+    // for (let i = 0; i < quantity; ++i) {
+    //     craftOne(resourceKey, cost, craftBonus);
+    // }
 
-    for (let i = 0; i < quantity; ++i) {
-        craftResource(resourceKey);
+    for (let mat in cost) {
+        increaseMaterial(mat, -cost[mat] * quantity);
     }
+    increaseMaterial(resourceKey, quantity);
+
+
+    if (!craftedResources[resourceKey].craftedOnce) craftedResources[resourceKey].craftedOnce = true;
+
+    updateDisplayValue(resourceKey);
+
 }
 
+
+function craftOne(resourceKey, cost, craftBonus) {
+    for (let mat in cost) {
+        increaseMaterial(mat, -cost[mat]);
+    }
+    increaseMaterial(resourceKey, 1 || craftBonus);
+
+}
 // Craft function
 function craftResource(resourceKey) {
     if (!craftedResources.hasOwnProperty(resourceKey)) throw "Invalid craft for missing resource: " + resourceKey;
 
-
-    let cost = craftedResources[resourceKey].cost;
-
     if (!canCraft(resourceKey)) return;
 
+    let cost = craftedResources[resourceKey].cost;
+    let craftBonus = calcCraftBonus(resourceKey);
 
-    for (let mat in cost) {
-        increaseMaterial(mat, -cost[mat]);
-    }
-    increaseMaterial(resourceKey, 1 || calcCraftBonus(resourceKey));
+
+    craftOne(resourceKey, cost, craftBonus);
+
     // document.querySelector("#" + resourceKey + "Value").textContent = craftedResources[resourceKey].value.toFixed(2);
-    craftedResources[resourceKey].craftedOnce = true;
+    if (!craftedResources[resourceKey].craftedOnce) craftedResources[resourceKey].craftedOnce = true;
     updateDisplayValue(resourceKey);
 }
 
