@@ -119,7 +119,7 @@ const buildings = {
     "grove": {
         basecost: { 'wood': 20, 'vines': 20 },
         effects: {},
-        boost: { 'wood': 1.1, 'sticks': 1.2 },
+        boost: { 'wood': 1.05, 'sticks': 1.1 },
         count: 0,
         ratio: 1.2,
         tooltipDesc: "A nice grove of trees to find wood faster."
@@ -130,7 +130,7 @@ const buildings = {
         },
         "effects": {},
         "boost": {
-            "fish": 1.2
+            "fish": 1.05
         },
         "count": 0,
         "ratio": 1.2,
@@ -143,7 +143,7 @@ const buildings = {
         },
         "effects": {},
         "boost": {
-            "ore": 1.05
+            "ore": 1.05, 'rocks': 1.05
         },
         "count": 0,
         "ratio": 1.2,
@@ -162,12 +162,12 @@ const buildings = {
     },
     "lumber_yard": {
         "basecost": {
-            "wood": 60,
-            "iron": 5
+            "wood": 200,
+            "iron": 1
         },
         "effects": {},
         "boost": {
-            "wood": 1.25
+            "wood": 1.2
         },
         "count": 0,
         "ratio": 1.3,
@@ -181,7 +181,7 @@ const buildings = {
         },
         "effects": {},
         "boost": {
-            "rocks": 1.3
+            "rocks": 1.1
         },
         "count": 0,
         "ratio": 1.3,
@@ -194,7 +194,7 @@ const buildings = {
         },
         "effects": {},
         "boost": {
-            "fish": 1.4
+            "fish": 1.1
         },
         "count": 0,
         "ratio": 1.2,
@@ -207,7 +207,7 @@ const buildings = {
         },
         "effects": {},
         "boost": {
-            "vines": 1.3
+            "vines": 1.1
         },
         "count": 0,
         "ratio": 1.2,
@@ -221,7 +221,7 @@ const buildings = {
         },
         "effects": {},
         "boost": {
-            "ore": 1.5
+            "ore": 1.2
         },
         "count": 0,
         "ratio": 1.2,
@@ -230,12 +230,12 @@ const buildings = {
     'water_well': {
         'basecost': {
             'rocks': 30,
-            'rope': 5,
+            'rope': 1,
             'wood': 10
         },
         'effects': { 'freshwater': 30 },
         'boost': {
-            'freshwater': 1.2
+            'freshwater': 1.1
         },
         'count': 0,
         'ratio': 1.4,
@@ -260,7 +260,7 @@ const buildings = {
         },
         "effects": { 'hides': 50 },
         "boost": {
-            "hides": 1.5
+            "hides": 1.1
         },
         "count": 0,
         "ratio": 1.3,
@@ -275,9 +275,9 @@ const buildings = {
         },
         "effects": {},
         "boost": {
-            "berries": 1.4,
-            "herbs": 1.4,
-            'ore': 1.2
+            "berries": 1.2,
+            "herbs": 1.2,
+            'ore': 1.1
         },
         "count": 0,
         "ratio": 1.25,
@@ -291,7 +291,7 @@ const buildings = {
         },
         "effects": {},
         "boost": {
-            "wheat": 1.4
+            "wheat": 1.2
         },
         "count": 0,
         "ratio": 1.3,
@@ -317,14 +317,14 @@ const buildings = {
     },
     "observatory": {
         "basecost": {
-            "rocks": 70,
+            "bricks": 70,
             "wood": 30,
             "glass": 50,
             "ponder": 50
         },
         "effects": {},
         "boost": {
-            "ponder": 1.4
+            "ponder": 1.2
         },
         "count": 0,
         "ratio": 1.3,
@@ -339,7 +339,7 @@ const buildings = {
         },
         "effects": { "ponder": 50 },
         "boost": {
-            "ponder": 1.5
+            "ponder": 1.1
         },
         "count": 0,
         "ratio": 1.3,
