@@ -248,6 +248,7 @@ function increaseMax(material, num) {
     resources[material].max += num;
     updateSidebar();
     updateTotal();
+
 }
 
 // Generic increase

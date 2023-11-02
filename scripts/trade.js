@@ -1,5 +1,6 @@
 const { getMaterial } = require('./getMaterial');
 
+
 const resourceList = document.getElementById('resourceList');
 const goldAmountEl = document.getElementById('goldAmount');
 // let goldAmount = 1000; // Sample starting amount
@@ -51,19 +52,23 @@ exports.buyResource = buyResource;
 exports.sellResource = sellResource;
 
 function buyResource(resource, price) {
-    let goldAmount = getMaterial('gold', require('./json/resources').resources);
-    if (goldAmount >= price) {
-        goldAmount -= price;
-        goldAmountEl.textContent = goldAmount.toFixed(2);
-        alert(`You bought ${resource} for ${price.toFixed(2)} gold!`);
+
+    if (getMaterial('gold', require('./json/resources').resources) >= price) {
+        require('./resources').increaseMaterial('gold', -price);
+        require('./resources').increaseMaterial(resource, price);
+        goldAmountEl.textContent = getMaterial('gold', require('./json/resources').resources);
+        // alert(`You bought ${resource} for ${price.toFixed(2)} gold!`);
     } else {
-        alert("You don't have enough gold!");
+        // alert("You don't have enough gold!");
     }
 }
 
 function sellResource(resource, price) {
-    let goldAmount = getMaterial('gold', require('./json/resources').resources);
-    goldAmount += price;
-    goldAmountEl.textContent = goldAmount.toFixed(2);
-    alert(`You sold ${resource} for ${price.toFixed(2)} gold!`);
+    if (getMaterial(resource, require('./json/resources').resources) >= 1) {
+
+        require('./resources').increaseMaterial('gold', price);
+        require('./resources').increaseMaterial(resource, -1);
+        goldAmountEl.textContent = getMaterial('gold', require('./json/resources').resources);
+    }
+    // alert(`You sold ${resource} for ${price.toFixed(2)} gold!`);
 }
