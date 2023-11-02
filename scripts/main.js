@@ -9,7 +9,7 @@ const { resources, getResourceConfigById } = require('./json/resources');
 const { saveGame, loadGame } = require("./saving");
 const { createResourceTag, generateTooltipCost, appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource, calcIncrease, updateResourceIncreaseRates, calcSecondsRemaining, increaseMax } = require('./resources');
 const { recalculateBuildingCost, buyMaxBuildings, buyBuilding } = require('./buildings');
-const { hasPerk } = require('./perks');
+const { hasPerk, selectAbility } = require('./perks');
 const { updateSidebar, getMax } = require('./helper');
 const { makeVisible } = require('./makeVisible');
 const { updateButtonVisibility } = require('./updateButtonVisibility');
@@ -780,6 +780,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
                 }
 
+            }
+
+            if (button.classList.includes('tierOneButton')) {
+                let perk = button.textContent;
+                selectAbility(perk);
             }
 
         }
