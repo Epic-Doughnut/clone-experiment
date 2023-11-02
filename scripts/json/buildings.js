@@ -65,7 +65,7 @@ const buildings = {
     },
     "workshop": {
         "basecost": { "wood": 40, "sticks": 20, "rocks": 10 },
-        "effects": { 'rocks': 50, 'ore': 50, 'sand': 100 },
+        "effects": { 'rocks': 50, 'ore': 50, 'sand': 100, 'clay': 50 },
         "boost": {},
         "count": 0,
         "ratio": 1.2,

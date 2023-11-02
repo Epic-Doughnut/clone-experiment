@@ -6,6 +6,7 @@ const { resources } = require('./json/resources');
 
 const { getMaterial } = require('./getMaterial');
 const { isPondered } = require("./ponder");
+const { getMax } = require('./helper');
 
 /* JOBS FUNCTIONALITY */
 
@@ -144,9 +145,12 @@ function updateDisplay(jobType) {
 }
 
 
+/**
+ * Update total assigned clones counter
+ */
 function updateTotal() {
     const totalElement = document.querySelector('#jobs-total');
-    totalElement.textContent = "Assigned Clones: " + getTotalJobs() + " / " + getMaterial('clones', resources);
+    totalElement.textContent = "Assigned Clones: " + getTotalJobs() + " / " + getMax('clones');
 }
 
 
