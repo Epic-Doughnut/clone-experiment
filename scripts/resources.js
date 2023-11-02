@@ -435,12 +435,29 @@ const autoCraftTable = {
 
 function craftAllResources(resourceKey) {
     try {
-        while (canCraft(resourceKey)) {
-            craftResource(resourceKey);
+        const cost = craftedResources[resourceKey].cost;
+        let sufficientResources = [];
+        for (let mat in cost) {
+            // if (getMaterial(mat, resources) < cost[mat]) {
+            sufficientResources.push(getMaterial(mat, resources) / cost[mat]);
+            // }
         }
+
+        craftResourceQuantity(Math.min(...sufficientResources));
+
 
     } catch (error) {
         console.log('Failed to craftall for: ', resourceKey, error);
+    }
+}
+
+function craftResourceQuantity(resourceKey, quantity) {
+    if (!craftedResources.hasOwnProperty(resourceKey)) throw "Invalid craft for missing resource: " + resourceKey;
+
+    if (!canCraft(resourceKey)) return; // Takes care of quantity < 1
+
+    for (let i = 0; i < quantity; ++i) {
+        craftResource(resourceKey);
     }
 }
 
@@ -451,16 +468,18 @@ function craftResource(resourceKey) {
 
     let cost = craftedResources[resourceKey].cost;
 
-    if (canCraft(resourceKey)) {
-        for (let mat in cost) {
-            increaseMaterial(mat, -cost[mat]);
-        }
-        increaseMaterial(resourceKey, 1 || calcCraftBonus(resourceKey));
-        // document.querySelector("#" + resourceKey + "Value").textContent = craftedResources[resourceKey].value.toFixed(2);
-        craftedResources[resourceKey].craftedOnce = true;
-        updateDisplayValue(resourceKey);
+    if (!canCraft(resourceKey)) return;
+
+
+    for (let mat in cost) {
+        increaseMaterial(mat, -cost[mat]);
     }
+    increaseMaterial(resourceKey, 1 || calcCraftBonus(resourceKey));
+    // document.querySelector("#" + resourceKey + "Value").textContent = craftedResources[resourceKey].value.toFixed(2);
+    craftedResources[resourceKey].craftedOnce = true;
+    updateDisplayValue(resourceKey);
 }
+
 
 
 module.exports = {
