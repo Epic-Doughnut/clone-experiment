@@ -11,9 +11,9 @@ function generateTradeTable(resources) {
         const price = Math.floor(Math.random() * 100) + 10; // Random price between 10 and 110 for this example.
 
         row.innerHTML = `
-            <td>${resource}</td>
-            <td>${price}</td>
-            <td>
+            <td class="tradetd">${resource}</td>
+            <td class="tradetd">${price}</td>
+            <td class="tradetd" style="display:flex; flex-direction:row;">
                 <button class="buyBtn" data-resource="${resource}" data-price="${price}">Buy</button>
                 <button class="sellBtn" data-resource="${resource}" data-price="${price}">Sell</button>
             </td>
@@ -25,14 +25,18 @@ function generateTradeTable(resources) {
     // Add event listeners for the buy and sell buttons
     document.querySelectorAll('.buyBtn').forEach(btn => {
         btn.addEventListener('click', (e) => {
+            // @ts-ignore
             const resource = e.target.getAttribute('data-resource');
+            // @ts-ignore
             const price = parseFloat(e.target.getAttribute('data-price'));
             buyResource(resource, price);
         });
     });
     document.querySelectorAll('.sellBtn').forEach(btn => {
         btn.addEventListener('click', (e) => {
+            // @ts-ignore
             const resource = e.target.getAttribute('data-resource');
+            // @ts-ignore
             const price = parseFloat(e.target.getAttribute('data-price'));
             sellResource(resource, price);
         });

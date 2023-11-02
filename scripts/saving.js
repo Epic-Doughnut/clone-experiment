@@ -194,7 +194,12 @@ function loadGame() {
     }
     if (typeof savegame.unlocks !== 'undefined') {
         for (let u in savegame.unlocks) {
-            ponders[u].isPondered = savegame.unlocks[u];
+            try {
+                ponders[u].isPondered = savegame.unlocks[u];
+
+            } catch (error) {
+                console.warn('Old save data includes obsolete ponder', u);
+            }
         }
     }
 

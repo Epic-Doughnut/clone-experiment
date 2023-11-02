@@ -10,14 +10,29 @@
 #trading-container table {
     width: 100%;
     border-collapse: collapse;
+    display: flex;
+    flex-direction: row;
 }
 
-#trading-container table thead tr th,
-#trading-container table thead tr td {
-    padding: 10px;
-    border: 1px solid #353535;
+#trading-container table tr {
+    display: flex;
+    flex-direction: row;
 }
+
+.tradetd {
+    display: inline-block;
+    /* flex-direction: row; */
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #363636;
+
+}
+
 
 .gold-container {
     margin-bottom: 20px;
+}
+
+#resourceList {
+    width: 300px;
 }

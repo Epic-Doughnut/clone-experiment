@@ -34,14 +34,14 @@ let ponders = {
         requirement: () => true,
         text: "Fishing Job"
     },
-    'management': {
-        id: 'ponderManagement',
-        isPondered: false,
-        cost: { 'ponder': 200, 'clones': 5 },
-        text: "Meta-jobs",
-        requirement: () => true,
-        tooltipDesc: "You managed to make clones manage each other. You call them "
-    },
+    // 'micromanagement': {
+    //     id: 'ponderMicromanagement',
+    //     isPondered: false,
+    //     cost: { 'ponder': 200, 'clones': 5 },
+    //     text: "Micromanagement",
+    //     requirement: () => true,
+    //     tooltipDesc: "You managed to make clones manage each other."
+    // },
     'fasterSkills': {
         id: 'ponderFasterSkills',
         isPondered: false,
@@ -149,14 +149,11 @@ let ponders = {
     //         amount: 160
     //     }]
     // },
-    // 'trading': {
-    //     id: 'ponderTrading',
-    //     isPondered: false,
-    //     cost: [{
-    //         material: 'ponder',
-    //         amount: 180
-    //     }, { material: 'gold', amount: 100 }]
-    // },
+    'trading': {
+        id: 'ponderTrading',
+        isPondered: false,
+        cost: { 'gold': 20, 'ponder': 400 }
+    },
     // 'science': {
     //     id: 'ponderScience',
     //     isPondered: false,

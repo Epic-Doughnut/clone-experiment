@@ -5,7 +5,9 @@
 function selectCorrectPerkButton(abilityName) {
     // Disable all buttons
     let buttons = document.querySelectorAll('.tierOneButton');
-    let selectedButton = document.querySelector(`#${abilityName}`);
+    let selectedButton;
+    try { selectedButton = document.querySelector(`#${abilityName}Perk`); }
+    catch (error) { }
     if (selectedButton) {
         buttons.forEach(button => {
             button.setAttribute('disabled', 'true');
