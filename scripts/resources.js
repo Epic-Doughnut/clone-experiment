@@ -187,16 +187,16 @@ function createResourceTag(resourceName) {
     changeResourceOrder("resource-vines", 3); // Move "Vines" to order 3
     changeResourceOrder("resource-rocks", 4);
     changeResourceOrder("resource-fish", 5);
-    changeResourceOrder("resource-freshwater", 5.5);
-    changeResourceOrder("resource-wood", 6);
-    changeResourceOrder("resource-ore", 7);
-    changeResourceOrder("resource-sand", 8);
-    changeResourceOrder("resource-clay", 9);
-    changeResourceOrder("resource-wheat", 10);
-    changeResourceOrder("resource-hides", 11);
-    changeResourceOrder("resource-game", 12);
-    changeResourceOrder("resource-herbs", 13);
-    changeResourceOrder("resource-berries", 14);
+    changeResourceOrder("resource-freshwater", 6);
+    changeResourceOrder("resource-wood", 7);
+    changeResourceOrder("resource-ore", 8);
+    changeResourceOrder("resource-sand", 9);
+    changeResourceOrder("resource-clay", 10);
+    changeResourceOrder("resource-wheat", 11);
+    changeResourceOrder("resource-hides", 12);
+    changeResourceOrder("resource-game", 13);
+    changeResourceOrder("resource-herbs", 14);
+    changeResourceOrder("resource-berries", 15);
     changeResourceOrder("resource-ponder", 50);
 
 

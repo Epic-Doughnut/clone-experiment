@@ -18,7 +18,7 @@ function selectCorrectPerkButton(abilityName) {
         selectedButton.removeAttribute('disabled');
         selectedButton.classList.add('selected');
     } else {
-        console.warn('No button found with ability name: ', abilityName);
+        console.warn('No button found with ability name: ' + abilityName);
     }
 }
 exports.selectCorrectPerkButton = selectCorrectPerkButton;

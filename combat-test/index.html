@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incremental Combat Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="game-container">
+        <div id="player" class="combatant">&#x13080;</div>
+        <div id="enemy" class="combatant">&#x1320F;</div>
+        <div id="orb-row">
+            <!-- Dynamically filled with orbs -->
+        </div>
+        <div id="player-cards">
+            <!-- Dynamically filled with cards -->
+        </div>
+        <button id="next-turn">Next Turn</button>
+        <div id="log"></div>
+        <div id="inventory" ondrop="handleDrop(event)" ondragover="allowDrop(event)">
+            <p>Inventory</p>
+            <!-- Cards can be dragged here to be excluded from the turn order -->
+        </div>
+    </div>
+    <script src="script.js"></script>
+    <script>
+        // Prevent the default image drag behavior to ensure our custom drag-and-drop works smoothly
+        window.addEventListener('load', () => {
+            document.addEventListener('dragstart', (event) => {
+                if (event.target.tagName === 'IMG') {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,4 +1,4 @@
-const { makeVisible, passedStage, getAllStages } = require('../helper');  // replace 'yourFile' with actual file name
+
 
 // Mock the DOM functionalities
 const jsdom = require('jsdom');
