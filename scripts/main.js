@@ -843,13 +843,15 @@ document.addEventListener('DOMContentLoaded', (event) => {
     });
 
     function makeFactoryButtons() {
+        const factoryButtons = document.querySelector('#factoryButtons');
+
         const buyFactoryButton = document.createElement('button');
         buyFactoryButton.classList.add('tooltip');
         buyFactoryButton.id = 'buyFactoryButton';
         buyFactoryButton.textContent = 'Buy New Factory';
         buyFactoryButton.setAttribute('data-tooltip-desc', 'The factory must grow!');
         buyFactoryButton.setAttribute('data-tooltip-cost', '50 silver');
-        document.querySelector('#factoryTab').appendChild(buyFactoryButton);
+        factoryButtons.appendChild(buyFactoryButton);
 
         buyFactoryButton.addEventListener("click", () => {
 
@@ -863,7 +865,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         upgradeBulkButton.textContent = 'Upgrade Bulk';
         upgradeBulkButton.setAttribute('data-tooltip-desc', 'Craft more resources per second');
         upgradeBulkButton.setAttribute('data-tooltip-cost', '2 → 4: 30 silver');
-        document.querySelector('#factoryTab').appendChild(upgradeBulkButton);
+        factoryButtons.appendChild(upgradeBulkButton);
 
         upgradeBulkButton.addEventListener("click", () => {
             console.log('upgrading bulk');

@@ -20,7 +20,7 @@ Object.keys(craftedResources).forEach(r => allMaterials.push(r));
 console.log("All materials: ", allMaterials);
 
 function createFactoryDiv() {
-    const factoryTab = document.getElementById('factoryTab');
+    const factoriesContainer = document.getElementById('factories');
     const factoryDiv = document.createElement('div');
     factoryDiv.className = 'factory';
 
@@ -77,7 +77,7 @@ function createFactoryDiv() {
 
     addInitialOption(rightSelect, 'Select a Resource');
 
-    factoryTab.appendChild(factoryDiv);
+    factoriesContainer.appendChild(factoryDiv);
 
 }
 
