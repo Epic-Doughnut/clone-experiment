@@ -10,7 +10,7 @@ const { skills } = require('./json/skills');
 
 const { getWorkers, updateTotal, reassignJobsBasedOnResources } = require('./jobs');
 const { hasTool, getToolValueForResource } = require('./tools');
-const { updateSidebar, updateSkills, calcCraftBonus } = require("./helper");
+const { updateSidebar, updateSkills, calcCraftBonus, getMax } = require("./helper");
 const { canCraft } = require('./canCraft');
 const { capitalizeFirst } = require('./capitalizeFirst');
 const { getMaterial } = require('./getMaterial');
@@ -70,7 +70,10 @@ function calcIncrease(resourceName, delta_time) {
     //     total = 1;
     //     return total;
     // }
-    if (!resources.hasOwnProperty(resourceName)) return total;
+    if (craftedResources.hasOwnProperty(resourceName)) {
+        // check our factories
+
+    } else if (!resources.hasOwnProperty(resourceName)) return total;
 
     if (resourceName === 'clones' && isPondered('autoClone')) total = 1;
     // Check tools
@@ -142,8 +145,20 @@ function calcSecondsRemaining(resourceName, needed) {
 
 // Create all our resource tags in the sidebar
 const resourcesContainer = document.getElementById('resources');
-function createResourceTag(resourceName) {
-    if (!resources.hasOwnProperty(resourceName)) throw "Invalid resource: " + resourceName;
+function createResourceTag(resourceName, groupName) {
+    // if (!resources.hasOwnProperty(resourceName)) throw "Invalid resource: " + resourceName;
+    console.log("Creating resource tag for ", resourceName, groupName);
+    let groupContainer;
+    if (groupName) {
+        groupContainer = document.getElementById(`group-${groupName}`);
+        if (!groupContainer) {
+            groupContainer = createResourceGroupContainer(groupName);
+            resourcesContainer.appendChild(groupContainer);
+        }
+    }
+    else {
+        groupContainer = document.getElementById('resources');
+    }
 
     const resourceDisplayName = capitalizeFirst(resourceName).split('_').join(' ');
 
@@ -158,7 +173,9 @@ function createResourceTag(resourceName) {
     const resourceValueSpan = document.createElement('span');
     resourceValueSpan.className = 'resourceValue';
     resourceValueSpan.id = `${resourceName}Value`;
-    resourceValueSpan.textContent = `${resources[resourceName].value.toFixed(2)} / ${resources[resourceName].max.toFixed(2)}`;
+    let max = getMax(resourceName) === Infinity ? '∞' : getMax(resourceName).toFixed(2);
+
+    resourceValueSpan.textContent = `${getMaterial(resourceName).toFixed(2)} / ${max}`;
 
     const resourceRateSpan = document.createElement('span');
     resourceRateSpan.className = 'resourceRate';
@@ -169,7 +186,9 @@ function createResourceTag(resourceName) {
     resourceElement.appendChild(resourceValueSpan);
     resourceElement.appendChild(resourceRateSpan);
 
-    resourcesContainer.appendChild(resourceElement);
+    // resourcesContainer.appendChild(resourceElement);
+    groupContainer.appendChild(resourceElement);
+
 
     // Update the ordering
 
@@ -203,36 +222,109 @@ function createResourceTag(resourceName) {
 }
 
 
+// Define groups for your resources
+const resourceGroups = {
+    basics: ['clones', 'sticks', 'berries', 'fish', 'game', 'wheat', 'freshwater'],
+    materials: ['wood', 'ore', 'sand', 'clay', 'vines', 'rocks', 'hides', 'herbs'],
+    tools: ['sharprocks', 'rope', 'handle', 'fishingrod', 'pickaxe', 'axe', 'spear', 'staff'],
+    advanced: ['glass', 'paper', 'crates', 'medicine', 'leather'],
+    metal: ['gold', 'iron', 'silver', 'steel'],
+    construction: ['bricks', 'beams', 'nails', 'slabs', 'concrete']
+    // ... Add other groups as necessary
+};
+
+
+function toggleGroupVisibility(groupName) {
+    const group = document.getElementById(`group-${groupName}`);
+    const toggleButton = document.getElementById(`toggle-${groupName}`); // Ensure you have this button with the id 'toggle-groupName'
+
+    Array.from(group.children).forEach(element => {
+        if (element.tagName === 'P') element.classList.toggle('hidden');
+    });
+
+    // Check if the group is currently hidden
+    if (toggleButton.classList.contains('arrow-down')) {
+        toggleButton.classList.remove('arrow-down');
+        toggleButton.classList.add('arrow-right');
+    } else {
+        toggleButton.classList.remove('arrow-right');
+        toggleButton.classList.add('arrow-down');
+    }
+}
+
+
+// Function to create a group container
+function createResourceGroupContainer(groupName) {
+    const groupContainer = document.createElement('div');
+    groupContainer.className = 'resourceGroup';
+    groupContainer.id = `group-${groupName}`;
+
+    const toggleButton = document.createElement('button');
+    toggleButton.textContent = groupName.toUpperCase();
+    toggleButton.onclick = () => toggleGroupVisibility(groupName);
+    toggleButton.className = 'toggle-button arrow-down';
+    toggleButton.id = `toggle-${groupName}`;
+
+    groupContainer.appendChild(toggleButton);
+    return groupContainer;
+}
+
+
+// Iterates over each group and resource to create tags
+function initializeResourceTags() {
+    for (let groupName in resourceGroups) {
+        const resources = resourceGroups[groupName];
+        resources.forEach(resourceName => {
+            try { createResourceTag(resourceName, groupName); }
+            catch (error) { console.log(error); }
+        });
+    }
+}
+
+// Call this function once to set up your resource tags
+// initializeResourceTags();
+
 
 function updateDisplayValue(material) {
     const element = resourcesContainer.querySelector(`#${material}Value`);
     const craftedButton = document.querySelector(`button#craft${capitalizeFirst(material)}`);
-    try { if (!element || craftedButton) createResourceTag(material); }
+    try { if (!element) createResourceTag(material); }
     catch (error) { }
 
 
-
+    // console.log(material, element, craftedButton);
     if (element) {
         try {
-            element.textContent = `${resources[material].value.toFixed(2)} / ${resources[material].max.toFixed(2)}`;
+            let max = getMax(material) === Infinity ? '∞' : getMax(material).toFixed(2);
+            element.textContent = `${getMaterial(material).toFixed(2)} / ${max}`;
 
         } catch (error) {
             console.error(element, material, error);
         }
 
-        if (resources[material].isGetting) {
+        if (resources[material]) {
             const sidebarText = document.querySelector("#resources").querySelector('#resource-' + material);
-            // @ts-ignore
-            if (sidebarText) sidebarText.style.fontWeight = 'bold';
+            if (resources[material].isGetting) {
+                // @ts-ignore
+                if (sidebarText) sidebarText.style.fontWeight = 'bold';
+
+            }
+
+            // document.querySelectorAll('select').forEach(s => {
+            //     // console.log(s, material);
+            //     if (s.value === material && sidebarText) {
+            //         sidebarText.style.color = 'thistle';
+            //     }
+            // });
 
         }
-    } else if (craftedButton) {
+    }
+    if (craftedButton) {
         const countSpan = craftedButton.querySelector(`#${material}Value`);
+        // console.log('crafted button was found', countSpan, material, getCraftedResource(material));
         if (countSpan) countSpan.textContent = getCraftedResource(material).toFixed(0);
         else console.warn(`Resource button found but no count span for: ${material}`);
 
-    } else {
-        // console.warn(`No display element found for material: ${material}`);
     }
 
 }
@@ -262,15 +354,15 @@ function increaseMaterial(material, num) {
     // This check ensures that the material key exists in the resources map.
     if (resources.hasOwnProperty(material)) {
 
-        if (resources[material].value < resources[material].max && num > 0) { // Adding resources
+        if (getMaterial(material) < getMax(material) && num > 0) { // Adding resources
             if (isPondered('fasterResourceGain')) num *= 1.05;
             resources[material].value += num;
             updateSkills(material, num);
         } else if (num < 0) { // Subtracting resources
             resources[material].value += num;
         } else { // Already at max
-            resources[material].value = resources[material].max;
-            if (isPondered('autocraft') && autoCraftTable[material]) {
+            resources[material].value = getMax(material);
+            if (isPondered('autocraft') && document.querySelector("#autoCraftCheckbox").checked && autoCraftTable[material]) {
                 craftAllResources(autoCraftTable[material]);
             }
 
@@ -286,7 +378,9 @@ function increaseMaterial(material, num) {
         updateSkills(material, num);
     }
     else {
-        throw "Tried to increase Invalid material: " + material;
+        // throw "Tried to increase Invalid material: " + material;
+        createResourceTag(material);
+        increaseMaterial(material, num);
     }
 
     // crafted materials have no max, a la Kittens Game
@@ -344,8 +438,8 @@ function appendCraftedResourceButtons() {
 
         // config.count = craftedResources[name].value;
         const button = createCraftedResourceButton(craftedResources[name]);
-        button.setAttribute('data-tooltip-desc', craftedResources[name].tooltipDesc);
-        button.setAttribute('data-tooltip-cost', generateTooltipCost(craftedResources[name].cost));
+        button.setAttribute('data-tooltip-desc', craftedResources[name].tooltipDesc || "");
+        button.setAttribute('data-tooltip-cost', generateTooltipCost(craftedResources[name].cost) || "");
 
         container.appendChild(button);
         buttons[craftedResources[name].id] = craftedResources[name];
@@ -368,6 +462,7 @@ function appendCraftedResourceButton(name) {
 // appendCraftedResourceButton('sticks');
 
 function generateTooltipCost(requirements) {
+    if (requirements === null) return '';
     var str = '';
     for (let material in requirements) {
 
@@ -516,6 +611,7 @@ module.exports = {
     createResourceTag,
     appendCraftedResourceButtons,
     calcIncrease,
-    updateResourceIncreaseRates
+    updateResourceIncreaseRates,
+    initializeResourceTags
 
 };

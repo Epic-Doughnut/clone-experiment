@@ -125,21 +125,21 @@ let ponders = {
         tooltipDesc: 'Maybe you as the original should specialize',
         cost: { 'ponder': 400 }
     },
-    'autocraft': {
-        id: "ponderAutocraft",
+    // 'autocraft': {
+    //     id: "ponderAutocraft",
+    //     requirement: () => true,
+    //     isPondered: false,
+    //     text: "Auto Craft",
+    //     tooltipDesc: "Automatically craft resources when they reach the storage limit",
+    //     cost: { 'ponder': 400, 'wood': 1000, 'rocks': 500, 'wheat': 1000 }
+    // },
+    'factoryTab': {
+        id: 'ponderFactoryTab',
         requirement: () => true,
         isPondered: false,
-        text: "Auto Craft",
-        tooltipDesc: "Automatically craft resources when they reach the storage limit",
-        cost: { 'ponder': 400, 'wood': 1000, 'rocks': 500, 'wheat': 1000 }
-    },
-    'finish': {
-        id: 'ponderFinish',
-        requirement: () => true,
-        isPondered: false,
-        text: "Finish the Game",
-        tooltipDesc: "That's it. You're done",
-        cost: { 'ponder': 1000 }
+        text: "Factories",
+        tooltipDesc: "Ascend to the next level of economy",
+        cost: { 'ponder': 500, 'gold': 10, 'wood': 1000, 'wheat': 1000, 'rocks': 1000 }
     },
     // 'exploration': {
     //     id: 'ponderExploration',
@@ -149,13 +149,13 @@ let ponders = {
     //         amount: 160
     //     }]
     // },
-    'trading': {
-        id: 'ponderTrading',
-        isPondered: false,
-        text: "Trading",
-        tooltipDesc: "You met someone! Time to trade with them.",
-        cost: { 'gold': 10, 'ponder': 400 }
-    },
+    // 'trading': {
+    //     id: 'ponderTrading',
+    //     isPondered: false,
+    //     text: "Trading",
+    //     tooltipDesc: "You met someone! Time to trade with them.",
+    //     cost: { 'gold': 10, 'ponder': 400 }
+    // },
     // 'science': {
     //     id: 'ponderScience',
     //     isPondered: false,

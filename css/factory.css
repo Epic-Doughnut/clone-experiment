@@ -1,0 +1,30 @@
+#factoryTab {
+    /* Add styles for the factory tab container if necessary */
+    display: flex;
+    flex-direction: column;
+}
+
+.factory {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    width: 250px;
+    background: linear-gradient(to right, #3a4a3a, #5a7a5a);
+    color: white;
+}
+
+.factory select {
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #2a2a2a;
+    color: white;
+    border: 1px solid #444;
+}
+
+.factory span {
+    margin: 0 10px;
+    font-size: 1.5em;
+}

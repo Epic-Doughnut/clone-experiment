@@ -1,25 +1,27 @@
 #sidebar {
     width: 350px;
-    height: 100vh;
+    height: 90vh;
+    overflow-y: auto;
     background-color: #bbb;
     border-right: 1px solid #eee;
     padding: 20px;
     font-size: 16px;
     display: flex;
     flex-direction: column;
+    position: sticky;
 }
 
 
 #sidebar>#resources {
-    display: flex;
-    flex-direction: column;
+    /* display: flex; */
+    /* flex-direction: column; */
     flex: none;
 }
 
-#sidebar>#resources>* {
+/* #sidebar>#resources>* {
     display: none;
     order: 1000;
-}
+} */
 
 
 
@@ -37,12 +39,31 @@
 }
 
 p.resource {
-    display: flex !important;
+    display: flex;
     /* Enable flexbox on the paragraph */
     justify-content: space-between;
     /* Distribute items evenly */
 }
 
+#sidebar p.hidden {
+    display: none;
+}
+
+.toggle-button {
+    cursor: pointer;
+    /* Add more styles as needed */
+}
+
+/* Define styles for arrows */
+.arrow-down::before {
+    content: "⮟";
+    /* Unicode for arrow down */
+}
+
+.arrow-right::before {
+    content: "⮞";
+    /* Unicode for arrow right */
+}
 
 .resourceValue {
     flex: 1;
@@ -61,38 +82,42 @@ p.resource {
     width: 100px;
 }
 
-#resourcesWords {
-    order: 0;
+/* width */
+::-webkit-scrollbar {
+    width: 20px;
 }
 
-#resource-clones {
-    order: 1;
+/* Track */
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px #222;
+    background-color: #333;
+    border-radius: 10px;
 }
 
-#resource-sticks {
-    order: 2;
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #666;
+    border-radius: 10px;
 }
 
-#resource-vines {
-    order: 3;
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
 
-#resource-rocks {
-    order: 4;
+::-webkit-scrollbar-track-piece {
+    background-color: #333;
 }
 
-#resource-fish {
-    order: 5;
+
+.hidden {
+    display: none;
 }
 
-#resource-wood {
-    order: 6;
+.resourceGroup {
+    margin-bottom: 10px;
 }
 
-#resource-ore {
-    order: 7;
-}
-
-#resource-ponder {
-    order: 50;
+.resourceGroup>button {
+    /* Styles for your group toggle buttons */
 }

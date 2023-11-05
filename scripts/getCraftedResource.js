@@ -11,9 +11,10 @@ function getCraftedResource(material, craftedResources) {
         // console.warn('Missing craftedResources definition, loading default', craftedResources);
     }
     if (craftedResources.hasOwnProperty(material)) {
-        return craftedResources[material].value;
+        return craftedResources[material].value || 0;
     } else {
-        throw ("Invalid crafted resource:" + material); // For debugging
+        console.warn("Invalid crafted resource:" + material); // For debugging
+        return 0;
     }
 }
 exports.getCraftedResource = getCraftedResource;

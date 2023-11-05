@@ -159,7 +159,9 @@ function loadGame() {
     if (typeof savegame.craftedResources !== "undefined") {
         for (var key of Object.keys(savegame.craftedResources)) {
             // console.log('loading crafted', key, savegame.craftedResources[key], craftedResources[key]);
+            if (!craftedResources[key]) continue;
             craftedResources[key].value = savegame.craftedResources[key].value;
+            if (Number.isNaN(craftedResources[key].value)) craftedResources[key].value = 0;
             craftedResources[key].craftedOnce = savegame.craftedResources[key].craftedOnce;
             updateDisplayValue(key);
         }

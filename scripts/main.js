@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 const { craftedResources, getCraftedResourceConfigById } = require('./json/craftedResources');
 const { buildings } = require("./json/buildings");
 const { ponders } = require("./json/ponder");
@@ -7,16 +5,17 @@ const { buttons } = require("./json/buttons");
 const { resources, getResourceConfigById } = require('./json/resources');
 
 const { saveGame, loadGame } = require("./saving");
-const { createResourceTag, generateTooltipCost, appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource, calcIncrease, updateResourceIncreaseRates, calcSecondsRemaining, increaseMax } = require('./resources');
+const { generateTooltipCost, appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource, calcIncrease, updateResourceIncreaseRates, calcSecondsRemaining, increaseMax, initializeResourceTags } = require('./resources');
 const { recalculateBuildingCost, buyMaxBuildings, buyBuilding } = require('./buildings');
 const { hasPerk, selectAbility } = require('./perks');
-const { updateSidebar, getMax } = require('./helper');
+const { updateSidebar, getMax, clearSidebar } = require('./helper');
 const { makeVisible } = require('./makeVisible');
 const { updateButtonVisibility } = require('./updateButtonVisibility');
 const { getCraftedResource } = require('./getCraftedResource');
 const { getMaterial } = require('./getMaterial');
+const { createFactoryDiv, buyFactory, attemptManufacture, upgradeBulk } = require('./factory');
 // @ts-ignore
-const { canUnlock, isPondered, generatePonderButtons } = require("./ponder");
+const { isPondered, generatePonderButtons } = require("./ponder");
 const { hasTool, addTool } = require('./tools');
 const { getAteFish, setAteFish } = require('./ateFish');
 const { drawAllConnections, updateTotal } = require('./jobs');
@@ -280,6 +279,10 @@ const visibilityRules = [
         condition: () => getAteFish(),
         action: () => { makeVisible('clone'); makeVisible('ponder-tab'); }
     },
+    {
+        condition: () => isPondered('ponderFinish'),
+        action: () => navigateTo('stage2.html')
+    }
     // {
     //     condition: () => isPondered('jobs-tab'),
     //     action: () => makeVisible('jobs-tab')
@@ -329,8 +332,12 @@ let tabContainers = document.querySelectorAll(".tab-content > .content"); // Dir
 function showTab(tabName) {
     console.log("show tab: " + tabName);
     // Get all main container divs and hide them
+    let prevTab = '';
     for (let content of tabContainers) {
-        content.classList.remove("active");
+        if (content.classList.contains('active')) {
+            prevTab = content.id;
+            content.classList.remove("active");
+        }
     }
 
     // Get all tab buttons and remove the active class
@@ -350,8 +357,17 @@ function showTab(tabName) {
 
     if (activeTabButton) activeTabButton.classList.add("active");
 
-    if (tabName === 'jobsTab') {
+    if (tabName === 'jobsTab')
         drawAllConnections();
+
+
+    if (tabName === 'factoryTab' && prevTab !== 'factoryTab') {
+        clearSidebar();
+        initializeResourceTags();
+    }
+    else if (prevTab === 'factoryTab') {
+        clearSidebar();
+        updateSidebar();
     }
 }
 
@@ -379,7 +395,7 @@ document.addEventListener('keydown', function (event) {
             if (passedStage('perksTab')) showTab('perksTab');
             break;
         case '7':
-            if (passedStage('trading')) showTab('tradeTab');
+            if (true) showTab('factoryTab');
             break;
         default:
             break;
@@ -452,6 +468,21 @@ function hideOverlay() {
     overlay.style.display = 'none';
 }
 
+function navigateTo(url) {
+    // Trigger the overlay to fade in
+    var overlay = document.getElementById('page-transition-overlay');
+    overlay.classList.add('fade-in');
+
+    // Wait for the fade in to complete before changing the page
+    setTimeout(function () {
+        window.location.href = url;
+    }, 300); // This duration should match the CSS opacity transition
+}
+
+// Example usage
+// navigateTo('next-page.html');
+
+
 
 // Message 
 const messageElement = document.getElementById('message');
@@ -504,7 +535,7 @@ function loop(current_time) {
 
 
 let time_since_last_save = 0;
-
+let time_since_manufature = 0;
 function update(delta_time, total_time) {
 
     for (let key in resources) {
@@ -514,15 +545,21 @@ function update(delta_time, total_time) {
     }
 
     updateResourceIncreaseRates();
-
     render();
 
     // Save the game every 10 seconds
     time_since_last_save += delta_time;
+    time_since_manufature += delta_time;
     total_time += delta_time;
     if (time_since_last_save >= 10000) {
         saveGame();
         time_since_last_save = 0;
+    }
+
+    // Manufacture every second
+    if (time_since_manufature >= 1000) {
+        attemptManufacture();
+        time_since_manufature = 0;
     }
 
 }
@@ -664,7 +701,7 @@ function updateTooltip(button) {
 
     const config = getResourceConfigById(button.id) || getCraftedResourceConfigById(button.id) || buildings[button.getAttribute('data_building')] || ponders[button.getAttribute('unlock')];
     // console.log(config);
-    const cost = button.getAttribute('tooltipCost') || config.cost;
+    const cost = button.getAttribute('tooltipCost') || button.getAttribute('data-tooltip-cost') || config.cost;
     showTooltip(button, desc, effect, cost);
 }
 
@@ -758,22 +795,22 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 console.log(button);
                 if (button.id.slice(0, 6) === "gather") toggleResource(getRKeyFromID(button.id));
 
-                if (button.id.slice(0, 5) === 'craft')
+                else if (button.id.slice(0, 5) === 'craft')
                     if (event.shiftKey) craftAllResources(getCRKeyFromID(button.id));
                     else craftResource(getCRKeyFromID(button.id));
 
-                if (button.id === 'saveButton') saveGame();
+                else if (button.id === 'saveButton') saveGame();
 
-                if (button.id === 'eatFish') eatFish();
+                else if (button.id === 'eatFish') eatFish();
 
-                if (button.id === 'overlay-button') hideOverlay();
+                else if (button.id === 'overlay-button') hideOverlay();
 
-                if (button.id === 'deleteSaveButton') {
+                else if (button.id === 'deleteSaveButton') {
                     localStorage.removeItem('save'); location.reload();
                 }
-                if (button.id === 'clearJobAssignments') clearJobAssignments();
+                else if (button.id === 'clearJobAssignments') clearJobAssignments();
                 // @ts-ignore
-                if (button.id === 'darkModeToggle') {
+                else if (button.id === 'darkModeToggle') {
                     body.classList.toggle('dark-mode');
                     // @ts-ignore
                     darkModeToggle.classList.toggle('dark');
@@ -782,6 +819,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     darkModeToggle.textContent = isDark ? "Light Mode" : "Dark Mode";
 
                 }
+
+                else if (button.id === '2main') showTab('mainTab');
+                else if (button.id === '2graphs') showTab('graphsTab');
 
             }
 
@@ -801,6 +841,40 @@ document.addEventListener('DOMContentLoaded', (event) => {
             updateTotal();
         }
     });
+
+    function makeFactoryButtons() {
+        const buyFactoryButton = document.createElement('button');
+        buyFactoryButton.classList.add('tooltip');
+        buyFactoryButton.id = 'buyFactoryButton';
+        buyFactoryButton.textContent = 'Buy New Factory';
+        buyFactoryButton.setAttribute('data-tooltip-desc', 'The factory must grow!');
+        buyFactoryButton.setAttribute('data-tooltip-cost', '50 silver');
+        document.querySelector('#factoryTab').appendChild(buyFactoryButton);
+
+        buyFactoryButton.addEventListener("click", () => {
+
+            console.log('buying factory');
+            buyFactory();
+        });
+
+        const upgradeBulkButton = document.createElement('button');
+        upgradeBulkButton.classList.add('tooltip');
+        upgradeBulkButton.id = 'upgradeBulkButton';
+        upgradeBulkButton.textContent = 'Upgrade Bulk';
+        upgradeBulkButton.setAttribute('data-tooltip-desc', 'Craft more resources per second');
+        upgradeBulkButton.setAttribute('data-tooltip-cost', '2 → 4: 30 silver');
+        document.querySelector('#factoryTab').appendChild(upgradeBulkButton);
+
+        upgradeBulkButton.addEventListener("click", () => {
+            console.log('upgrading bulk');
+            upgradeBulk();
+        });
+
+
+
+    }
+    makeFactoryButtons();
+    createFactoryDiv();
 
 
     requestAnimationFrame(loop);

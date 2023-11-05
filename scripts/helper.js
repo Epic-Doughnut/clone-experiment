@@ -5,6 +5,7 @@ const { buildings } = require('./json/buildings');
 const { getMaterial } = require('./getMaterial');
 
 
+
 let allVisibleButtons = new Set(['gatherSticks']);
 exports.allVisibleButtons = allVisibleButtons;
 
@@ -57,8 +58,15 @@ function getMax(material) {
     }
 }
 
+function clearSidebar() {
+    const sidebar = document.querySelector("#resources");
+    sidebar.innerHTML = '';
+}
+
 
 function updateSidebar() {
+    Array.from(require('./factory').allMaterials).forEach(r => require('./resources').updateDisplayValue(r));
+
     for (const [resourceName, resourceConfig] of Object.entries(resources)) {
 
         const parentElement = document.getElementById('resource-' + resourceName);
@@ -87,6 +95,7 @@ function updateSidebar() {
             displayElem.innerHTML = `<span style="color:${color}">${abbreviateNumber(resourceConfig.value)} / ${abbreviateNumber(getMax(resourceName))} </span>`;
         }
     }
+
 }
 
 function abbreviateNumber(num) {
@@ -245,5 +254,6 @@ module.exports = {
     setVisibleButton,
     canBuyBuilding,
     hasGeneratedSkillTable,
+    clearSidebar,
 };
 

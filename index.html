@@ -7,15 +7,7 @@
 	<title>Clone Idle</title>
 	<link href="https://fonts.googleapis.com/css2?family=PT+Sans&display=swap" rel="stylesheet">
 
-	<link rel="stylesheet" href="css/style.css">
-	<link rel="stylesheet" href="css/skills.css">
-	<link rel="stylesheet" href="css/buttons.css">
-	<link rel="stylesheet" href="css/darkmode.css">
-	<link rel="stylesheet" href="css/sidebar.css">
-	<link rel="stylesheet" href="css/jobs.css">
-	<link rel="stylesheet" href="css/tabs.css">
-	<link rel="stylesheet" href="css/overlay.css">
-	<link rel="stylesheet" href="css/trade.css">
+	<link rel="stylesheet" href="css/master.css">
 </head>
 
 <body>
@@ -23,7 +15,7 @@
 	<button id="saveButton">Save</button>
 	<button id="deleteSaveButton">Delete Save
 		Data</button>
-	<!-- Level up -->
+	<div id="page-transition-overlay"></div>
 
 
 	<!-- For cutscenes -->
@@ -36,12 +28,12 @@
 	<!-- SIDEBAR -->
 
 	<div id="sidebar">
-		<h4 id='resourcesWords' class='startVisible'>Resources</h4>
+		<h4 id='resourcesWords' class='startVisible'><a href="stage2.html">Resources</a></h4>
 		<div id="resources">
 			<!-- Resource values here -->
 		</div>
 
-		<div id="tools" class='craftRocks'>
+		<div id="tools" class='craftRocks' style="display: none;">
 			<hr>
 			<h4>Tools:</h4>
 			<ul id="tools-list">
@@ -74,9 +66,13 @@
 
 		<!-- EXPERIMENT TAB (2) -->
 		<div id="experimentTab" class="experiment-tab content" data-target='experimentTab'>
+			<!-- <input type="checkbox" name="autoCraft" id="autoCraftCheckbox"> -->
+			<!-- <label for="autoCraftCheckbox">Auto Craft</label> -->
+
 			<div class="button-columns visible active">
 				<!-- This is where you will append the columns of buttons -->
 			</div>
+
 
 			<div class="rows visible active craftRocks rope" id="craftedResourceButtons">
 
@@ -127,7 +123,7 @@
 
 		</div>
 
-		<div id='tradeTab' class="tradeTab content" data-targe="tradeTab">
+		<div id='tradeTab' class="tradeTab content" data-target="tradeTab">
 			<div class="trading-container">
 				<div class="gold-container">
 					Gold: <span id="goldAmount">0</span> <!-- Sample initial value -->
@@ -143,6 +139,10 @@
 					<tbody id="resourceList"></tbody>
 				</table>
 			</div>
+		</div>
+
+		<div id="factoryTab" class="factoryTab content" data-target="factoryTab">
+
 		</div>
 	</div>
 

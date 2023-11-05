@@ -2,6 +2,8 @@
 
 // Mock the DOM functionalities
 const jsdom = require('jsdom');
+const { makeVisible } = require('../makeVisible');
+const { passedStage, getAllStages } = require('../stages');
 const { JSDOM } = jsdom;
 
 // Initial stages for testing

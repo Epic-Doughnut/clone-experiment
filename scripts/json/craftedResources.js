@@ -159,7 +159,15 @@ const craftedResources = {
         requirement: () => getMaterial('clay', resources) > 5,
         tooltipDesc: "Leave some clay by the fire",
         tooltipCost: ''
-    }
+    },
+    'steel': { value: 0, cost: { 'iron': 5 } },
+    'beams': { value: 0, cost: { 'wood': 10 } },
+    'crates': { value: 0, cost: { 'wood': 15 } },
+    'nails': { value: 0, cost: { 'iron': 1 } },
+    'slabs': { value: 0, cost: { 'rocks': 20 } },
+    'medicine': { value: 0, cost: { 'herbs': 50 } },
+    'leather': { value: 0, cost: { 'hides': 10 } },
+    'concrete': { value: 0, cost: { 'sand': 32 } }
 };
 
 function getCraftedResourceConfigById(id) {
