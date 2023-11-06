@@ -20,6 +20,7 @@ const { ponders } = require("./json/ponder");
 const { resources } = require('./json/resources');
 const { skills } = require("./json/skills");
 const { getAllStages } = require('./stages');
+const { activeFactoriesProducing, loadFactory } = require('./factory');
 
 // import jobCounts;
 /* SAVING */
@@ -44,7 +45,8 @@ function saveGame() {
         allVisibleButtons: [],
         message: [],
         connections: new Map(),
-        perks: []
+        perks: [],
+        factories: {}
     };
 
     // Extract exp and level from skills and save to save.skills
@@ -107,6 +109,10 @@ function saveGame() {
         const spanText = div.querySelector('span').textContent;
 
         return [textContent, spanText];
+    }
+
+    for (const [key, val] of Object.entries(activeFactoriesProducing)) {
+        save.factories[key] = val;
     }
 
     const htmlString = require('./main').getMessage().innerHTML;
@@ -286,6 +292,13 @@ function loadGame() {
             require('./selectCorrectPerkButton').selectCorrectPerkButton(perk);
         }
     }
+
+    if (typeof savegame.factories !== 'undefined')
+        for (const [key, val] of Object.entries(savegame.factories))
+            if (val > 0)
+                for (let i = 0; i < val; ++i)
+                    loadFactory(key);
+
 
 }
 

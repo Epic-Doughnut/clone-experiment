@@ -882,7 +882,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     }
     makeFactoryButtons();
-    createFactoryDiv();
+    // createFactoryDiv();
 
 
     requestAnimationFrame(loop);

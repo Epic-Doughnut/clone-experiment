@@ -21,13 +21,17 @@ var switchedManufacturedMap = {
     'crates': ['wood'],
     'glass': ['sand'],
     'gold': ['ore'],
+    'handle': ['sticks'],
     'iron': ['ore'],
     'leather': ['hides'],
     'medicine': ['herbs'],
     'nails': ['iron'],
     'paper': ['wood'],
+    'sharprocks': ['rocks'],
     'silver': ['ore'],
     'slabs': ['rocks'],
+    'spear': ['staff', 'sharprocks', 'rope'],
+    'staff': ['handle', 'rope'],
     'steel': ['iron'],
     'sticks': ['wood'],
     'rope': ['vines'],
@@ -159,15 +163,33 @@ function createFactoryDiv() {
 
     factoriesContainer.appendChild(factoryDiv);
 
+    return factoryDiv;
+
+}
+
+function loadFactory(crafting) {
+    let div = createFactoryDiv();
+    div.querySelector('select').value = crafting;
+    document.querySelector(`#resource-${crafting}`).style.color = 'thistle';
+    div.querySelector('.factoryCost').innerHTML = '';
+    div.querySelector('.factoryCost').innerHTML += `${require('./resources').generateTooltipCost(craftedResources[crafting].cost)}`;
+
 }
 
 
 let manufactureBulk = 2;
 let bulkUpgradeCost = 30;
 let manufactureBonus = 1;
-function manufacture(resource, goalResource) {
+/**
+ * 
+ * @param {string[]} resources All resources required for the craft
+ * @param {string} goalResource What we'll be crafting
+ */
+function manufacture(resources, goalResource) {
     // Calculate how many we can afford
-    let num = Math.min(manufactureBulk, getMaterial(resource));
+    let arr = [];
+    resources.forEach(resource => arr.push(getMaterial(resource)));
+    let num = Math.min(manufactureBulk, ...arr);
     num *= manufactureBonus;
     // The factories get to be half price of normal crafting bc efficiency
     require('./resources').craftResourceQuantity(goalResource, num);
@@ -180,7 +202,7 @@ function upgradeBulk() {
     bulkUpgradeCost += 10;
 
     const upButton = document.getElementById('upgradeBulkButton');
-    upButton.setAttribute('data-tooltip-cost', `${manufactureBulk} → ${manufactureBulk + 2}: ${bulkUpgradeCost.toFixed(0)} silver`);
+    upButton.setAttribute('tooltipCost', `${manufactureBulk} → ${manufactureBulk + 2}: ${bulkUpgradeCost.toFixed(0)} silver`);
 }
 
 function attemptManufacture() {
@@ -190,10 +212,10 @@ function attemptManufacture() {
         // const leftSelect = factory.querySelector('span:first-child');
         const rightSelect = factory.querySelector('select:last-child');
         const goalResource = rightSelect.value;
-        const resource = switchedManufacturedMap[goalResource];
+        const resources = switchedManufacturedMap[goalResource];
         console.log("checking factory", goalResource);
-        if (resource && goalResource) {
-            manufacture(resource, goalResource);
+        if (resources && goalResource) {
+            manufacture(resources, goalResource);
         }
 
     });
@@ -202,6 +224,15 @@ function attemptManufacture() {
 // Call this function whenever you want to start the manufacturing process
 // for example, after creating the factory divs initially or after adding a new one
 // startManufacturingProcess();
+// function determineNewFactoryCost() {
+//     var cost = 50;
+//     for (const [key, val] of Object.entries(activeFactoriesProducing)) {
+//         if (val > 0)
+//             cost *= Math.pow(1.2, val);
+//     }
+//     return cost;
+// }
+// var newFactorySilverCost = determineNewFactoryCost();
 var newFactorySilverCost = 50;
 function buyFactory() {
     const buyFactoryButton = document.getElementById('buyFactoryButton');
@@ -214,7 +245,7 @@ function buyFactory() {
     createFactoryDiv();
 
     newFactorySilverCost *= 1.2;
-    buyFactoryButton.setAttribute('data-tooltip-cost', `${newFactorySilverCost.toFixed(2)} silver`);
+    buyFactoryButton.setAttribute('tooltipCost', `${newFactorySilverCost.toFixed(2)} silver`);
 }
 
 module.exports = {
@@ -223,5 +254,7 @@ module.exports = {
     buyFactory,
     upgradeBulk,
     allMaterials,
-    getFactoryProduction
+    getFactoryProduction,
+    loadFactory,
+    activeFactoriesProducing
 };
