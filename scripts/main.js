@@ -395,7 +395,7 @@ document.addEventListener('keydown', function (event) {
             if (passedStage('perksTab')) showTab('perksTab');
             break;
         case '7':
-            if (true) showTab('factoryTab');
+            if (passedStage('factoryTab')) showTab('factoryTab');
             break;
         default:
             break;

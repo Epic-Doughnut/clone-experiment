@@ -14,6 +14,25 @@ var manufacturedMap = {
     wood: ['paper', 'beams', 'crates'],
 };
 
+var switchedManufacturedMap = {
+    'bricks': ['clay'],
+    'medicine': ['herbs'],
+    'leather': ['hides'],
+    'steel': ['iron'],
+    'nails': ['iron'],
+    'iron': ['ore'],
+    'silver': ['ore'],
+    'gold': ['ore'],
+    'glass': ['sand'],
+    'concrete': ['sand'],
+    'slabs': ['rocks'],
+    'rope': ['vines'],
+    'paper': ['wood'],
+    'beams': ['wood'],
+    'crates': ['wood']
+};
+
+
 var allMaterials = [];
 Object.keys(resources).forEach(r => allMaterials.push(r));
 Object.keys(craftedResources).forEach(r => allMaterials.push(r));
@@ -28,34 +47,34 @@ function createFactoryDiv() {
     const rightSelect = document.createElement('select');
 
     // Populate the right dropdown
-    Object.values(manufacturedMap).forEach(resource => {
-        resource.forEach(r => {
-            const option = document.createElement('option');
-            option.value = r;
-            option.textContent = r;
-            rightSelect.appendChild(option);
+    Object.keys(switchedManufacturedMap).forEach(resource => {
 
-        });
+        const option = document.createElement('option');
+        option.value = resource;
+        option.textContent = resource;
+        rightSelect.appendChild(option);
+
+
     });
 
 
     rightSelect.addEventListener('change', function () {
         document.querySelector(`#resource-${rightSelect.value}`).style.color = 'thistle';
+        leftText.textContent = switchedManufacturedMap[rightSelect.value];
+        // let foundResource = null;
 
-        let foundResource = null;
+        // // Iterate through the manufacturedMap to find the right resource
+        // for (const [resource, products] of Object.entries(manufacturedMap)) {
+        //     if (products.includes(rightSelect.value)) { // Make sure to use .value for <select> elements
+        //         foundResource = resource;
+        //         break; // Stop the loop once the resource is found
+        //     }
+        // }
 
-        // Iterate through the manufacturedMap to find the right resource
-        for (const [resource, products] of Object.entries(manufacturedMap)) {
-            if (products.includes(rightSelect.value)) { // Make sure to use .value for <select> elements
-                foundResource = resource;
-                break; // Stop the loop once the resource is found
-            }
-        }
-
-        // Update the leftText if the resource was found
-        if (foundResource) {
-            leftText.textContent = foundResource;
-        }
+        // // Update the leftText if the resource was found
+        // if (foundResource) {
+        //     leftText.textContent = foundResource;
+        // }
     });
 
     // Add the initial option for left select
