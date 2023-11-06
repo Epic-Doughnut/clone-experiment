@@ -302,16 +302,13 @@ function render() {
     });
 
     for (let tool in toolsToStages) {
-        // @ts-ignore
         if (!hasTool(tool) && getCraftedResource(tool) > 0) {
-            // @ts-ignore
             addTool(tool);
             makeVisible(toolsToStages[tool]);
         }
     }
 
     try {
-        // @ts-ignore
         updateButtonVisibility();
         if (currentHoverButton !== null) updateTooltip(currentHoverButton);
     } catch (err) {
@@ -336,7 +333,8 @@ function showTab(tabName) {
     for (let content of tabContainers) {
         if (content.classList.contains('active')) {
             prevTab = content.id;
-            content.classList.remove("active");
+            content.style.opacity = '0';
+            setTimeout(() => { content.classList.remove("active"); }, 100);
         }
     }
 
@@ -349,7 +347,13 @@ function showTab(tabName) {
     // Show the clicked tab's main container div and make the tab button active
     let activeContent = document.getElementById(tabName);
     // @ts-ignore
-    activeContent.classList.add("active");
+
+
+    setTimeout(() => { activeContent.classList.add("active"); }, 100);
+    setTimeout(() => {
+        activeContent.style.opacity = '1';
+    }, 200);
+
 
     // Get the clicked tab button and make it active
     const tabString = `#${tabName}Button`;
@@ -360,10 +364,13 @@ function showTab(tabName) {
     if (tabName === 'jobsTab')
         drawAllConnections();
 
+    console.log(prevTab, '>', tabName);
+    if (tabName === 'factoryTab') {
+        if (prevTab != 'factoryTab') {
 
-    if (tabName === 'factoryTab' && prevTab !== 'factoryTab') {
-        clearSidebar();
-        initializeResourceTags();
+            clearSidebar();
+            initializeResourceTags();
+        }
     }
     else if (prevTab === 'factoryTab') {
         clearSidebar();
@@ -674,7 +681,7 @@ function showTooltip(target, desc, effect, cost) {
 
         } catch (error) {
             content += cost;
-            console.error("Couldn't make normal cost for button: ", target, cost, error);
+            // console.error("Couldn't make normal cost for button: ", target, cost, error);
         }
     }
     // console.log(target, content);

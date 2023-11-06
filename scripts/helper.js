@@ -31,10 +31,18 @@ function canBuyBuilding(buildingName) {
     return canBuy;
 }
 // Calculate the final number of crafted goods from bonuses
-// @ts-ignore
-// @ts-ignore
 function calcCraftBonus(resourceKey) {
-    return 1;
+    let total = 1;
+    for (let skill in skills) {
+        if (skills[skill].affectedResources.includes(resourceKey)) {
+            let skillRatio = 1.06;
+            var mult = 1 + (Math.pow(skillRatio, skills[skill].level) - 1) / 100;
+            // console.log("Multiplying gain by " + mult);
+            total *= mult;
+        }
+    }
+
+    return total;
 }
 
 
@@ -244,7 +252,6 @@ function setVisibleButton(id) {
 }
 
 module.exports = {
-    getMaterial,
     getMax,
     updateSidebar,
     updateSkills,

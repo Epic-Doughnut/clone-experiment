@@ -1,35 +1,37 @@
+const { getMaterial } = require('./getMaterial');
 const { craftedResources } = require('./json/craftedResources');
 const { resources } = require('./json/resources');
-const { increaseMaterial, getMaterial, craftResource } = require('./resources');
 // Assuming these are defined globally
-var manufacturedMap = {
-    clay: ['bricks'],
-    herbs: ['medicine'],
-    hides: ['leather'],
-    iron: ['steel', 'nails'],
-    ore: ['iron', 'silver', 'gold'],
-    sand: ['glass', 'concrete'],
-    rocks: ['slabs'],
-    vines: ['rope'],
-    wood: ['paper', 'beams', 'crates'],
-};
+// var manufacturedMap = {
+//     clay: ['bricks'],
+//     herbs: ['medicine'],
+//     hides: ['leather'],
+//     iron: ['steel', 'nails'],
+//     ore: ['iron', 'silver', 'gold'],
+//     sand: ['glass', 'concrete'],
+//     rocks: ['slabs'],
+//     vines: ['rope'],
+//     wood: ['paper', 'beams', 'crates'],
+// };
 
 var switchedManufacturedMap = {
-    'bricks': ['clay'],
-    'medicine': ['herbs'],
-    'leather': ['hides'],
-    'steel': ['iron'],
-    'nails': ['iron'],
-    'iron': ['ore'],
-    'silver': ['ore'],
-    'gold': ['ore'],
-    'glass': ['sand'],
-    'concrete': ['sand'],
-    'slabs': ['rocks'],
-    'rope': ['vines'],
-    'paper': ['wood'],
     'beams': ['wood'],
-    'crates': ['wood']
+    'bricks': ['clay'],
+    'concrete': ['sand'],
+    'crates': ['wood'],
+    'glass': ['sand'],
+    'gold': ['ore'],
+    'iron': ['ore'],
+    'leather': ['hides'],
+    'medicine': ['herbs'],
+    'nails': ['iron'],
+    'paper': ['wood'],
+    'silver': ['ore'],
+    'slabs': ['rocks'],
+    'steel': ['iron'],
+    'sticks': ['wood'],
+    'rope': ['vines'],
+    'wood': ['sticks'],
 };
 
 
@@ -38,12 +40,68 @@ Object.keys(resources).forEach(r => allMaterials.push(r));
 Object.keys(craftedResources).forEach(r => allMaterials.push(r));
 console.log("All materials: ", allMaterials);
 
+let activeFactoriesProducing = {};
+let activeFactoriesConsuming = {};
+
+function isProducing(resource) {
+    return resource in activeFactoriesProducing;
+}
+
+function isConsuming(resource) {
+    return resource in activeFactoriesConsuming;
+}
+
+// function getFactoryConsumption(resource) {
+//     return activeFactoriesConsuming[resource] * ;
+// }
+
+function getFactoryProduction(resource) {
+    return activeFactoriesProducing[resource] * manufactureBulk;
+}
+
+
+// Function to update resource production and consumption
+function updateFactoryResourceTracking(oldProduced, newProduced, factoryIndex) {
+    // If this factory was previously producing something, reduce the count
+    if (oldProduced && oldProduced !== 'none') {
+        activeFactoriesProducing[oldProduced]--;
+        Array.from(craftedResources[oldProduced].cost).forEach((cost) => {
+            activeFactoriesConsuming[cost.resource] -= cost.amount;
+        });
+    }
+
+    // Update the production count for the new resource
+    activeFactoriesProducing[newProduced]++;
+    Array.from(craftedResources[newProduced].cost).forEach((cost) => {
+        activeFactoriesConsuming[cost.resource] += cost.amount;
+    });
+}
+
+// Call this whenever a factory's settings change
+function onFactoryModified(factoryIndex, newProduced) {
+    const rightSelect = document.querySelector(`#factory-${factoryIndex} .rightSelect`);
+    updateFactoryResourceTracking(rightSelect.getAttribute('data-produced'), newProduced, factoryIndex);
+    rightSelect.setAttribute('data-produced', newProduced);
+}
 function createFactoryDiv() {
+
+    // Initialize resource tracking objects
+    Object.keys(craftedResources).forEach((resource) => {
+        activeFactoriesProducing[resource] = 0;
+        Array.from(craftedResources[resource].cost).forEach((cost) => {
+            if (!activeFactoriesConsuming[cost.resource]) {
+                activeFactoriesConsuming[cost.resource] = 0;
+            }
+        });
+    });
+
+
     const factoriesContainer = document.getElementById('factories');
     const factoryDiv = document.createElement('div');
     factoryDiv.className = 'factory';
 
     const leftText = document.createElement('span');
+    leftText.classList.add('factoryCost');
     const rightSelect = document.createElement('select');
 
     // Populate the right dropdown
@@ -57,24 +115,27 @@ function createFactoryDiv() {
 
     });
 
+    rightSelect.setAttribute('data-produced', 'none');
+
 
     rightSelect.addEventListener('change', function () {
-        document.querySelector(`#resource-${rightSelect.value}`).style.color = 'thistle';
-        leftText.textContent = switchedManufacturedMap[rightSelect.value];
-        // let foundResource = null;
+        // Get the current produced resource for this factory
+        const currentProduced = this.getAttribute('data-produced');
+        if (currentProduced !== 'none') document.querySelector(`#resource-${currentProduced}`).style.color = '';
 
-        // // Iterate through the manufacturedMap to find the right resource
-        // for (const [resource, products] of Object.entries(manufacturedMap)) {
-        //     if (products.includes(rightSelect.value)) { // Make sure to use .value for <select> elements
-        //         foundResource = resource;
-        //         break; // Stop the loop once the resource is found
-        //     }
-        // }
+        const newProduced = rightSelect.value;
 
-        // // Update the leftText if the resource was found
-        // if (foundResource) {
-        //     leftText.textContent = foundResource;
-        // }
+        // Update resource tracking
+        updateFactoryResourceTracking(currentProduced, newProduced, this.dataset.factoryIndex);
+
+        // Now update the dataset for the next change event
+        this.setAttribute('data-produced', newProduced);
+
+
+        document.querySelector(`#resource-${newProduced}`).style.color = 'thistle';
+        leftText.innerHTML = '';
+        leftText.innerHTML += `${require('./resources').generateTooltipCost(craftedResources[rightSelect.value].cost)}`;
+
     });
 
     // Add the initial option for left select
@@ -109,8 +170,7 @@ function manufacture(resource, goalResource) {
     let num = Math.min(manufactureBulk, getMaterial(resource));
     num *= manufactureBonus;
     // The factories get to be half price of normal crafting bc efficiency
-    for (let i = 0; i < num; ++i)
-        craftResource(goalResource);
+    require('./resources').craftResourceQuantity(goalResource, num);
     // increaseMaterial(goalResource, num);
     // increaseMaterial(resource, -craftedResources[goalResource].cost);
 }
@@ -127,11 +187,11 @@ function attemptManufacture() {
     const factories = document.querySelectorAll('.factory');
     factories.forEach(factory => {
 
-        const leftSelect = factory.querySelector('span:first-child');
+        // const leftSelect = factory.querySelector('span:first-child');
         const rightSelect = factory.querySelector('select:last-child');
-        const resource = leftSelect.textContent;
         const goalResource = rightSelect.value;
-        console.log("checking factory", resource, goalResource);
+        const resource = switchedManufacturedMap[goalResource];
+        console.log("checking factory", goalResource);
         if (resource && goalResource) {
             manufacture(resource, goalResource);
         }
@@ -150,7 +210,7 @@ function buyFactory() {
     }
 
     // Has enough silver to afford factory
-    increaseMaterial('silver', -newFactorySilverCost);
+    require('./resources').increaseMaterial('silver', -newFactorySilverCost);
     createFactoryDiv();
 
     newFactorySilverCost *= 1.2;
@@ -162,5 +222,6 @@ module.exports = {
     attemptManufacture,
     buyFactory,
     upgradeBulk,
-    allMaterials
+    allMaterials,
+    getFactoryProduction
 };

@@ -2,22 +2,21 @@
 // DEPENDS ON: tools.js, jobs.js
 const { resources } = require("./json/resources");
 const { craftedResources } = require('./json/craftedResources');
-const { buildings, getBoost } = require("./json/buildings");
 // @ts-ignore
 const { ponders } = require("./json/ponder");
 const { buttons } = require("./json/buttons");
 const { skills } = require('./json/skills');
 
 const { getWorkers, updateTotal, reassignJobsBasedOnResources } = require('./jobs');
-const { hasTool, getToolValueForResource } = require('./tools');
+const { hasTool, } = require('./tools');
 const { updateSidebar, updateSkills, calcCraftBonus, getMax } = require("./helper");
 const { canCraft } = require('./canCraft');
 const { capitalizeFirst } = require('./capitalizeFirst');
 const { getMaterial } = require('./getMaterial');
 
-const { hasPerk } = require('./perks');
 const { isPondered } = require('./ponder');
 const { getCraftedResource } = require('./getCraftedResource');
+const { calcIncrease } = require("./calcIncrease");
 // console.log(capitalizeFirst);
 
 /**
@@ -58,75 +57,6 @@ function isResourceAffectedByJob(job, resource) {
 
 
 
-
-// Clones work at 1/4 the speed by default
-var cloneMult = 0.25;
-// console.log('initial', workersDistribution);
-function calcIncrease(resourceName, delta_time) {
-    var total = 0;
-
-    // clones increase by 1 per second as long as there's space
-    // if (resource === 'clones' && passedStage('clone')) {
-    //     total = 1;
-    //     return total;
-    // }
-    if (craftedResources.hasOwnProperty(resourceName)) {
-        // check our factories
-
-    } else if (!resources.hasOwnProperty(resourceName)) return total;
-
-    if (resourceName === 'clones' && isPondered('autoClone')) total = 1;
-    // Check tools
-    var currTool = getToolValueForResource(resources[resourceName]);
-    // Gathering personally
-    if (resources[resourceName] && resources[resourceName].isGetting) {
-        total += currTool;
-    }
-
-    // Check jobs
-    let leaderMult = hasPerk('Leader') ? cloneMult * 1.5 : cloneMult;
-    total += leaderMult * getWorkers(resourceName) || 0;
-
-
-    // Apply perks production boost
-    if (hasPerk('Lumberjack') && (resourceName == 'wood' || resourceName == 'sticks')) total *= 1.25;
-    if (hasPerk('Miner') && (resourceName == 'rocks' || resourceName == 'ore')) total *= 1.25;
-    if (hasPerk('Botanist') && (resourceName == 'vines' || resourceName == 'herbs' || resourceName == 'wheat')) total *= 1.25;
-
-    // Apply skills to all clones
-    for (let skill in skills) {
-        if (skills[skill].affectedResources.includes(resourceName)) {
-            let skillRatio = 1.06;
-            var mult = 1 + (Math.pow(skillRatio, skills[skill].level) - 1) / 100;
-            // console.log("Multiplying gain by " + mult);
-            total *= mult;
-        }
-    }
-
-
-    // All buildings after level
-    for (let building in buildings) {
-        const boostData = getBoost(building, resourceName);
-        if (boostData) {
-            var increase = Math.pow(boostData, buildings[building].count);
-            if (isPondered('effectiveBuildings')) increase *= 1.01;
-            total *= increase;
-        }
-    }
-    if (resourceName === 'ponder') {
-        // console.log("PONDERING INC: ",total);
-        if (isPondered('ponder1')) total *= 1.05;
-    }
-
-    if (isPondered('fasterResourceGain')) total *= 1.05;
-
-    // Convert from seconds to milliseconds
-    total *= delta_time / 1000;
-    // round total to nearest thousandth
-    total = parseFloat(total.toFixed(3));
-    // console.log("time for resources", delta_time, resourceName, total);
-    return total;
-}
 
 function calcSecondsRemaining(resourceName, needed) {
     if (needed <= resources[resourceName]) return 0;
@@ -287,6 +217,7 @@ function initializeResourceTags() {
 
 function updateDisplayValue(material) {
     const element = resourcesContainer.querySelector(`#${material}Value`);
+    const elementIncrease = resourcesContainer.querySelector(`#${material}IncreaseRate`);
     const craftedButton = document.querySelector(`button#craft${capitalizeFirst(material)}`);
     try { if (!element) createResourceTag(material); }
     catch (error) { }
@@ -298,6 +229,9 @@ function updateDisplayValue(material) {
             let max = getMax(material) === Infinity ? '∞' : getMax(material).toFixed(2);
             element.textContent = `${getMaterial(material).toFixed(2)} / ${max}`;
 
+            if (elementIncrease) {
+                elementIncrease.textContent = calcIncrease(material, 1000).toFixed(2);
+            }
         } catch (error) {
             console.error(element, material, error);
         }
@@ -558,11 +492,13 @@ function craftResourceQuantity(resourceKey, quantity) {
     //     craftOne(resourceKey, cost, craftBonus);
     // }
 
-    for (let mat in cost) {
-        increaseMaterial(mat, -cost[mat] * quantity);
+    for (let i = 0; i < quantity; ++i) {
+        craftOne(resourceKey, cost, calcCraftBonus(resourceKey));
     }
-    increaseMaterial(resourceKey, quantity);
-
+    // for (let mat in cost) {
+    //     increaseMaterial(mat, -cost[mat] * quantity);
+    // }
+    // increaseMaterial(resourceKey, quantity);
 
     if (!craftedResources[resourceKey].craftedOnce) craftedResources[resourceKey].craftedOnce = true;
 
@@ -575,7 +511,7 @@ function craftOne(resourceKey, cost, craftBonus) {
     for (let mat in cost) {
         increaseMaterial(mat, -cost[mat]);
     }
-    increaseMaterial(resourceKey, 1 || craftBonus);
+    increaseMaterial(resourceKey, craftBonus);
 
 }
 // Craft function
@@ -598,7 +534,6 @@ function craftResource(resourceKey) {
 
 
 module.exports = {
-    getMaterial,
     increaseMaterial,
     setMax,
     increaseMax,
@@ -612,6 +547,6 @@ module.exports = {
     appendCraftedResourceButtons,
     calcIncrease,
     updateResourceIncreaseRates,
-    initializeResourceTags
+    initializeResourceTags, craftResourceQuantity
 
 };

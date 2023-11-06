@@ -8,7 +8,7 @@ const { passedStage } = require('../stages');
 const craftedResources = {
     'sharprocks': {
         text: 'Sharp Rocks',
-        id: 'craftSharprocks',
+        id: 'craftsharprocks',
         value: 0,
         cost: { 'rocks': 2 },
         craftedOnce: false,
@@ -34,7 +34,7 @@ const craftedResources = {
         value: 0,
         cost: { 'sticks': 2 },
         craftedOnce: false,
-        requirement: () => getCraftedResource('sharpRocks') >= 1,
+        requirement: () => getCraftedResource('sharprocks') >= 1,
         tooltipDesc: 'Shear off that bark to hold it better',
         tooltipCost: 'Sharp Rocks: 1',
         class: 'craftRocks'
@@ -67,7 +67,7 @@ const craftedResources = {
         value: 0,
         cost: {
             'staff': 1,
-            'sharpRocks': 1,
+            'sharprocks': 1,
             'rope': 1,
         },
         craftedOnce: false,
@@ -93,7 +93,7 @@ const craftedResources = {
         value: 0,
         cost: {
             'handle': 1,
-            'sharpRocks': 3,
+            'sharprocks': 3,
             'rope': 1,
             'rocks': 10
         },
@@ -167,7 +167,9 @@ const craftedResources = {
     'slabs': { value: 0, cost: { 'rocks': 20 } },
     'medicine': { value: 0, cost: { 'herbs': 50 } },
     'leather': { value: 0, cost: { 'hides': 10 } },
-    'concrete': { value: 0, cost: { 'sand': 32 } }
+    'concrete': { value: 0, cost: { 'sand': 32 } },
+    'wood': { value: 0, cost: { 'sticks': 8 } },
+    'sticks': { value: 0, cost: { 'wood': .1 } },
 };
 
 function getCraftedResourceConfigById(id) {
