@@ -1,7 +1,7 @@
 const { buildings } = require('./json/buildings');
 const { buttons } = require('./json/buttons');
 const { resources } = require('./json/resources');
-const { increaseMaterial, increaseMax } = require('./resources');
+const { increaseMaterial, increaseMax, generateTooltipCost } = require('./resources');
 const { canBuyBuilding, updateSidebar } = require('./helper');
 const { updateTotal } = require('./jobs');
 const { hasPerk } = require('./perks');
@@ -57,7 +57,7 @@ function recalculateBuildingCost(buildingKey, buildings, hasPerk) {
 
     // Update tooltip cost
     const myButton = document.querySelector('#' + buildingKey);
-    var newText = generateBuildingTooltipCost(building.cost);
+    var newText = generateTooltipCost(building.cost);
     if (myButton) {
         myButton.setAttribute('data-tooltip-cost', newText);
         const effectString = generateEffectString(building);

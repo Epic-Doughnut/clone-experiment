@@ -657,9 +657,8 @@ function showTooltip(target, desc, effect, cost) {
         // content += `<span style="color:#F4D03F">${cost}</span><br>`;
         try {
             var str = '';
-            for (let material in cost) {
+            for (const [material, amount] of Object.entries(cost)) {
                 // const material = req;
-                const amount = cost[material];
                 const hasEnough = getMaterial(material, resources) >= amount;/* Your logic to check if there's enough of the material */;
                 var colorClass = hasEnough ? 'enough' : 'not-enough';
                 if (getMax(material) < amount) colorClass = 'exceeds-max';
@@ -675,7 +674,7 @@ function showTooltip(target, desc, effect, cost) {
 
         } catch (error) {
             content += cost;
-            // console.error("Couldn't make normal cost for button: ", target, cost, error);
+            console.error("Couldn't make normal cost for button: ", target, cost, error);
         }
     }
     // console.log(target, content);
@@ -701,7 +700,7 @@ function updateTooltip(button) {
 
     const config = getResourceConfigById(button.id) || getCraftedResourceConfigById(button.id) || buildings[button.getAttribute('data_building')] || ponders[button.getAttribute('unlock')];
     // console.log(config);
-    const cost = button.getAttribute('tooltipCost') || button.getAttribute('data-tooltip-cost') || config.cost;
+    const cost = button.getAttribute('tooltipCost') /*|| button.getAttribute('data-tooltip-cost') */ || config.cost;
     showTooltip(button, desc, effect, cost);
 }
 
@@ -850,7 +849,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         buyFactoryButton.id = 'buyFactoryButton';
         buyFactoryButton.textContent = 'Buy New Factory';
         buyFactoryButton.setAttribute('data-tooltip-desc', 'The factory must grow!');
-        buyFactoryButton.setAttribute('data-tooltip-cost', '50 silver');
+        buyFactoryButton.setAttribute('tooltipCost', '50 silver');
         factoryButtons.appendChild(buyFactoryButton);
 
         buyFactoryButton.addEventListener("click", () => {
@@ -864,7 +863,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         upgradeBulkButton.id = 'upgradeBulkButton';
         upgradeBulkButton.textContent = 'Upgrade Bulk';
         upgradeBulkButton.setAttribute('data-tooltip-desc', 'Craft more resources per second');
-        upgradeBulkButton.setAttribute('data-tooltip-cost', '2 → 4: 30 silver');
+        upgradeBulkButton.setAttribute('tooltipCost', '2 → 4: 30 silver');
         factoryButtons.appendChild(upgradeBulkButton);
 
         upgradeBulkButton.addEventListener("click", () => {

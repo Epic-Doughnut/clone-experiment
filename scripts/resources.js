@@ -79,7 +79,7 @@ function calcIncrease(resourceName, delta_time) {
     // Check tools
     var currTool = getToolValueForResource(resources[resourceName]);
     // Gathering personally
-    if (resources[resourceName].isGetting) {
+    if (resources[resourceName] && resources[resourceName].isGetting) {
         total += currTool;
     }
 

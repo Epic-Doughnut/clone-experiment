@@ -38,6 +38,7 @@
     display: none;
     padding: 20px;
     border: 1px solid #444;
+    width: 70%;
 }
 
 .tab-content>.content.active {

@@ -50,11 +50,13 @@ function generatePonderButtons(ponderObjects) {
 
         const buttonKey = `ponder${capitalizeFirst(ponderKey)}`; // e.g. ponderFishing
 
+        // let tooltipCost = Object.entries(ponderObj.cost).map(([material, amount]) => `${amount.toFixed(0)} ${material}`).join('<br>');
+        let tooltipCost = require('./resources').generateTooltipCost(ponderObj.cost);
         buttons[buttonKey] = {
             class: 'tooltip unlock',
             text: ponderObj.text || 'Ponder a Mystery?',
             tooltipDesc: ponderObj.tooltipDesc || "Who knows what you'll discover",
-            tooltipCost: ponderObj.tooltipCost,
+            tooltipCost: tooltipCost,
             tab: 'ponder',
             unlock: ponderKey,
             requirement: () => {
