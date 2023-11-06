@@ -1,4 +1,4 @@
-#factoryTab {
+#factoryTab.active {
     /* Add styles for the factory tab container if necessary */
     display: flex;
     flex-direction: column;

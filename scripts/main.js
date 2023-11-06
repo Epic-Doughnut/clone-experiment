@@ -557,7 +557,7 @@ function update(delta_time, total_time) {
     }
 
     // Manufacture every second
-    if (time_since_manufature >= 1000) {
+    if (passedStage('factoryTab') && time_since_manufature >= 1000) {
         attemptManufacture();
         time_since_manufature = 0;
     }
