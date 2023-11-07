@@ -19,19 +19,20 @@ function calcIncrease(resourceName, delta_time) {
     //     total = 1;
     //     return total;
     // }
-    if (craftedResources.hasOwnProperty(resourceName)) {
-        // check our factories
-        total = getFactoryProduction(resourceName);
-        if (total > 0) return total; // Don't apply skills to factories
-
-    } else if (!resources.hasOwnProperty(resourceName)) return total;
+    if (!resources.hasOwnProperty(resourceName)) {
+        if (craftedResources.hasOwnProperty(resourceName)) {
+            // check our factories
+            total = getFactoryProduction(resourceName);
+            if (total > 0) return total; // Don't apply skills to factories
+        }
+        else return total; // if not a resource or a crafted resource, return 0
+    }
 
     if (resourceName === 'clones' && isPondered('autoClone')) total = 1;
-    // Check tools
-    var currTool = getToolValueForResource(resources[resourceName]);
+
     // Gathering personally
     if (resources[resourceName] && resources[resourceName].isGetting) {
-        total += currTool;
+        total += 1;
     }
 
     // Check jobs
@@ -65,8 +66,9 @@ function calcIncrease(resourceName, delta_time) {
         }
     }
     if (resourceName === 'ponder') {
-        // console.log("PONDERING INC: ",total);
         if (isPondered('ponder1')) total *= 1.05;
+        if (isPondered('ponder2')) total *= 1.05;
+        if (isPondered('ponder3')) total *= 1.05;
     }
 
     if (isPondered('fasterResourceGain')) total *= 1.05;

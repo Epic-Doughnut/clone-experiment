@@ -72,60 +72,9 @@ function clearSidebar() {
 }
 
 
-function updateSidebar() {
-    Array.from(require('./factory').allMaterials).forEach(r => require('./resources').updateDisplayValue(r));
 
-    for (const [resourceName, resourceConfig] of Object.entries(resources)) {
 
-        const parentElement = document.getElementById('resource-' + resourceName);
-        if (!parentElement) return;
-        // console.log(parentElement);
-        var shouldHide = true;
-        for (let c in parentElement.classList) {
-            // console.log('has passed', resourceName, passedStage(c));
-            if (require('./stages').passedStage(c)) { shouldHide = false; console.log('dont hide', resourceName, c); }
-        }
-        if (resourceConfig.value > 0) { shouldHide = false; resources[resourceName].isVisible = true; }
-        if (resourceConfig.isVisible) { shouldHide = false; }
 
-        if (shouldHide) {
-            parentElement.style.display = 'none';
-        }
-        const displayElem = document.getElementById(resourceName + 'Value');
-        if (displayElem) {
-            // console.log(abbreviateNumber(resourceData));
-            var color = '#fff';
-            // 
-            if (resourceConfig.value === getMax(resourceName)) color = '#fcc';
-            // 
-            else if (resourceConfig.value / getMax(resourceName) > .6) color = '#eeb';
-
-            displayElem.innerHTML = `<span style="color:${color}">${abbreviateNumber(resourceConfig.value)} / ${abbreviateNumber(getMax(resourceName))} </span>`;
-        }
-    }
-
-}
-
-function abbreviateNumber(num) {
-    function format(value, unit) {
-        if (value < 10) return roundToDecimals(value, 3) + unit;
-        if (value < 100) return roundToDecimals(value, 2) + unit;
-        if (value < 1000) return roundToDecimals(value, 1) + unit;
-        return Math.round(value) + unit;
-    }
-
-    function roundToDecimals(number, decimals) {
-        const factor = Math.pow(10, decimals);
-        return (Math.round(number * factor) / factor).toFixed(decimals);
-    }
-
-    if (num < 1e3) return roundToDecimals(num, 2); // If less than 1,000
-    if (num < 1e6) return format(num / 1e3, 'K'); // Thousands
-    if (num < 1e9) return format(num / 1e6, 'M'); // Millions
-    if (num < 1e12) return format(num / 1e9, 'B'); // Billions
-    // Add more cases for larger numbers if needed
-    return num.toString();
-}
 const levelUpMessage = document.getElementById('levelUpMessage');
 
 function updateSkills(resource, num) {
@@ -253,7 +202,6 @@ function setVisibleButton(id) {
 
 module.exports = {
     getMax,
-    updateSidebar,
     updateSkills,
     populateSkillsTable,
     calcCraftBonus,

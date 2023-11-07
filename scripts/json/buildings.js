@@ -362,6 +362,13 @@ const buildings = {
 function getBuildingCount(buildingName) {
     return buildings[buildingName].count;
 }
+
+/**
+ * 
+ * @param {string} buildingName 
+ * @param {string} resource 
+ * @returns 
+ */
 function getBoost(buildingName, resource) {
     const building = buildings[buildingName];
 
@@ -374,7 +381,7 @@ function getBoost(buildingName, resource) {
 
 
 module.exports = {
-    buildings: buildings,
+    buildings,
     getBuildingCount,
     getBoost
 };

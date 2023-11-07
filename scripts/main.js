@@ -5,23 +5,23 @@ const { buttons } = require("./json/buttons");
 const { resources, getResourceConfigById } = require('./json/resources');
 
 const { saveGame, loadGame } = require("./saving");
-const { generateTooltipCost, appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource, calcIncrease, updateResourceIncreaseRates, calcSecondsRemaining, increaseMax, initializeResourceTags } = require('./resources');
+const { generateTooltipCost, appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource, calcIncrease, updateResourceIncreaseRates, calcSecondsRemaining, increaseMax } = require('./resources');
 const { recalculateBuildingCost, buyMaxBuildings, buyBuilding } = require('./buildings');
 const { hasPerk, selectAbility } = require('./perks');
-const { updateSidebar, getMax, clearSidebar } = require('./helper');
+const { getMax, clearSidebar } = require('./helper');
 const { makeVisible } = require('./makeVisible');
 const { updateButtonVisibility } = require('./updateButtonVisibility');
 const { getCraftedResource } = require('./getCraftedResource');
 const { getMaterial } = require('./getMaterial');
-const { createFactoryDiv, buyFactory, attemptManufacture, upgradeBulk } = require('./factory');
-// @ts-ignore
+const { buyFactory, attemptManufacture, upgradeBulk } = require('./factory');
 const { isPondered, generatePonderButtons } = require("./ponder");
 const { hasTool, addTool } = require('./tools');
 const { getAteFish, setAteFish } = require('./ateFish');
-const { drawAllConnections, updateTotal } = require('./jobs');
+const { drawAllConnections, updateTotal, clearJobAssignments } = require('./jobs');
 const { capitalizeFirst } = require('./capitalizeFirst');
 const { passedStage } = require('./stages');
-/* MY CODE STARTS HERE */
+const { recalcMaxClones } = require('./recalcMaxClones');
+const { initializeResourceTags, updateSidebar } = require('./sidebar');
 
 
 
@@ -52,7 +52,6 @@ function stopAllGathering() {
         if (rButton) rButton.textContent = resources[key].defaultText;
 
         // Set sidebar to not bold
-        // @ts-ignore
         const sidebarText = sidebarParent.querySelector('#resource-' + key);
         // @ts-ignore
         if (sidebarText) sidebarText.style.fontWeight = 'normal';
@@ -146,6 +145,7 @@ function generateButtons() {
     let productionColumnIndex = 0;
     let experimentColumnIndex = 0;
     let ponderColumnIndex = 0;
+    // @ts-ignore
     // @ts-ignore
     // @ts-ignore
     let jobColumnIndex = 0;
@@ -282,15 +282,11 @@ const visibilityRules = [
     {
         condition: () => isPondered('ponderFinish'),
         action: () => navigateTo('stage2.html')
+    },
+    {
+        condition: () => isPondered('biggerShelter') || isPondered('biggerHut') || isPondered('biggerHouse') || isPondered('biggerTeepee') || isPondered('evenBiggerShelter'),
+        action: () => recalcMaxClones()
     }
-    // {
-    //     condition: () => isPondered('jobs-tab'),
-    //     action: () => makeVisible('jobs-tab')
-    // },
-    // {
-    //     condition: () => isPondered('skillsTable'),
-    //     action: () => { makeVisible("skilled"); populateSkillsTable(); }
-    // }
 ];
 
 function render() {
@@ -333,6 +329,7 @@ function showTab(tabName) {
     for (let content of tabContainers) {
         if (content.classList.contains('active')) {
             prevTab = content.id;
+            // @ts-ignore
             content.style.opacity = '0';
             setTimeout(() => { content.classList.remove("active"); }, 100);
         }
@@ -365,17 +362,19 @@ function showTab(tabName) {
         drawAllConnections();
 
     console.log(prevTab, '>', tabName);
-    if (tabName === 'factoryTab') {
-        if (prevTab != 'factoryTab') {
+    // if (tabName === 'factoryTab') {
+    //     if (prevTab != 'factoryTab') {
 
-            clearSidebar();
-            initializeResourceTags();
-        }
-    }
-    else if (prevTab === 'factoryTab') {
-        clearSidebar();
-        updateSidebar();
-    }
+    //         clearSidebar();
+    //         initializeResourceTags();
+    //     }
+    // }
+    // else if (prevTab === 'factoryTab') {
+    //     clearSidebar();
+    //     updateSidebar();
+    // }
+    // clearSidebar();
+    updateSidebar();
 }
 
 
@@ -583,8 +582,6 @@ function update(delta_time, total_time) {
 //     document.getElementById("resourceForm").style.display = "block";
 // });
 
-// @ts-ignore
-// @ts-ignore
 function addResource() {
     // @ts-ignore
     const resourceName = document.getElementById("resourceName").value;
@@ -715,16 +712,24 @@ function updateTooltip(button) {
 // After all has been loaded
 // @ts-ignore
 // @ts-ignore
+// @ts-ignore
 document.addEventListener('DOMContentLoaded', (event) => {
     generatePonderButtons(ponders);
     appendCraftedResourceButtons();
     generateButtons(); // Call this once on page load or game initialization
 
     loadGame();
+    initializeResourceTags();
     updateSidebar();
     showTab('productionTab');
     require('./trade').generateTradeTable(resources);
-    // createResourceTag('sticks');
+
+    // const groupCheck = document.getElementById('groupCheck');
+    // groupCheck.addEventListener('change', () => {
+    //     // Toggle visibility of groups
+    //     initializeResourceTags(groupCheck.checked);
+    //     console.log('groups? ', groupCheck.checked);
+    // });
 
     function getRKeyFromID(id) {
         for (let r in resources) {
@@ -799,21 +804,30 @@ document.addEventListener('DOMContentLoaded', (event) => {
             // @ts-ignore
             if (button.id !== 'undefined') {
                 console.log(button);
+                // @ts-ignore
                 if (button.id.slice(0, 6) === "gather") toggleResource(getRKeyFromID(button.id));
 
+                // @ts-ignore
                 else if (button.id.slice(0, 5) === 'craft')
+                    // @ts-ignore
                     if (event.shiftKey) craftAllResources(getCRKeyFromID(button.id));
+                    // @ts-ignore
                     else craftResource(getCRKeyFromID(button.id));
 
+                // @ts-ignore
                 else if (button.id === 'saveButton') saveGame();
 
+                // @ts-ignore
                 else if (button.id === 'eatFish') eatFish();
 
+                // @ts-ignore
                 else if (button.id === 'overlay-button') hideOverlay();
 
+                // @ts-ignore
                 else if (button.id === 'deleteSaveButton') {
                     localStorage.removeItem('save'); location.reload();
                 }
+                // @ts-ignore
                 else if (button.id === 'clearJobAssignments') clearJobAssignments();
                 // @ts-ignore
                 else if (button.id === 'darkModeToggle') {
@@ -826,12 +840,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
                 }
 
+                // @ts-ignore
                 else if (button.id === '2main') showTab('mainTab');
+                // @ts-ignore
                 else if (button.id === '2graphs') showTab('graphsTab');
 
             }
 
+            // @ts-ignore
             if (button.classList.contains('tierOneButton')) {
+                // @ts-ignore
                 let perk = button.textContent;
                 selectAbility(perk);
             }
@@ -894,6 +912,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         // const content = "Your tooltip content here";
         // @ts-ignore
         // @ts-ignore
+        // @ts-ignore
         button.addEventListener('mouseenter', function (e) {
             updateTooltip(button);
             currentHoverButton = button;
@@ -918,7 +937,6 @@ var currentHoverButton = null;
 
 module.exports = {
 
-    updateSidebar,
     updateUI,
     setTotalTime,
     changeMessage,

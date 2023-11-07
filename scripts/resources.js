@@ -7,9 +7,9 @@ const { ponders } = require("./json/ponder");
 const { buttons } = require("./json/buttons");
 const { skills } = require('./json/skills');
 
-const { getWorkers, updateTotal, reassignJobsBasedOnResources } = require('./jobs');
+const { getWorkers, updateTotal } = require('./jobs');
 const { hasTool, } = require('./tools');
-const { updateSidebar, updateSkills, calcCraftBonus, getMax } = require("./helper");
+const { updateSkills, calcCraftBonus, getMax } = require("./helper");
 const { canCraft } = require('./canCraft');
 const { capitalizeFirst } = require('./capitalizeFirst');
 const { getMaterial } = require('./getMaterial');
@@ -17,6 +17,7 @@ const { getMaterial } = require('./getMaterial');
 const { isPondered } = require('./ponder');
 const { getCraftedResource } = require('./getCraftedResource');
 const { calcIncrease } = require("./calcIncrease");
+const { updateSidebar } = require("./sidebar");
 // console.log(capitalizeFirst);
 
 /**
@@ -73,154 +74,22 @@ function calcSecondsRemaining(resourceName, needed) {
     return timeRemaining;
 }
 
-// Create all our resource tags in the sidebar
-const resourcesContainer = document.getElementById('resources');
-function createResourceTag(resourceName, groupName) {
-    // if (!resources.hasOwnProperty(resourceName)) throw "Invalid resource: " + resourceName;
-    console.log("Creating resource tag for ", resourceName, groupName);
-    let groupContainer;
-    if (groupName) {
-        groupContainer = document.getElementById(`group-${groupName}`);
-        if (!groupContainer) {
-            groupContainer = createResourceGroupContainer(groupName);
-            resourcesContainer.appendChild(groupContainer);
-        }
-    }
-    else {
-        groupContainer = document.getElementById('resources');
-    }
-
-    const resourceDisplayName = capitalizeFirst(resourceName).split('_').join(' ');
-
-    const resourceElement = document.createElement('p');
-    resourceElement.className = `${resourceName} resource`;
-    resourceElement.id = `resource-${resourceName}`;
-
-    const resourceNameSpan = document.createElement('span');
-    resourceNameSpan.className = 'resourceName';
-    resourceNameSpan.textContent = `${resourceDisplayName}:`;
-
-    const resourceValueSpan = document.createElement('span');
-    resourceValueSpan.className = 'resourceValue';
-    resourceValueSpan.id = `${resourceName}Value`;
-    let max = getMax(resourceName) === Infinity ? '∞' : getMax(resourceName).toFixed(2);
-
-    resourceValueSpan.textContent = `${getMaterial(resourceName).toFixed(2)} / ${max}`;
-
-    const resourceRateSpan = document.createElement('span');
-    resourceRateSpan.className = 'resourceRate';
-    resourceRateSpan.innerHTML = `(+
-            <span id="${resourceName}IncreaseRate">0</span>/s)`;
-
-    resourceElement.appendChild(resourceNameSpan);
-    resourceElement.appendChild(resourceValueSpan);
-    resourceElement.appendChild(resourceRateSpan);
-
-    // resourcesContainer.appendChild(resourceElement);
-    groupContainer.appendChild(resourceElement);
 
 
-    // Update the ordering
-
-    // Function to change the order of a resource
-    function changeResourceOrder(resourceId, newOrder) {
-        const resource = document.getElementById(resourceId);
-        if (resource) {
-            resource.style.order = newOrder;
-        }
-    }
 
 
-    changeResourceOrder("resource-clones", 1);
-    changeResourceOrder("resource-sticks", 2); // Move "Sticks" to order 2
-    changeResourceOrder("resource-vines", 3); // Move "Vines" to order 3
-    changeResourceOrder("resource-rocks", 4);
-    changeResourceOrder("resource-fish", 5);
-    changeResourceOrder("resource-freshwater", 6);
-    changeResourceOrder("resource-wood", 7);
-    changeResourceOrder("resource-ore", 8);
-    changeResourceOrder("resource-sand", 9);
-    changeResourceOrder("resource-clay", 10);
-    changeResourceOrder("resource-wheat", 11);
-    changeResourceOrder("resource-hides", 12);
-    changeResourceOrder("resource-game", 13);
-    changeResourceOrder("resource-herbs", 14);
-    changeResourceOrder("resource-berries", 15);
-    changeResourceOrder("resource-ponder", 50);
-
-
-}
-
-
-// Define groups for your resources
-const resourceGroups = {
-    basics: ['clones', 'sticks', 'berries', 'fish', 'game', 'wheat', 'freshwater'],
-    materials: ['wood', 'sand', 'clay', 'vines', 'rocks', 'hides', 'herbs'],
-    tools: ['sharprocks', 'rope', 'handle', 'fishingrod', 'pickaxe', 'axe', 'spear', 'staff'],
-    advanced: ['glass', 'paper', 'crates', 'medicine', 'leather'],
-    metal: ['ore', 'gold', 'iron', 'silver', 'steel'],
-    construction: ['bricks', 'beams', 'nails', 'slabs', 'concrete']
-    // ... Add other groups as necessary
-};
-
-
-function toggleGroupVisibility(groupName) {
-    const group = document.getElementById(`group-${groupName}`);
-    const toggleButton = document.getElementById(`toggle-${groupName}`); // Ensure you have this button with the id 'toggle-groupName'
-
-    Array.from(group.children).forEach(element => {
-        if (element.tagName === 'P') element.classList.toggle('hidden');
-    });
-
-    // Check if the group is currently hidden
-    if (toggleButton.classList.contains('arrow-down')) {
-        toggleButton.classList.remove('arrow-down');
-        toggleButton.classList.add('arrow-right');
-    } else {
-        toggleButton.classList.remove('arrow-right');
-        toggleButton.classList.add('arrow-down');
-    }
-}
-
-
-// Function to create a group container
-function createResourceGroupContainer(groupName) {
-    const groupContainer = document.createElement('div');
-    groupContainer.className = 'resourceGroup';
-    groupContainer.id = `group-${groupName}`;
-
-    const toggleButton = document.createElement('button');
-    toggleButton.textContent = groupName.toUpperCase();
-    toggleButton.onclick = () => toggleGroupVisibility(groupName);
-    toggleButton.className = 'toggle-button arrow-down';
-    toggleButton.id = `toggle-${groupName}`;
-
-    groupContainer.appendChild(toggleButton);
-    return groupContainer;
-}
-
-
-// Iterates over each group and resource to create tags
-function initializeResourceTags() {
-    for (let groupName in resourceGroups) {
-        const resources = resourceGroups[groupName];
-        resources.forEach(resourceName => {
-            try { createResourceTag(resourceName, groupName); }
-            catch (error) { console.log(error); }
-        });
-    }
-}
 
 // Call this function once to set up your resource tags
 // initializeResourceTags();
+const resourcesContainer = document.getElementById('resources');
 
 
 function updateDisplayValue(material) {
     const element = resourcesContainer.querySelector(`#${material}Value`);
     const elementIncrease = resourcesContainer.querySelector(`#${material}IncreaseRate`);
     const craftedButton = document.querySelector(`button#craft${capitalizeFirst(material)}`);
-    try { if (!element) createResourceTag(material); }
-    catch (error) { }
+    // try { if (!element) createResourceTag(material); }
+    // catch (error) { }
 
 
     // console.log(material, element, craftedButton);
@@ -237,19 +106,12 @@ function updateDisplayValue(material) {
         }
 
         if (resources[material]) {
-            const sidebarText = document.querySelector("#resources").querySelector('#resource-' + material);
             if (resources[material].isGetting) {
+                const sidebarText = document.querySelector("#resources").querySelector('#resource-' + material);
                 // @ts-ignore
                 if (sidebarText) sidebarText.style.fontWeight = 'bold';
 
             }
-
-            // document.querySelectorAll('select').forEach(s => {
-            //     // console.log(s, material);
-            //     if (s.value === material && sidebarText) {
-            //         sidebarText.style.color = 'thistle';
-            //     }
-            // });
 
         }
     }
@@ -296,13 +158,14 @@ function increaseMaterial(material, num) {
             resources[material].value += num;
         } else { // Already at max
             resources[material].value = getMax(material);
+            // @ts-ignore
             if (isPondered('autocraft') && document.querySelector("#autoCraftCheckbox").checked && autoCraftTable[material]) {
                 craftAllResources(autoCraftTable[material]);
             }
 
         }
         updateDisplayValue(material);
-        reassignJobsBasedOnResources();
+        // reassignJobsBasedOnResources();
 
     }
     else if (craftedResources.hasOwnProperty(material)) {
@@ -312,9 +175,11 @@ function increaseMaterial(material, num) {
         updateSkills(material, num);
     }
     else {
-        // throw "Tried to increase Invalid material: " + material;
-        createResourceTag(material);
-        increaseMaterial(material, num);
+        // Creating a new material
+        if (resources[material]) resources[material].value += num;
+        if (craftedResources[material]) craftedResources[material].value += num;
+
+        updateSidebar();
     }
 
     // crafted materials have no max, a la Kittens Game
@@ -543,10 +408,9 @@ module.exports = {
     updateDisplayValue,
     generateTooltipCost,
     calcSecondsRemaining,
-    createResourceTag,
     appendCraftedResourceButtons,
     calcIncrease,
     updateResourceIncreaseRates,
-    initializeResourceTags, craftResourceQuantity
+    craftResourceQuantity
 
 };

@@ -47,10 +47,12 @@ console.log("All materials: ", allMaterials);
 let activeFactoriesProducing = {};
 let activeFactoriesConsuming = {};
 
+// @ts-ignore
 function isProducing(resource) {
     return resource in activeFactoriesProducing;
 }
 
+// @ts-ignore
 function isConsuming(resource) {
     return resource in activeFactoriesConsuming;
 }
@@ -65,6 +67,7 @@ function getFactoryProduction(resource) {
 
 
 // Function to update resource production and consumption
+// @ts-ignore
 function updateFactoryResourceTracking(oldProduced, newProduced, factoryIndex) {
     // If this factory was previously producing something, reduce the count
     if (oldProduced && oldProduced !== 'none') {
@@ -82,6 +85,7 @@ function updateFactoryResourceTracking(oldProduced, newProduced, factoryIndex) {
 }
 
 // Call this whenever a factory's settings change
+// @ts-ignore
 function onFactoryModified(factoryIndex, newProduced) {
     const rightSelect = document.querySelector(`#factory-${factoryIndex} .rightSelect`);
     updateFactoryResourceTracking(rightSelect.getAttribute('data-produced'), newProduced, factoryIndex);
@@ -125,6 +129,7 @@ function createFactoryDiv() {
     rightSelect.addEventListener('change', function () {
         // Get the current produced resource for this factory
         const currentProduced = this.getAttribute('data-produced');
+        // @ts-ignore
         if (currentProduced !== 'none') document.querySelector(`#resource-${currentProduced}`).style.color = '';
 
         const newProduced = rightSelect.value;
@@ -136,6 +141,7 @@ function createFactoryDiv() {
         this.setAttribute('data-produced', newProduced);
 
 
+        // @ts-ignore
         document.querySelector(`#resource-${newProduced}`).style.color = 'thistle';
         leftText.innerHTML = '';
         leftText.innerHTML += `${require('./resources').generateTooltipCost(craftedResources[rightSelect.value].cost)}`;
@@ -170,6 +176,7 @@ function createFactoryDiv() {
 function loadFactory(crafting) {
     let div = createFactoryDiv();
     div.querySelector('select').value = crafting;
+    // @ts-ignore
     document.querySelector(`#resource-${crafting}`).style.color = 'thistle';
     div.querySelector('.factoryCost').innerHTML = '';
     div.querySelector('.factoryCost').innerHTML += `${require('./resources').generateTooltipCost(craftedResources[crafting].cost)}`;
@@ -211,6 +218,7 @@ function attemptManufacture() {
 
         // const leftSelect = factory.querySelector('span:first-child');
         const rightSelect = factory.querySelector('select:last-child');
+        // @ts-ignore
         const goalResource = rightSelect.value;
         const resources = switchedManufacturedMap[goalResource];
         console.log("checking factory", goalResource);

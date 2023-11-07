@@ -2,12 +2,14 @@ const { buildings } = require('./json/buildings');
 const { buttons } = require('./json/buttons');
 const { resources } = require('./json/resources');
 const { increaseMaterial, increaseMax, generateTooltipCost } = require('./resources');
-const { canBuyBuilding, updateSidebar } = require('./helper');
+const { canBuyBuilding } = require('./helper');
 const { updateTotal } = require('./jobs');
 const { hasPerk } = require('./perks');
 const { capitalizeFirst } = require('./capitalizeFirst');
 const { getMaterial } = require('./getMaterial');
 const { passedStage } = require('./stages');
+const { recalcMaxClones } = require('./recalcMaxClones');
+const { updateSidebar } = require('./sidebar');
 
 /* BUILDINGS */
 
@@ -156,7 +158,8 @@ function buyBuilding(buildingName) {
     // Add the effects
     for (const resource in building.effects) {
         increaseMax(resource, building.effects[resource]);
-
+        if (resource === 'clones')
+            recalcMaxClones();
     }
 
 

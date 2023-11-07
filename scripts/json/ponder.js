@@ -141,69 +141,62 @@ let ponders = {
         tooltipDesc: "Ascend to the next level of economy",
         cost: { 'ponder': 500, 'gold': 10, 'wood': 1000, 'wheat': 1000, 'rocks': 1000 }
     },
-    // 'exploration': {
-    //     id: 'ponderExploration',
-    //     isPondered: false,
-    //     cost: [{
-    //         material: 'ponder',
-    //         amount: 160
-    //     }]
-    // },
-    // 'trading': {
-    //     id: 'ponderTrading',
-    //     isPondered: false,
-    //     text: "Trading",
-    //     tooltipDesc: "You met someone! Time to trade with them.",
-    //     cost: { 'gold': 10, 'ponder': 400 }
-    // },
-    // 'science': {
-    //     id: 'ponderScience',
-    //     isPondered: false,
-    //     cost: [{
-    //         material: 'ponder',
-    //         amount: 200
-    //     }]
-    // },
-    // 'magic': {
-    //     id: 'ponderMagic',
-    //     isPondered: false,
-    //     cost: [{
-    //         material: 'ponder',
-    //         amount: 220
-    //     }]
-    // },
-    // 'diplomacy': {
-    //     id: 'ponderDiplomacy',
-    //     isPondered: false,
-    //     cost: [{
-    //         material: 'ponder',
-    //         amount: 240
-    //     }]
-    // },
-    // 'construction': {
-    //     id: 'ponderConstruction',
-    //     isPondered: false,
-    //     cost: [{
-    //         material: 'ponder',
-    //         amount: 260
-    //     }]
-    // },
-    // 'arts': {
-    //     id: 'ponderArts',
-    //     isPondered: false,
-    //     cost: [{
-    //         material: 'ponder',
-    //         amount: 280
-    //     }]
-    // },
-    // 'astronomy': {
-    //     id: 'ponderAstronomy',
-    //     isPondered: false,
-    //     cost: [{
-    //         material: 'ponder',
-    //         amount: 300
-    //     }]
-    // }
+    'ponder2': {
+        id: 'ponderPonder2',
+        requirement: () => true,
+        isPondered: false,
+        text: "Think even harder",
+        tooltipDesc: "5% boost to pondering",
+        cost: { 'ponder': 300 }
+    },
+    'ponder3': {
+        id: 'ponderPonder3',
+        requirement: () => true,
+        isPondered: false,
+        text: "Think hardest",
+        tooltipDesc: "5% boost to pondering",
+        cost: { 'ponder': 600 }
+    },
+    'biggerShelter': {
+        id: 'ponderBiggerShelter',
+        requirement: () => true,
+        isPondered: false,
+        text: "Expand Shelter",
+        tooltipDesc: "Shelters can house 1 more clone each",
+        cost: { 'ponder': 500, 'sticks': 1000 }
+    },
+    'biggerHut': {
+        id: 'ponderBiggerHut',
+        requirement: () => true,
+        isPondered: false,
+        text: "Expand Hut",
+        tooltipDesc: "Huts can house 1 more clone each",
+        cost: { 'ponder': 750, 'sticks': 1500, 'vines': 1000 }
+    },
+    'biggerHouse': {
+        id: 'ponderBiggerHouse',
+        requirement: () => true,
+        isPondered: false,
+        text: "Two-story houses",
+        tooltipDesc: "Houses can house 2 more clones each",
+        cost: { 'ponder': 1000, 'wood': 2000, 'rocks': 2000 }
+    },
+    'biggerTeepee': {
+        id: 'ponderBiggerTeepee',
+        requirement: () => true,
+        isPondered: false,
+        text: "Double diameter Teepees",
+        tooltipDesc: "Teepees can house 4 more clones each",
+        cost: { 'ponder': 1250, 'wood': 3000, 'hides': 1500 }
+    },
+    'evenBiggerShelter': {
+        id: 'ponderEvenBiggerShelter',
+        requirement: () => true,
+        isPondered: false,
+        text: "Expand Shelter Again",
+        tooltipDesc: "Shelters can house 1 more clone each",
+        cost: { 'ponder': 1500, 'sticks': 3000, 'fish': 1000 }
+    },
 };
 
 

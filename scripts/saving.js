@@ -2,7 +2,7 @@
 const { updateBuildingButtonCount, recalculateBuildingCost } = require('./buildings');
 const { updateDisplayValue, calcIncrease, updateEmojiDisplay } = require('./resources');
 const { addTool, getAllTools } = require('./tools');
-const { allVisibleButtons, updateSidebar, populateSkillsTable, setVisibleButton } = require('./helper');
+const { allVisibleButtons, populateSkillsTable, setVisibleButton } = require('./helper');
 const { makeVisible } = require('./makeVisible');
 const { getCraftedResource } = require('./getCraftedResource');
 const { getMaterial } = require('./getMaterial');
@@ -21,6 +21,8 @@ const { resources } = require('./json/resources');
 const { skills } = require("./json/skills");
 const { getAllStages } = require('./stages');
 const { activeFactoriesProducing, loadFactory } = require('./factory');
+const { recalcMaxClones } = require('./recalcMaxClones');
+const { updateSidebar } = require('./sidebar');
 
 // import jobCounts;
 /* SAVING */
@@ -234,6 +236,11 @@ function loadGame() {
         }
         updateSidebar();
     }
+
+    // After ponders and buildings we can recalculate max clones
+    recalcMaxClones();
+
+
 
     // If we have a clone, then we ate fish
     setAteFish(resources.clones.max >= 1);
