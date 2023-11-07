@@ -69,7 +69,7 @@ function toggleResource(resourceKey) {
     // @ts-ignore
     const sidebarText = sidebarParent.querySelector('#resource-' + resourceKey);
     const resourceButton = document.querySelector('#gather' + resourceKey.charAt(0).toUpperCase() + resourceKey.slice(1));
-
+    emojiGatherDiv.textContent = '𓀟'; // Default emoji 𓀟
     if (!resource.isGetting) {
         stopAllGathering(); // Stop all gathering actions
         resource.isGetting = true;
