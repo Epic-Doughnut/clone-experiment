@@ -67,15 +67,23 @@ let ponders = {
         text: "Productivity I",
         tooltipDesc: "Just work harder. 5% bonus to resource gain"
     },
-    // 'metalWorking': {
-    //     id: 'ponderMetalWorking',
-    //     isPondered: false,
-    //     requirement: () => true,
-    //     text: "Metal Working",
-    //     tooltipDesc: "Start processing that ore",
-    //     // cost: [{ material: 'ponder', amount: 100 }, { material: 'ore', amount: 50 }, { material: 'rocks', amount: 50 }]
-    //     cost: { 'ponder': 100, 'ore': 50, 'rocks': 50 },
-    // },
+    'metalWorking': {
+        id: 'ponderMetalWorking',
+        isPondered: false,
+        requirement: () => true,
+        text: "Metal Working",
+        tooltipDesc: "Start processing that ore",
+        // cost: [{ material: 'ponder', amount: 100 }, { material: 'ore', amount: 50 }, { material: 'rocks', amount: 50 }]
+        cost: { 'ponder': 100, 'ore': 50, 'rocks': 50 },
+    },
+    'glassBlowing': {
+        id: 'glassBlowing',
+        isPondered: false,
+        requirement: () => true,
+        text: 'Glass Blowing',
+        tooltipDesc: 'Huff and puff and make a cool vase',
+        cost: { 'sand': 20, 'ponder': 80 }
+    },
     'autoClone': {
         id: 'ponderAutoClone',
         requirement: () => true,
@@ -91,7 +99,7 @@ let ponders = {
         isPondered: false,
         text: "Buildings I",
         tooltipDesc: "Increase building effects by 1%",
-        cost: { 'ponder': 140 },
+        cost: { 'ponder': 180 },
     },
     'agriculture': {
         id: 'ponderAgriculture',
@@ -99,7 +107,7 @@ let ponders = {
         isPondered: false,
         text: "Agriculture",
         tooltipDesc: "Find some seeds from all those plants",
-        cost: { 'ponder': 150 }
+        cost: { 'ponder': 180 }
     },
     'combat': {
         id: 'ponderCombat',
@@ -115,7 +123,7 @@ let ponders = {
         isPondered: false,
         text: "Hunting",
         tooltipDesc: "At least there are animals",
-        cost: { 'ponder': 140, 'fish': 50 }
+        cost: { 'ponder': 200, 'fish': 50 }
     },
     'perksTab': {
         id: 'ponderPerksTab',
