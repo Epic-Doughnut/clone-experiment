@@ -21,7 +21,7 @@ let ponders = {
     'skillsTable': {
         id: 'ponderSkillsTable',
         isPondered: false,
-        cost: { 'ponder': 40 },
+        cost: { 'ponder': 50 },
         tooltipDesc: "You're starting to learn things, right?",
         requirement: () => true,
         text: "Notice Improvement"
