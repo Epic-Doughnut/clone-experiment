@@ -5,7 +5,7 @@ const { buttons } = require("./json/buttons");
 const { resources, getResourceConfigById } = require('./json/resources');
 
 const { saveGame, loadGame } = require("./saving");
-const { generateTooltipCost, appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource, calcIncrease, updateResourceIncreaseRates, calcSecondsRemaining, increaseMax } = require('./resources');
+const { generateTooltipCost, appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource, calcIncrease, updateResourceIncreaseRates, calcSecondsRemaining, increaseMax, updateDisplayValue } = require('./resources');
 const { recalculateBuildingCost, buyMaxBuildings, buyBuilding } = require('./buildings');
 const { hasPerk, selectAbility } = require('./perks');
 const { getMax, clearSidebar } = require('./helper');
@@ -722,6 +722,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
     loadGame();
     initializeResourceTags();
     updateSidebar();
+    // for (const [resourceName, v] of Object.entries(resources))
+    //     updateDisplayValue(resourceName);
     showTab('productionTab');
     require('./trade').generateTradeTable(resources);
 

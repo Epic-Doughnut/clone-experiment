@@ -117,6 +117,8 @@ function abbreviateNumber(num) {
     if (num < 1e9) return format(num / 1e6, 'M'); // Millions
     if (num < 1e12) return format(num / 1e9, 'B'); // Billions
     // Add more cases for larger numbers if needed
+
+    if (num === Infinity) num = '∞';
     return num.toString();
 }
 
