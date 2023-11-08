@@ -2,6 +2,7 @@ const { capitalizeFirst } = require('./capitalizeFirst');
 const { getMaterial } = require('./getMaterial');
 const { getMax } = require('./helper');
 const { resources } = require('./json/resources');
+const { isPondered } = require('./ponder');
 
 
 
@@ -45,6 +46,7 @@ function createResourceGroupContainer(groupName) {
 
 // Iterates over each group and resource to create tags
 function initializeResourceTags(withGroups) {
+    if (isPondered('organization')) withGroups = true;
     console.log("initialzing resource tags");
     console.trace();
     // Define groups for your resources

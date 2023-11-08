@@ -300,6 +300,10 @@ const visibilityRules = [
     {
         condition: () => getMaterial('clay') > 0,
         action: () => makeVisible('clay')
+    },
+    {
+        condition: () => document.getElementById('toggle-basics') && isPondered('organization'),
+        action: () => initializeResourceTags(true)
     }
 ];
 

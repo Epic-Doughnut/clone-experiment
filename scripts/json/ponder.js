@@ -77,12 +77,28 @@ let ponders = {
         cost: { 'ponder': 100, 'ore': 50, 'rocks': 50 },
     },
     'glassBlowing': {
-        id: 'glassBlowing',
+        id: 'ponderGlassBlowing',
         isPondered: false,
         requirement: () => true,
         text: 'Glass Blowing',
         tooltipDesc: 'Huff and puff and make a cool vase',
         cost: { 'sand': 20, 'ponder': 80 }
+    },
+    'organization': {
+        id: 'ponderOrganization',
+        isPondered: false,
+        requirement: () => true,
+        text: 'Organizized Storage',
+        tooltipDesc: 'Organize your storage by groups',
+        cost: { 'ponder': 200 }
+    },
+    'paper': {
+        id: 'ponderPaper',
+        isPondered: false,
+        requirement: () => true,
+        text: 'Paper Processing',
+        tooltipDesc: 'Smash down some wood into paper',
+        cost: { 'ponder': 200, 'wood': 100 }
     },
     'autoClone': {
         id: 'ponderAutoClone',

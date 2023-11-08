@@ -60,7 +60,7 @@ const craftedResources = {
         requiredStage: "fishing",
         tooltipDesc: 'A weapon feared by underwater life',
         tooltipCost: '',
-        class: 'rope'
+        class: 'fishing'
         // tool: 'Bare Hands'
     },
     'spear': {
@@ -86,7 +86,7 @@ const craftedResources = {
         requiredStage: "spear",
         tooltipDesc: 'Put a rock straight through that handle',
         tooltipCost: 'Spears: 1',
-        class: 'rope'
+        class: 'spear'
         // tool: 'Bare Hands'
     },
     'pickaxe': {
@@ -102,7 +102,7 @@ const craftedResources = {
         requiredStage: "spear",
         tooltipDesc: 'Sadly not made of diamonds',
         tooltipCost: 'Axes: 1',
-        class: 'rope'
+        class: 'spear'
     },
 
     'glass': {
@@ -111,7 +111,8 @@ const craftedResources = {
         cost: { 'sand': 10 },
         craftedOnce: false,
         tooltipDesc: 'You can see right through it!',
-        requiredStage: "glassBlowing"
+        requiredStage: "glassBlowing",
+        class: 'glassBlowing'
     },
     'paper': {
         id: 'craftPaper',
@@ -120,6 +121,7 @@ const craftedResources = {
         craftedOnce: false,
         tooltipDesc: 'Outsource your memory',
         requiredStage: "paper",
+        class: 'paper'
     },
     'gold': {
         id: 'craftGold',
