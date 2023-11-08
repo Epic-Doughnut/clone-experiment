@@ -10,11 +10,13 @@ function makeVisible(stage) {
     if (!passedStage(stage)) {
         setStage(stage);
     }
-    const stageElements = document.querySelectorAll("p." + stage);
-    stageElements.forEach(element => element.classList.add('visible'));
-    // 
-    // @ts-ignore
-    stageElements.forEach(element => element.style.display = '');
+    const stageElements = document.querySelectorAll("." + stage);
+    stageElements.forEach(element => {
+        element.classList.add('visible');
+        element.classList.remove('hidden');
+        // @ts-ignore
+        element.style.display = '';
+    });
     updateButtonVisibility();
 }
 exports.makeVisible = makeVisible;

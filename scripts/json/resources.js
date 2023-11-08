@@ -164,6 +164,16 @@ const resources = {
         'defaultText': '𓀎 Hunt',
         emoji: '𓀎',
         'max': 50
+    },
+    'husks': {
+        value: 0,
+        id: 'gatherHusks',
+        isGetting: false,
+        isVisible: false,
+        activeText: '',
+        defaultText: "",
+        emoji: 'X',
+        'max': 1000
     }
 };
 function isResource(resource) {

@@ -156,10 +156,9 @@ function buyBuilding(buildingName) {
         increaseMaterial(resource, -building.cost[resource]);
     }
     // Add the effects
-    for (const resource in building.effects) {
-        increaseMax(resource, building.effects[resource]);
-        if (resource === 'clones')
-            recalcMaxClones();
+    for (const [resource, amount] of Object.entries(building.effects)) {
+        console.log('bought building effects', resource, amount);
+        increaseMax(resource, amount);
     }
 
 
@@ -174,6 +173,9 @@ function buyBuilding(buildingName) {
 
     // Update the cost of the building
     recalculateBuildingCost(buildingName, buildings, hasPerk);
+
+    // Update max clones after updating the count
+    recalcMaxClones();
 }
 
 function buyMaxBuildings(buildingName) {

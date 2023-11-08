@@ -22,6 +22,7 @@ const { capitalizeFirst } = require('./capitalizeFirst');
 const { passedStage } = require('./stages');
 const { recalcMaxClones } = require('./recalcMaxClones');
 const { initializeResourceTags, updateSidebar } = require('./sidebar');
+const { prestige } = require('./json/prestige');
 
 
 
@@ -251,6 +252,10 @@ const visibilityRules = [
         condition: () => getMaterial("rocks", resources) >= 1,
         action: () => { makeVisible("tab-button"); makeVisible('craftRocks'); }
     },
+    {
+        condition: () => getCraftedResource('spear', craftedResources) > 0,
+        action: () => makeVisible('spear')
+    },
 
     {
         condition: () => getMaterial("fish", resources) >= 1,
@@ -269,10 +274,11 @@ const visibilityRules = [
     {
         condition: () => getMaterial('fish', resources) >= 5 && !getAteFish(),
         action: () => {
+            makeVisible('eatFish');
             // @ts-ignore
-            document.getElementById('eatFish').style.display = 'block';
-            // @ts-ignore
-            document.getElementById('eatFish').classList.add('visible');
+            // document.getElementById('eatFish').style.display = 'block';
+            // // @ts-ignore
+            // document.getElementById('eatFish').classList.add('visible');
         }
     },
     {
@@ -286,6 +292,14 @@ const visibilityRules = [
     {
         condition: () => isPondered('biggerShelter') || isPondered('biggerHut') || isPondered('biggerHouse') || isPondered('biggerTeepee') || isPondered('evenBiggerShelter'),
         action: () => recalcMaxClones()
+    },
+    {
+        condition: () => getMaterial('clones') >= 50,
+        action: () => makeVisible('prestige')
+    },
+    {
+        condition: () => getMaterial('clay') > 0,
+        action: () => makeVisible('clay')
     }
 ];
 
@@ -669,7 +683,8 @@ function showTooltip(target, desc, effect, cost) {
                 if (getMax(material) < amount) colorClass = 'exceeds-max';
                 str += `<span class="tooltip-${material} ${colorClass}">${amount.toFixed(0)} ${material}</span>`;
 
-                const secondsRemaining = calcSecondsRemaining(material, amount);
+                let secondsRemaining = 0;
+                if (resources[material]) secondsRemaining = calcSecondsRemaining(material, amount);
                 // console.log(secondsRemaining);
                 if (secondsRemaining > 0 && colorClass != 'exceeds-max') { str += `<span class="time-remaining">(${(secondsRemaining).toFixed(0)} seconds)</span>`; }
                 str += `<br>`;
@@ -716,10 +731,12 @@ function updateTooltip(button) {
 // @ts-ignore
 document.addEventListener('DOMContentLoaded', (event) => {
     generatePonderButtons(ponders);
-    appendCraftedResourceButtons();
+    // appendCraftedResourceButtons();
     generateButtons(); // Call this once on page load or game initialization
 
     loadGame();
+    appendCraftedResourceButtons();
+
     initializeResourceTags();
     updateSidebar();
     // for (const [resourceName, v] of Object.entries(resources))
@@ -847,7 +864,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 else if (button.id === '2main') showTab('mainTab');
                 // @ts-ignore
                 else if (button.id === '2graphs') showTab('graphsTab');
-
+                // @ts-ignore
+                else if (button.id === 'prestige') {
+                    isekai();
+                }
             }
 
             // @ts-ignore
@@ -935,6 +955,81 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 
 });
+
+function nextFibonacci(n) {
+    let a = n * (1 + Math.sqrt(5)) / 2.0;
+    return Math.round(a);
+}
+
+function prevFibonacci(n) {
+    let a = n / ((1 + Math.sqrt(5)) / 2.0);
+    return Math.round(a);
+}
+
+function isekai() {
+    const overlay = document.getElementById('overlay');
+    const overlayText = document.getElementById('overlay-text');
+    const overlayButton = document.getElementById('overlay-button');
+
+    // Convert clones to husks
+    const huskValue = document.createElement('p');
+    huskValue.id = 'huskValue';
+    increaseMaterial('husks', getMaterial('clones'));
+    increaseMaterial('clones', -getMaterial('clones'));
+    huskValue.textContent = 'Husks: ' + getMaterial('husks');
+    huskValue.style.opacity = '0';
+    overlay.prepend(huskValue);
+    // Overlay
+    overlay.style.backgroundColor = 'MidnightBlue';
+    overlayText.textContent = 'You step through to another world.';
+
+    fadeToBlack();
+
+    function createPrestigeButtons() {
+
+        const buttonContainer = document.getElementById('isekaiButtons');
+        let i = 1;
+        Object.keys(prestige).forEach(key => {
+            const button = document.createElement('button');
+            button.innerHTML = `<b>${prestige[key].text}</b><br>Level: ${prestige[key].level}<br>Cost: ${prestige[key].cost}`;
+            button.setAttribute('tooltipCost', prestige[key].cost);
+            button.setAttribute('tooltipDesc', prestige[key].tooltipDesc);
+            button.classList.add('tooltip'); // Add a class for styling if needed
+            button.style.gridColumn = (i % 4 + 1).toString();
+            button.style.gridRow = Math.floor(i / 4 + 1).toString();
+            ++i;
+            // Optional: Add an event listener if you want to handle clicks
+            button.addEventListener('click', () => {
+                // You can implement what happens when the button is clicked
+                console.log(`Button ${key} was clicked`);
+                if (getMaterial('husks') < prestige[key].cost) return;
+                prestige[key].level++;
+                increaseMaterial('husks', -prestige[key].cost);
+                prestige[key].cost = nextFibonacci(prestige[key].cost);
+                button.innerHTML = `<b>${prestige[key].text}</b><br>Level: ${prestige[key].level}<br>Cost: ${prestige[key].cost}`;
+
+            });
+            // Right-click to decrease level
+            button.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                // You can implement what happens when the button is clicked
+                console.log(`Button ${key} was right clicked`);
+                if (prestige[key].level <= 0) return;
+                prestige[key].level--;
+                prestige[key].cost = prevFibonacci(prestige[key].cost);
+                increaseMaterial('husks', prestige[key].cost);
+                button.innerHTML = `<b>${prestige[key].text}</b><br>Level: ${prestige[key].level}<br>Cost: ${prestige[key].cost}`;
+
+            });
+            buttonContainer.appendChild(button);
+        });
+    }
+
+    // Call the function to create buttons
+    setTimeout(createPrestigeButtons, 5000);
+    setTimeout(() => { huskValue.style.opacity = '1'; }, 5000);
+
+}
 
 var currentHoverButton = null;
 

@@ -7,9 +7,9 @@ function recalcMaxClones() {
     let maxClones = 0;
     if (passedStage('clone')) maxClones += 1;
     // console.log(passedStage('clone'), maxClones);
-    for (const key in buildings) {
-        const building = buildings[key];
-        // console.log(key, building, maxClones);
+    for (const [key, building] of Object.entries(buildings)) {
+
+        console.log(key, building, building.effects);
         if (building.effects && building.effects['clones'])
             maxClones += building.effects['clones'] * building.count;
     }

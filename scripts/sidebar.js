@@ -49,19 +49,19 @@ function initializeResourceTags(withGroups) {
     console.trace();
     // Define groups for your resources
     const resourceGroups = {
-        basics: ['clones', 'sticks', 'berries', 'fish', 'game', 'wheat', 'freshwater'],
+        'special': ['clones', 'husks', 'ponder'],
+        basics: ['sticks', 'berries', 'fish', 'game', 'wheat', 'freshwater'],
         materials: ['wood', 'sand', 'clay', 'vines', 'rocks', 'hides', 'herbs'],
         tools: ['sharprocks', 'rope', 'handle', 'fishingrod', 'pickaxe', 'axe', 'spear', 'staff'],
         advanced: ['glass', 'paper', 'crates', 'medicine', 'leather'],
         metal: ['ore', 'gold', 'iron', 'silver', 'steel'],
         construction: ['bricks', 'beams', 'nails', 'slabs', 'concrete'],
-        special: ['ponder']
         // ... Add other groups as necessary
     };
-    for (let groupName in resourceGroups) {
-        const groupOfResources = resourceGroups[groupName];
+    for (let [groupName, groupOfResources] of Object.entries(resourceGroups)) {
+
         groupOfResources.forEach(resourceName => {
-            console.log(resourceName);
+            console.log(resourceName, groupName);
             let parentElement = document.getElementById('resource-' + resourceName);
 
             if (!withGroups) groupName = null; // Set group to resources
@@ -158,14 +158,14 @@ function updateSidebar() {
 const resourcesContainer = document.getElementById('resources');
 function createResourceTag(resourceName, groupName) {
     // if (!resources.hasOwnProperty(resourceName)) throw "Invalid resource: " + resourceName;
-    console.log("Creating resource tag for ", resourceName, groupName);
+    // console.log("Creating resource tag for ", resourceName, groupName);
     let groupContainer;
     if (groupName) {
         groupContainer = document.getElementById(`group-${groupName}`);
         if (!groupContainer) {
             groupContainer = createResourceGroupContainer(groupName);
             resourcesContainer.appendChild(groupContainer);
-            console.log('appending', groupContainer, resourcesContainer, resourcesContainer.childElementCount);
+            // console.log('appending', groupContainer, resourcesContainer, resourcesContainer.childElementCount);
         }
     }
     else {
@@ -187,7 +187,7 @@ function createResourceTag(resourceName, groupName) {
     const resourceValueSpan = document.createElement('span');
     resourceValueSpan.className = 'resourceValue';
     resourceValueSpan.id = `${resourceName}Value`;
-    let max = getMax(resourceName) === Infinity ? '∞' : getMax(resourceName).toFixed(2);
+    let max = (getMax(resourceName) && getMax(resourceName) < Infinity) ? getMax(resourceName).toFixed(2) : '∞';
 
     resourceValueSpan.textContent = `${getMaterial(resourceName).toFixed(2)} / ${max}`;
 

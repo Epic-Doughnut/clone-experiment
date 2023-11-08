@@ -12,7 +12,7 @@ const craftedResources = {
         value: 0,
         cost: { 'rocks': 2 },
         craftedOnce: false,
-        requirement: () => getMaterial('rocks', resources) >= 5,
+        requiredStage: "rocks",
         tooltipDesc: 'Craft a rock using nothing but rocks!',
         tooltipCost: 'Rocks: 5',
         class: 'craftRocks'
@@ -23,10 +23,10 @@ const craftedResources = {
         value: 0,
         cost: { 'vines': 3 },
         craftedOnce: false,
-        requirement: () => getMaterial('vines', resources) >= 3,
+        requiredStage: "rocks",
         tooltipDesc: 'The basis of attaching things to other things.',
         tooltipCost: 'Vines: 3',
-        class: 'rope'
+        class: 'craftRocks'
         // tool: 'Bare Hands'
     },
     'handle': {
@@ -34,7 +34,7 @@ const craftedResources = {
         value: 0,
         cost: { 'sticks': 2 },
         craftedOnce: false,
-        requirement: () => getCraftedResource('sharprocks') >= 1,
+        requiredStage: "rocks",
         tooltipDesc: 'Shear off that bark to hold it better',
         tooltipCost: 'Sharp Rocks: 1',
         class: 'craftRocks'
@@ -45,7 +45,7 @@ const craftedResources = {
         value: 0,
         cost: { 'handle': 2, 'rope': 1 },
         craftedOnce: false,
-        requirement: () => getCraftedResource('handle') >= 1,
+        requiredStage: "rocks",
         tooltipDesc: 'Stick some sheared sticks together',
         tooltipCost: 'Handles: 2',
         class: 'rope'
@@ -57,7 +57,7 @@ const craftedResources = {
         value: 0,
         cost: { 'staff': 1, 'rope': 2 },
         craftedOnce: false,
-        requirement: () => passedStage('fishing'),
+        requiredStage: "fishing",
         tooltipDesc: 'A weapon feared by underwater life',
         tooltipCost: '',
         class: 'rope'
@@ -72,7 +72,7 @@ const craftedResources = {
             'rope': 1,
         },
         craftedOnce: false,
-        requirement: () => getCraftedResource('staff') >= 1,
+        requiredStage: "rocks",
         tooltipDesc: 'A long and pointy stick',
         tooltipCost: 'Staffs: 1',
         class: 'rope'
@@ -83,7 +83,7 @@ const craftedResources = {
         value: 0,
         cost: { 'handle': 1, 'rope': 1, 'sharprocks': 2 },
         craftedOnce: false,
-        requirement: () => getCraftedResource('spear') >= 1,
+        requiredStage: "spear",
         tooltipDesc: 'Put a rock straight through that handle',
         tooltipCost: 'Spears: 1',
         class: 'rope'
@@ -99,7 +99,7 @@ const craftedResources = {
             'rocks': 10
         },
         craftedOnce: false,
-        requirement: () => getCraftedResource('axe') >= 1,
+        requiredStage: "spear",
         tooltipDesc: 'Sadly not made of diamonds',
         tooltipCost: 'Axes: 1',
         class: 'rope'
@@ -111,7 +111,7 @@ const craftedResources = {
         cost: { 'sand': 10 },
         craftedOnce: false,
         tooltipDesc: 'You can see right through it!',
-        requirement: () => passedStage("glassBlowing")
+        requiredStage: "glassBlowing"
     },
     'paper': {
         id: 'craftPaper',
@@ -119,14 +119,14 @@ const craftedResources = {
         cost: { 'wood': 12 },
         craftedOnce: false,
         tooltipDesc: 'Outsource your memory',
-        requirement: () => passedStage('paper'),
+        requiredStage: "paper",
     },
     'gold': {
         id: 'craftGold',
         value: 0,
         cost: { 'ore': 100 },
         craftedOnce: false,
-        requirement: () => passedStage('metalWorking'),
+        requiredStage: "metalWorking",
         tooltipDesc: "There's some yellow bits in this ore",
         tooltipCost: '',
         class: 'metalWorking'
@@ -136,7 +136,7 @@ const craftedResources = {
         value: 0,
         cost: { 'ore': 20 },
         craftedOnce: false,
-        requirement: () => passedStage('metalWorking'),
+        requiredStage: "metalWorking",
         tooltipDesc: "There's some sturdy-looking bits in this ore",
         tooltipCost: '',
         class: 'metalWorking'
@@ -147,7 +147,7 @@ const craftedResources = {
         cost: { 'ore': 50 },
 
         craftedOnce: false,
-        requirement: () => passedStage('metalWorking'),
+        requiredStage: "metalWorking",
         tooltipDesc: "There's some shiny gray bits in this ore",
         tooltipCost: '',
         class: 'metalWorking'
@@ -157,7 +157,7 @@ const craftedResources = {
         value: 0,
         cost: { 'clay': 15 },
         craftedOnce: false,
-        requirement: () => getMaterial('clay', resources) > 5,
+        requiredStage: "clay",
         tooltipDesc: "Leave some clay by the fire",
         tooltipCost: ''
     },
@@ -174,9 +174,9 @@ const craftedResources = {
 };
 
 function getCraftedResourceConfigById(id) {
-    for (let c in craftedResources) {
-        if (craftedResources[c].id === id) {
-            return craftedResources[c];
+    for (const [c, val] of Object.entries(craftedResources)) {
+        if (val.id + "Button" === id) {
+            return val;
         }
     }
     return null;
@@ -185,7 +185,7 @@ function getCraftedResourceConfigById(id) {
 function getCraftedResourceKeyByConfig(config) {
     for (let k in craftedResources) {
         // console.log(k);
-        if (craftedResources[k].id === config.id) return k;
+        if (craftedResources[k].id + 'Button' === config.id) return k;
     }
     return null;
 }

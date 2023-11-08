@@ -8,7 +8,7 @@ function setStage(stage) {
  * @returns boolean if stage in stages
  */
 function passedStage(stage) {
-    return stages.includes(stage);
+    return Object.values(stages).includes(stage);
 }
 function getAllStages() {
     return stages;

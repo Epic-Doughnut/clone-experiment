@@ -2,6 +2,7 @@
 
 /**
  * Tier 1 (400 ponder):
+ * 
  * Lumberjack
  *  +25% wood production
  *  +25% sticks production
@@ -20,6 +21,7 @@
  * 
  * 
  * Tier 2 (1500 ponder):
+ * 
  * Thinker
  *  +50% ponder production and storage
  *  -25% ponder cost
@@ -39,12 +41,15 @@
  *  +100% skill gain
  *  +10% skill bonus to resources
  * 
+ * 
+ * 
+ * 
  */
 const perks = {
     'tier1': ['Lumberjack', 'Miner', 'Botanist', 'Leader', 'Architect'],
-    'tier2': ['Thinker', 'General', 'Merchant', 'Generalist', 'Specialist']
+    'tier2': ['Thinker', 'General', 'Merchant', 'Generalist', 'Specialist'],
 };
 
 module.exports = {
     perks: perks
-}
+};

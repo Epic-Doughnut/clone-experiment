@@ -1,4 +1,4 @@
-const { resources } = require('./json/resources');
+const { resources, isResource } = require('./json/resources');
 const { skills } = require('./json/skills');
 const { buildings } = require('./json/buildings');
 
@@ -59,7 +59,7 @@ function getAffectedResources(skill) {
  * @returns Max of material or Infinity
  */
 function getMax(material) {
-    if (resources.hasOwnProperty(material)) {
+    if (isResource(material)) {
         return resources[material].max;
     } else {
         return Infinity;

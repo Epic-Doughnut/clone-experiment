@@ -6,6 +6,7 @@ const { getCraftedResourceKeyByConfig } = require("./json/craftedResources");
 const { isButtonIdVisible, canBuyBuilding, setVisibleButton } = require('./helper');
 const { canCraft } = require('./canCraft');
 const { getMaterial } = require('./getMaterial');
+const { passedStage } = require('./stages');
 /**
  * Changes the states of buttons between 'hidden', 'purchasable', and 'button-disabled'
  */
@@ -108,7 +109,7 @@ function updateButtonVisibility() {
         // if (button === currentHoverButton) updateTooltip(button);
         // If the state is hidden, set the button's display to none
         if (state === 'hidden') {
-            // console.log('hiding',button);
+            // console.log('hiding', button);
             button.style.display = 'none';
         } else {
             // console.log('all visible ', button.id);
@@ -132,7 +133,7 @@ function updateButtonVisibility() {
         // console.log(job, button, reqPonder, state);
         // button.classList.
         if (state === 'hidden') {
-            // console.log('hiding',button);
+            // console.log('hiding', button);
             // 
             // @ts-ignore
             button.style.display = 'none';

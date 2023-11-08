@@ -18,6 +18,7 @@ const { isPondered } = require('./ponder');
 const { getCraftedResource } = require('./getCraftedResource');
 const { calcIncrease } = require("./calcIncrease");
 const { updateSidebar } = require("./sidebar");
+const { passedStage, getAllStages } = require("./stages"); // Used for eval functions
 // console.log(capitalizeFirst);
 
 /**
@@ -95,7 +96,7 @@ function updateDisplayValue(material) {
     // console.log(material, element, craftedButton);
     if (element) {
         try {
-            let max = getMax(material) === Infinity ? '∞' : getMax(material).toFixed(2);
+            let max = (getMax(material) && getMax(material) < Infinity) ? getMax(material).toFixed(2) : '∞';
             element.textContent = `${getMaterial(material).toFixed(2)} / ${max}`;
 
             if (elementIncrease) {
@@ -216,7 +217,7 @@ function createCraftedResourceButton(config) {
     const button = document.createElement('button');
     button.className = config.class + ' tooltip';
     button.setAttribute('id', config.id + 'Button');
-    button.setAttribute('requirement', config.requirement);
+    button.setAttribute('requirement', config.requiredStage);
     const resourceName = Object.keys(craftedResources).find(key => craftedResources[key] === config);
     // const cleanCount = parseFloat(craftedResources[resourceName].value).toFixed(0);
     // button.innerHTML = `${config.text || capitalizeFirst(resourceName)}: <span id="${resourceName + "Value"}">${cleanCount}</span>`;
@@ -239,9 +240,16 @@ function appendCraftedResourceButtons() {
         const button = createCraftedResourceButton(craftedResources[name]);
         button.setAttribute('data-tooltip-desc', craftedResources[name].tooltipDesc || "");
         button.setAttribute('data-tooltip-cost', generateTooltipCost(craftedResources[name].cost) || "");
-
+        // console.log('tooltip cost', button.getAttribute('data-tooltip-cost'));
         container.appendChild(button);
-        if (!eval(button.getAttribute('requirement'))) button.style.display = 'none';
+        const reqResult = passedStage(button.getAttribute('requirement'));
+        // console.log(reqResult, button.getAttribute('requirement'), Object.values(getAllStages()));
+
+        // TODO: Figure out what the bug is here
+        if (reqResult) button.classList.remove('hidden');
+        else button.classList.add('hidden');
+
+
         buttons[craftedResources[name].id] = craftedResources[name];
     }
 }
