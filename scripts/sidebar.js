@@ -54,7 +54,8 @@ function initializeResourceTags(withGroups) {
         tools: ['sharprocks', 'rope', 'handle', 'fishingrod', 'pickaxe', 'axe', 'spear', 'staff'],
         advanced: ['glass', 'paper', 'crates', 'medicine', 'leather'],
         metal: ['ore', 'gold', 'iron', 'silver', 'steel'],
-        construction: ['bricks', 'beams', 'nails', 'slabs', 'concrete']
+        construction: ['bricks', 'beams', 'nails', 'slabs', 'concrete'],
+        special: ['ponder']
         // ... Add other groups as necessary
     };
     for (let groupName in resourceGroups) {
@@ -68,26 +69,34 @@ function initializeResourceTags(withGroups) {
             if (!parentElement) parentElement = createResourceTag(resourceName, groupName);
             console.log(parentElement);
 
-            var shouldHide = true;
-            for (let c in parentElement.classList) {
-                // console.log('has passed', resourceName, passedStage(c));
-                if (require('./stages').passedStage(c)) { shouldHide = false; console.log('dont hide', resourceName, c); }
-            }
-
-            if (getMaterial(resourceName) > 0) {
-                shouldHide = false;
-                if (resources[resourceName]) resources[resourceName].isVisible = true;
-            }
-            if (resources[resourceName] && resources[resourceName].isVisible) { shouldHide = false; }
 
             // Hide the element if we should, otherwise create a resource tag
-            if (shouldHide) {
+            if (shouldHide(resourceName)) {
                 parentElement.style.display = 'none';
             }
             console.log(shouldHide);
 
         });
     }
+}
+
+function shouldHide(resourceName) {
+
+    var shouldHide = true;
+    // for (let c in parentElement.classList) {
+    //     // console.log('has passed', resourceName, passedStage(c));
+    //     if (require('./stages').passedStage(c)) { shouldHide = false; console.log('dont hide', resourceName, c); }
+    // }
+
+    if (getMaterial(resourceName) > 0) {
+        shouldHide = false;
+        if (resources[resourceName]) resources[resourceName].isVisible = true;
+    }
+    if (resources[resourceName] && resources[resourceName].isVisible) { shouldHide = false; }
+
+    // console.log('should hide?', resourceName, shouldHide);
+    return shouldHide;
+
 }
 
 function abbreviateNumber(num) {
@@ -112,34 +121,31 @@ function abbreviateNumber(num) {
 }
 
 function updateSidebar() {
-    Array.from(require('./factory').allMaterials).forEach(r => require('./resources').updateDisplayValue(r));
+    const allMaterials = require('./factory').allMaterials;
+    Array.from(allMaterials).forEach(r => { if (resources[r]) require('./resources').updateDisplayValue(r); });
 
-    for (const [resourceName, resourceConfig] of Object.entries(resources)) {
+    for (const [index, resourceName] of Object.entries(allMaterials)) {
 
         const parentElement = document.getElementById('resource-' + resourceName);
-        if (!parentElement) return;
-        // console.log(parentElement);
-        var shouldHide = true;
-        for (let c in parentElement.classList) {
-            // console.log('has passed', resourceName, passedStage(c));
-            if (require('./stages').passedStage(c)) { shouldHide = false; console.log('dont hide', resourceName, c); }
-        }
-        if (resourceConfig.value > 0) { shouldHide = false; resources[resourceName].isVisible = true; }
-        if (resourceConfig.isVisible) { shouldHide = false; }
+        if (!parentElement) { console.warn('no parent element found for', resourceName); return; }
 
-        if (shouldHide) {
+        if (shouldHide(resourceName)) {
             parentElement.style.display = 'none';
+        } else {
+            parentElement.style.display = '';
         }
         const displayElem = document.getElementById(resourceName + 'Value');
         if (displayElem) {
             // console.log(abbreviateNumber(resourceData));
             var color = '#fff';
+            const amount = getMaterial(resourceName);
+            const max = getMax(resourceName);
             // 
-            if (resourceConfig.value === getMax(resourceName)) color = '#fcc';
+            if (amount === max) color = '#fcc';
             // 
-            else if (resourceConfig.value / getMax(resourceName) > .6) color = '#eeb';
+            else if (amount / max > .6) color = '#eeb';
 
-            displayElem.innerHTML = `<span style="color:${color}">${abbreviateNumber(resourceConfig.value)} / ${abbreviateNumber(getMax(resourceName))} </span>`;
+            displayElem.innerHTML = `<span style="color:${color}">${abbreviateNumber(amount)} / ${abbreviateNumber(max)} </span>`;
         }
     }
 
@@ -169,7 +175,7 @@ function createResourceTag(resourceName, groupName) {
     const resourceDisplayName = capitalizeFirst(resourceName).split('_').join(' ');
 
     const resourceElement = document.createElement('p');
-    resourceElement.className = `${resourceName} resource`;
+    resourceElement.className = `resource`;
     resourceElement.id = `resource-${resourceName}`;
 
     const resourceNameSpan = document.createElement('span');

@@ -13,7 +13,7 @@ function getCraftedResource(material, craftedResources) {
     if (craftedResources.hasOwnProperty(material)) {
         return craftedResources[material].value || 0;
     } else {
-        console.warn("Invalid crafted resource:" + material); // For debugging
+        // console.warn("Invalid crafted resource:" + material); // For debugging
         return 0;
     }
 }

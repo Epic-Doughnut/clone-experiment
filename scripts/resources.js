@@ -148,7 +148,7 @@ function increaseMaterial(material, num) {
     // if (Math.abs(num) > 5) console.log('changing', material, 'by', num);
 
     // This check ensures that the material key exists in the resources map.
-    if (resources.hasOwnProperty(material)) {
+    if (material in resources) {
 
         if (getMaterial(material) < getMax(material) && num > 0) { // Adding resources
             if (isPondered('fasterResourceGain')) num *= 1.05;
@@ -168,7 +168,7 @@ function increaseMaterial(material, num) {
         // reassignJobsBasedOnResources();
 
     }
-    else if (craftedResources.hasOwnProperty(material)) {
+    else if (material in craftedResources) {
         // console.log('crafting a material', material, num);
         craftedResources[material].value += num;
         updateDisplayValue(material);
@@ -215,12 +215,12 @@ function updateResourceIncreaseRates() {
 function createCraftedResourceButton(config) {
     const button = document.createElement('button');
     button.className = config.class + ' tooltip';
-    button.setAttribute('id', config.id);
-    // @ts-ignore
-    button.requirement = config.requirement;
+    button.setAttribute('id', config.id + 'Button');
+    button.setAttribute('requirement', config.requirement);
     const resourceName = Object.keys(craftedResources).find(key => craftedResources[key] === config);
-    const cleanCount = parseFloat(craftedResources[resourceName].value).toFixed(0);
-    button.innerHTML = `${config.text || capitalizeFirst(resourceName)}: <span id="${resourceName + "Value"}">${cleanCount}</span>`;
+    // const cleanCount = parseFloat(craftedResources[resourceName].value).toFixed(0);
+    // button.innerHTML = `${config.text || capitalizeFirst(resourceName)}: <span id="${resourceName + "Value"}">${cleanCount}</span>`;
+    button.innerHTML = `${config.text || capitalizeFirst(resourceName)}`;
     // button.tooltipDesc = config.tooltipDesc; 
     // @ts-ignore
     button.tab = 'experiment';
@@ -241,6 +241,7 @@ function appendCraftedResourceButtons() {
         button.setAttribute('data-tooltip-cost', generateTooltipCost(craftedResources[name].cost) || "");
 
         container.appendChild(button);
+        if (!eval(button.getAttribute('requirement'))) button.style.display = 'none';
         buttons[craftedResources[name].id] = craftedResources[name];
     }
 }
@@ -373,8 +374,8 @@ function craftResourceQuantity(resourceKey, quantity) {
 
 
 function craftOne(resourceKey, cost, craftBonus) {
-    for (let mat in cost) {
-        increaseMaterial(mat, -cost[mat]);
+    for (const [mat, val] of Object.entries(cost)) {
+        increaseMaterial(mat, -val);
     }
     increaseMaterial(resourceKey, craftBonus);
 

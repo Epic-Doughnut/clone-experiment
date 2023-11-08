@@ -8,7 +8,7 @@ const { passedStage } = require('../stages');
 const craftedResources = {
     'sharprocks': {
         text: 'Sharp Rocks',
-        id: 'craftsharprocks',
+        id: 'craftSharprocks',
         value: 0,
         cost: { 'rocks': 2 },
         craftedOnce: false,
@@ -53,6 +53,7 @@ const craftedResources = {
     },
     'fishingrod': {
         id: 'craftFishingrod',
+        text: 'Fishing Rod',
         value: 0,
         cost: { 'staff': 1, 'rope': 2 },
         craftedOnce: false,

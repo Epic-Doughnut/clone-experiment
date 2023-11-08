@@ -46,10 +46,10 @@ function setTotalTime(time) {
 
 const sidebarParent = document.querySelector("#resources");
 function stopAllGathering() {
-    for (let key in resources) {
-        resources[key].isGetting = false;
+    for (const [key, val] of Object.entries(resources)) {
+        val.isGetting = false;
         const rButton = document.querySelector("#gather" + capitalizeFirst(key));
-        if (rButton) rButton.textContent = resources[key].defaultText;
+        if (rButton) rButton.textContent = val.defaultText;
 
         // Set sidebar to not bold
         const sidebarText = sidebarParent.querySelector('#resource-' + key);
@@ -290,6 +290,7 @@ const visibilityRules = [
 ];
 
 function render() {
+
     // console.log('updating visible');
     visibilityRules.forEach(rule => {
         if (rule.condition()) {
@@ -544,7 +545,7 @@ let time_since_last_save = 0;
 let time_since_manufature = 0;
 function update(delta_time, total_time) {
 
-    for (let key in resources) {
+    for (const [key, val] of Object.entries(resources)) {
         // console.log("updating " + key);
 
         increaseMaterial(key, calcIncrease(key, delta_time));
@@ -704,7 +705,7 @@ function updateTooltip(button) {
 
     const config = getResourceConfigById(button.id) || getCraftedResourceConfigById(button.id) || buildings[button.getAttribute('data_building')] || ponders[button.getAttribute('unlock')];
     // console.log(config);
-    const cost = button.getAttribute('tooltipCost') /*|| button.getAttribute('data-tooltip-cost') */ || config.cost;
+    const cost = (config && config.cost) || button.getAttribute('tooltipCost') || button.getAttribute('data-tooltip-cost');
     showTooltip(button, desc, effect, cost);
 }
 
@@ -732,18 +733,18 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // });
 
     function getRKeyFromID(id) {
-        for (let r in resources) {
+        for (const [r, val] of Object.entries(resources)) {
             // console.log(resources[r].id, id);
-            if (resources[r].id === id) return r;
+            if (val.id === id) return r;
         }
-        return '';
+        return 'error ' + id;
     }
     function getCRKeyFromID(id) {
-        for (let r in craftedResources) {
-            // console.log(resources[r].id, id);
-            if (craftedResources[r].id === id) return r;
+        for (const [r, val] of Object.entries(craftedResources)) {
+            console.log(r, val, id);
+            if (val.id + "Button" === id) return r;
         }
-        return '';
+        return 'error ' + id;
     }
     document.addEventListener("click", (event) => {
         // @ts-ignore
