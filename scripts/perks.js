@@ -25,7 +25,7 @@ function addPerk(perkName) {
     switch (perkName) {
         case 'Architect':
             for (let b in buildings) {
-                require('./buildings').recalculateBuildingCost(b, buildings, hasPerk);
+                require('./recalculateBuildingCost').recalculateBuildingCost(b, buildings, hasPerk);
 
             }
             break;
@@ -61,10 +61,16 @@ function selectAbility(abilityName) {
 
     // myPerks.push(abilityName);
 }
+
+function resetPerks() {
+    myPerks = [];
+}
+
 module.exports = {
     hasPerk,
     addPerk,
     selectAbility,
     getPerkFromTier,
-    getAllPerks
+    getAllPerks,
+    resetPerks
 };

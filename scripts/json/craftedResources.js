@@ -161,7 +161,8 @@ const craftedResources = {
         craftedOnce: false,
         requiredStage: "clay",
         tooltipDesc: "Leave some clay by the fire",
-        tooltipCost: ''
+        tooltipCost: '',
+        class: 'clay'
     },
     'steel': { value: 0, cost: { 'iron': 5 } },
     'beams': { value: 0, cost: { 'wood': 10 } },
@@ -177,7 +178,7 @@ const craftedResources = {
 
 function getCraftedResourceConfigById(id) {
     for (const [c, val] of Object.entries(craftedResources)) {
-        if (val.id + "Button" === id) {
+        if (val.id + "Button" === id || val.id === id) {
             return val;
         }
     }
@@ -192,8 +193,16 @@ function getCraftedResourceKeyByConfig(config) {
     return null;
 }
 
+function resetCraftedResources() {
+    for (const [key, val] of Object.entries(craftedResources)) {
+        val.value = 0;
+        val.craftedOnce = false;
+    }
+}
+
 module.exports = {
     craftedResources,
     getCraftedResourceConfigById,
-    getCraftedResourceKeyByConfig
+    getCraftedResourceKeyByConfig,
+    resetCraftedResources
 };

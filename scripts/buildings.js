@@ -1,15 +1,16 @@
 const { buildings } = require('./json/buildings');
 const { buttons } = require('./json/buttons');
 const { resources } = require('./json/resources');
-const { increaseMaterial, increaseMax, generateTooltipCost } = require('./resources');
-const { canBuyBuilding } = require('./helper');
+const { increaseMaterial, increaseMax, } = require('./resources');
 const { updateTotal } = require('./jobs');
 const { hasPerk } = require('./perks');
-const { capitalizeFirst } = require('./capitalizeFirst');
 const { getMaterial } = require('./getMaterial');
 const { passedStage } = require('./stages');
 const { recalcMaxClones } = require('./recalcMaxClones');
 const { updateSidebar } = require('./sidebar');
+const { updateBuildingButtonCount } = require('./updateBuildingButtonCount');
+const { recalculateBuildingCost } = require('./recalculateBuildingCost');
+const { canBuyBuilding } = require('./canBuyBuilding');
 
 /* BUILDINGS */
 
@@ -38,38 +39,6 @@ function generateEffectString(building) {
 
     return effectParts.join(', ');
 }
-
-// Usage:
-/**
- * 
- * @param {string} buildingKey 
- * @param {Object} buildings
- * @param {function} hasPerk
- */
-function recalculateBuildingCost(buildingKey, buildings, hasPerk) {
-    let building = buildings[buildingKey];
-    if (building && building.cost && building.ratio) {
-        for (let material in building.cost) {
-            // console.log(building.basecost[material], building.ratio, building.count);
-            building.cost[material] = Math.round(building.basecost[material] * Math.pow(building.ratio, building.count));
-
-            if (hasPerk('Architect')) building.cost[material] *= 0.75; // 25% reduction for architects
-        }
-    }
-
-    // Update tooltip cost
-    const myButton = document.querySelector('#' + buildingKey);
-    var newText = generateTooltipCost(building.cost);
-    if (myButton) {
-        myButton.setAttribute('data-tooltip-cost', newText);
-        const effectString = generateEffectString(building);
-        myButton.setAttribute('data-tooltip-effect', effectString);
-
-    }
-    else { throw "Button not found for " + buildingKey; }
-
-}
-
 
 function generateBuildingTooltipCost(cost) {
     return Object.entries(cost).map(([material, amount]) => `${amount.toFixed(2)} ${material}`).join('\n');
@@ -127,11 +96,6 @@ function createRequirementFunction(costs, building) {
 
 
 
-for (let buildingKey in buildings) {
-    const button = createBuildingButton(buildingKey, buildings);
-    buttons[buildingKey] = button;
-    // console.log("Made button for " + buildingKey);
-}
 
 
 // console.log(buttons);
@@ -176,21 +140,68 @@ function buyBuilding(buildingName) {
 
     // Update max clones after updating the count
     recalcMaxClones();
+
+    updateBuildingList();
+}
+function fitCharToCell(char, cellWidth, cellHeight, initialFontSize) {
+    // Create a temporary span element to measure the character
+    const span = document.createElement('span');
+    span.textContent = char;
+    span.style.fontSize = `${initialFontSize}px`;
+    span.style.position = 'absolute'; // so it doesn't affect the layout
+    span.style.whiteSpace = 'nowrap'; // to prevent line breaks
+    span.style.visibility = 'hidden'; // to keep it hidden
+    document.body.appendChild(span);
+
+    // Check if the span fits within the dimensions, and adjust font size if not
+    let currentFontSize = initialFontSize;
+    while (span.offsetWidth < cellWidth && span.offsetHeight < cellHeight) {
+        currentFontSize++;
+        span.style.fontSize = `${currentFontSize}px`;
+
+        // Optional: stop if the font size gets too small
+        if (currentFontSize >= 1000) {
+            break;
+        }
+    }
+
+    // Clean up: remove the temporary span element
+    document.body.removeChild(span);
+
+    return currentFontSize;
 }
 
-function buyMaxBuildings(buildingName) {
-    while (canBuyBuilding(buildingName)) {
-        buyBuilding(buildingName);
+function updateBuildingList() {
+    const buildingList = document.getElementById('buildingList');
+    buildingList.innerHTML = '';
+    let i = 0;
+    const gridSize = 6;
+    const maxCellWidth = 36;
+    const maxCellHeight = 48;
+    const initialFontSize = 36; // starting font size
+
+    for (const [key, val] of Object.entries(buildings)) {
+        for (let j = 0; j < val.count; ++j, ++i) {
+            let col = (i % gridSize + 1).toString();
+            let row = Math.floor(i / gridSize + 1).toString();
+
+            // Calculate the best font size for this character
+            const fontSize = fitCharToCell(val.emoji || '?', maxCellWidth, maxCellHeight, initialFontSize);
+
+            // Add the span with the calculated font size
+            buildingList.innerHTML += `<span class = 'tooltip' style='grid-column:${col}; grid-row:${row}; font-size:${fontSize}px' tooltipDesc='${key}'>${val.emoji || '?'}</span>`;
+        }
     }
 }
 
-function updateBuildingButtonCount(buildingName, buildingCount) {
-    document.getElementById(`${buildingName}`).textContent = `${capitalizeFirst(buildingName).split('_').join(' ')} (${buildingCount})`;
-
+function buyMaxBuildings(buildingName) {
+    let i = 0;
+    while (canBuyBuilding(buildingName)) {
+        buyBuilding(buildingName);
+        ++i;
+    }
+    return i;
 }
-
-
-
 
 // function doubleStorageEffectsIfPassed() {
 //     if (passedStage("doubleStorage1")) {
@@ -208,10 +219,10 @@ function updateBuildingButtonCount(buildingName, buildingCount) {
 
 
 module.exports = {
-    recalculateBuildingCost,
     generateBuildingTooltipCost,
     createBuildingButton,
-    updateBuildingButtonCount,
     buyMaxBuildings,
-    buyBuilding
+    buyBuilding,
+    generateEffectString,
+    updateBuildingList
 };

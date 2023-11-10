@@ -1,13 +1,13 @@
-const { craftedResources, getCraftedResourceConfigById } = require('./json/craftedResources');
-const { buildings } = require("./json/buildings");
-const { ponders } = require("./json/ponder");
+const { craftedResources, getCraftedResourceConfigById, resetCraftedResources } = require('./json/craftedResources');
+const { buildings, resetBuildings } = require("./json/buildings");
+const { ponders, resetPonders } = require("./json/ponder");
 const { buttons } = require("./json/buttons");
-const { resources, getResourceConfigById } = require('./json/resources');
+const { resources, getResourceConfigById, resetResources } = require('./json/resources');
 
 const { saveGame, loadGame } = require("./saving");
 const { generateTooltipCost, appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource, calcIncrease, updateResourceIncreaseRates, calcSecondsRemaining, increaseMax, updateDisplayValue } = require('./resources');
-const { recalculateBuildingCost, buyMaxBuildings, buyBuilding } = require('./buildings');
-const { hasPerk, selectAbility } = require('./perks');
+const { buyMaxBuildings, buyBuilding, createBuildingButton } = require('./buildings');
+const { hasPerk, selectAbility, resetPerks } = require('./perks');
 const { getMax, clearSidebar } = require('./helper');
 const { makeVisible } = require('./makeVisible');
 const { updateButtonVisibility } = require('./updateButtonVisibility');
@@ -17,12 +17,14 @@ const { buyFactory, attemptManufacture, upgradeBulk } = require('./factory');
 const { isPondered, generatePonderButtons } = require("./ponder");
 const { hasTool, addTool } = require('./tools');
 const { getAteFish, setAteFish } = require('./ateFish');
-const { drawAllConnections, updateTotal, clearJobAssignments } = require('./jobs');
+const { drawAllConnections, updateTotal, clearJobAssignments, resetAllJobs } = require('./jobs');
 const { capitalizeFirst } = require('./capitalizeFirst');
-const { passedStage } = require('./stages');
+const { passedStage, resetStages } = require('./stages');
 const { recalcMaxClones } = require('./recalcMaxClones');
 const { initializeResourceTags, updateSidebar } = require('./sidebar');
 const { prestige } = require('./json/prestige');
+const { recalculateBuildingCost } = require('./recalculateBuildingCost');
+const { triggerFloatUpText } = require('./triggerFloatUpText');
 
 
 
@@ -103,6 +105,14 @@ function generateButtons() {
     console.log("Generating buttons");
     console.trace();
     // Create the columns
+
+
+    for (let buildingKey in buildings) {
+        const button = createBuildingButton(buildingKey, buildings);
+        buttons[buildingKey] = button;
+        // console.log("Made button for " + buildingKey);
+    }
+
     const createColumns = (parent) => {
         const col1 = document.createElement('div');
         const col2 = document.createElement('div');
@@ -294,7 +304,7 @@ const visibilityRules = [
         action: () => recalcMaxClones()
     },
     {
-        condition: () => getMaterial('clones') >= 50,
+        condition: () => getMaterial('clones') >= 30,
         action: () => makeVisible('prestige')
     },
     {
@@ -432,11 +442,11 @@ document.addEventListener('keydown', function (event) {
 
 
 /* DARK MODE */
-const darkModeToggle = document.getElementById("darkModeToggle");
+// const darkModeToggle = document.getElementById("darkModeToggle");
 const body = document.body;
 body.classList.toggle('dark-mode');
 // @ts-ignore
-darkModeToggle.classList.toggle('dark');
+// darkModeToggle.classList.toggle('dark');
 let isDark = true;
 
 
@@ -482,15 +492,24 @@ function fadeToBlack() {
     setTimeout(() => {
         // @ts-ignore
         overlayButton.style.display = 'block';
+        overlayButton.style.opacity = '1';
     }, 5000);
 }
 
-const overlay = document.getElementById('overlay');
-// @ts-ignore
-// @ts-ignore
 function hideOverlay() {
-    // @ts-ignore
+    const overlayText = document.getElementById('overlay-text');
+    overlayText.style.opacity = '0';
+
+    const overlayButton = document.getElementById('overlay-button');
+    overlayButton.style.opacity = '0';
+
+    const overlay = document.getElementById('overlay');
     overlay.style.display = 'none';
+
+    const isekaiButtons = document.getElementById('isekaiButtons');
+    // isekaiButtons.childNodes.forEach(child => isekaiButtons.removeChild(child));
+    isekaiButtons.innerHTML = '';
+    location.reload();
 }
 
 function navigateTo(url) {
@@ -512,7 +531,7 @@ function navigateTo(url) {
 // Message 
 const messageElement = document.getElementById('message');
 function changeMessage(newMessage, cloneWords) {
-    const modifiedMessage = newMessage.replace(cloneWords, `<span id="alone" title="You feel peckish for some seafood">${cloneWords}</span>`);
+    const modifiedMessage = newMessage.replace(cloneWords, `<span class='tooltip' id="alone" tooltipDesc="You feel peckish for some seafood">${cloneWords}</span>`);
     // @ts-ignore
     messageElement.innerHTML = modifiedMessage;
 }
@@ -730,18 +749,19 @@ function updateTooltip(button) {
 
 
 // After all has been loaded
-// @ts-ignore
-// @ts-ignore
-// @ts-ignore
 document.addEventListener('DOMContentLoaded', (event) => {
     generatePonderButtons(ponders);
     // appendCraftedResourceButtons();
     generateButtons(); // Call this once on page load or game initialization
 
+    initializeResourceTags();
     loadGame();
+
+    clearSidebar();
+    initializeResourceTags(); // check if we need groups
+
     appendCraftedResourceButtons();
 
-    initializeResourceTags();
     updateSidebar();
     // for (const [resourceName, v] of Object.entries(resources))
     //     updateDisplayValue(resourceName);
@@ -784,13 +804,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
             if (button.getAttribute('data_building') && button.getAttribute('data_building') !== 'undefined' && button.classList.contains('purchasable')) {
                 // @ts-ignore
                 var building = button.getAttribute('data_building');
+                const x = event.clientX;
+                const y = event.clientY;
                 if (event.shiftKey) {
-
-                    buyMaxBuildings(building);
+                    let count = buyMaxBuildings(building);
+                    triggerFloatUpText(x, y, `+${count} ${capitalizeFirst(building)}s`, 'aqua');
                 } else {
-
                     buyBuilding(building);
+                    triggerFloatUpText(x, y, `+1 ${capitalizeFirst(building)}`, 'aqua');
                 }
+
             }
             // @ts-ignore
             if (button.classList.contains('unlock')) {
@@ -827,7 +850,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
             // @ts-ignore
             if (button.id !== 'undefined') {
-                console.log(button);
+                // console.log(button);
                 // @ts-ignore
                 if (button.id.slice(0, 6) === "gather") toggleResource(getRKeyFromID(button.id));
 
@@ -848,7 +871,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 else if (button.id === 'overlay-button') hideOverlay();
 
                 // @ts-ignore
-                else if (button.id === 'deleteSaveButton') {
+                else if (button.id === 'deleteSaveButton' && confirm("Are you sure you want to delete your save data? This will reset all your progress.")) {
                     localStorage.removeItem('save'); location.reload();
                 }
                 // @ts-ignore
@@ -886,9 +909,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
         // @ts-ignore
         if (event.target.matches("#alone")) {
             // increaseMaterial('clones', 1);
+            let text = '+1 Clone';
             // Hardcoded instead to avoid increase affected by productivity bonuses
-            if (resources['clones'].value < resources['clones'].max) resources['clones'].value += 1;
-
+            if (resources['clones'].value < resources['clones'].max) { resources['clones'].value += 1; }
+            else text = 'Max Clones';
+            const x = event.clientX; // X coordinate of the click
+            const y = event.clientY; // Y coordinate of the click
+            const color = text === '+1 Clone' ? 'green' : 'red';
+            triggerFloatUpText(x, y, text, color);
             updateTotal();
         }
     });
@@ -937,9 +965,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         // console.log(button);
         // Extract the data from your building or any other data - source
         // const content = "Your tooltip content here";
-        // @ts-ignore
-        // @ts-ignore
-        // @ts-ignore
+
         button.addEventListener('mouseenter', function (e) {
             updateTooltip(button);
             currentHoverButton = button;
@@ -976,8 +1002,11 @@ function isekai() {
     const overlayButton = document.getElementById('overlay-button');
 
     // Convert clones to husks
-    const huskValue = document.createElement('p');
-    huskValue.id = 'huskValue';
+    const oldHuskValue = document.getElementById('husksIsekaiValue');
+    let huskValue;
+    if (oldHuskValue) huskValue = oldHuskValue;
+    else huskValue = document.createElement('p');
+    huskValue.id = 'husksIsekaiValue';
     increaseMaterial('husks', getMaterial('clones'));
     increaseMaterial('clones', -getMaterial('clones'));
     huskValue.textContent = 'Husks: ' + getMaterial('husks');
@@ -988,6 +1017,16 @@ function isekai() {
     overlayText.textContent = 'You step through to another world.';
 
     fadeToBlack();
+
+    // Reset all resources
+    resetResources();
+    resetCraftedResources();
+    resetPonders();
+    resetPerks();
+    resetBuildings();
+    resetAllJobs();
+    resetStages();
+
 
     function createPrestigeButtons() {
 
@@ -1010,8 +1049,11 @@ function isekai() {
                 prestige[key].level++;
                 increaseMaterial('husks', -prestige[key].cost);
                 prestige[key].cost = nextFibonacci(prestige[key].cost);
-                button.innerHTML = `<b>${prestige[key].text}</b><br>Level: ${prestige[key].level}<br>Cost: ${prestige[key].cost}`;
+                button.setAttribute('tooltipCost', prestige[key].cost);
 
+                button.innerHTML = `<b>${prestige[key].text}</b><br>Level: ${prestige[key].level}<br>Cost: ${prestige[key].cost}`;
+                huskValue.textContent = 'Husks: ' + getMaterial('husks');
+                updateTooltip(button);
             });
             // Right-click to decrease level
             button.addEventListener('contextmenu', (e) => {
@@ -1021,11 +1063,30 @@ function isekai() {
                 if (prestige[key].level <= 0) return;
                 prestige[key].level--;
                 prestige[key].cost = prevFibonacci(prestige[key].cost);
+                button.setAttribute('tooltipCost', prestige[key].cost);
                 increaseMaterial('husks', prestige[key].cost);
+
                 button.innerHTML = `<b>${prestige[key].text}</b><br>Level: ${prestige[key].level}<br>Cost: ${prestige[key].cost}`;
+                huskValue.textContent = 'Husks: ' + getMaterial('husks');
+                updateTooltip(button);
 
             });
             buttonContainer.appendChild(button);
+
+
+            // console.log(button);
+            // Extract the data from your building or any other data - source
+            // const content = "Your tooltip content here";
+
+            button.addEventListener('mouseenter', function (e) {
+                updateTooltip(button);
+                currentHoverButton = button;
+            });
+
+
+
+            button.addEventListener('mouseleave', function () { hideTooltip(); currentHoverButton = null; });
+
         });
     }
 

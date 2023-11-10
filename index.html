@@ -11,10 +11,9 @@
 </head>
 
 <body>
-	<button id="darkModeToggle">Light Mode</button>
+	<!-- <button id="darkModeToggle">Light Mode</button> -->
 	<button id="saveButton">Save</button>
-	<button id="deleteSaveButton">Delete Save
-		Data</button>
+	<button id="deleteSaveButton">Delete Save Data</button>
 	<div id="page-transition-overlay"></div>
 
 
@@ -36,12 +35,17 @@
 			<!-- Resource values here -->
 		</div>
 
-		<div id="tools" class='craftRocks' style="display: none;">
+		<!-- <div id="tools" class='craftRocks' style="display: none;">
+		<hr>
+		<h4>Tools:</h4>
+		<ul id="tools-list">
+		</ul>
+		</div> -->
+
+		<div id="buildingDisplay">
 			<hr>
-			<h4>Tools:</h4>
-			<ul id="tools-list">
-				<!-- List of our tools -->
-			</ul>
+			<h3>Your City</h3>
+			<p id="buildingList"></p>
 		</div>
 	</div>
 
@@ -53,8 +57,9 @@
 				in a forest
 			</h3>
 			<div id='emojiGatherDisplay'>𓀟</div>
-			<div id="emojiDisplay">𓆮
-			</div>
+			<div id="emojiDisplay">𓆮 </div>
+
+
 
 			<div id="levelUpMessage" class="hidden">
 				<p>Level up!</p>
@@ -62,7 +67,7 @@
 		</div>
 		<button class="eatFish hidden" id="eatFish">Eat fish</button>
 		<!-- <button onclick="fadeToBlack()">blackout</button> -->
-		<button class='prestige' id='prestige'>Isekai</button>
+		<button class='hidden prestige' id='prestige'>Isekai</button>
 
 		<!-- PRODUCTION TAB (1) -->
 		<div id="productionTab" class="content active" data-target='productionTab'></div>
@@ -149,6 +154,8 @@
 			<div id="factoryButtons" style="display: flex;flex-direction: row;"></div>
 			<div id="factories" style="display: flex; flex-direction: column;"></div>
 		</div>
+
+
 	</div>
 
 	<!-- Tabs navigation -->

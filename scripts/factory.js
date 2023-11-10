@@ -1,5 +1,6 @@
+const { getCraftedResource } = require('./getCraftedResource');
 const { getMaterial } = require('./getMaterial');
-const { craftedResources } = require('./json/craftedResources');
+const { craftedResources, getCraftedResourceConfigById } = require('./json/craftedResources');
 const { resources } = require('./json/resources');
 // Assuming these are defined globally
 // var manufacturedMap = {
@@ -195,8 +196,9 @@ let manufactureBonus = 1;
 function manufacture(resources, goalResource) {
     // Calculate how many we can afford
     let arr = [];
-    resources.forEach(resource => arr.push(getMaterial(resource)));
+    resources.forEach(resource => arr.push(getMaterial(resource) / craftedResources[goalResource].cost[resource]));
     let num = Math.min(manufactureBulk, ...arr);
+    console.log(num, manufactureBulk, ...arr);
     num *= manufactureBonus;
     // The factories get to be half price of normal crafting bc efficiency
     require('./resources').craftResourceQuantity(goalResource, num);

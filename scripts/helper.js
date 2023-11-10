@@ -1,8 +1,8 @@
+const { hasPrestige, getLevelOfPrestige } = require('./json/prestige');
 const { resources, isResource } = require('./json/resources');
 const { skills } = require('./json/skills');
-const { buildings } = require('./json/buildings');
+const { triggerFloatUpText } = require('./triggerFloatUpText');
 
-const { getMaterial } = require('./getMaterial');
 
 
 
@@ -10,26 +10,6 @@ let allVisibleButtons = new Set(['gatherSticks']);
 exports.allVisibleButtons = allVisibleButtons;
 
 
-/**
- * 
- * @param {string} buildingName 
- * @returns 
- */
-function canBuyBuilding(buildingName) {
-    // Check if we have enough resources
-    let canBuy = true;
-    const building = buildings[buildingName];
-
-    for (const resource in building.cost) {
-        if (building.cost[resource] > getMaterial(resource, resources)) {
-            canBuy = false;
-            break;
-        }
-    }
-
-    // console.log('can we buy ',buildingName,canBuy);
-    return canBuy;
-}
 // Calculate the final number of crafted goods from bonuses
 function calcCraftBonus(resourceKey) {
     let total = 1;
@@ -60,7 +40,9 @@ function getAffectedResources(skill) {
  */
 function getMax(material) {
     if (isResource(material)) {
-        return resources[material].max;
+        let max = resources[material].max;
+        if (hasPrestige('storageSpace')) max *= 1.05 * getLevelOfPrestige('storageSpace');
+        return max;
     } else {
         return Infinity;
     }
@@ -74,8 +56,6 @@ function clearSidebar() {
 
 
 
-
-const levelUpMessage = document.getElementById('levelUpMessage');
 
 function updateSkills(resource, num) {
     num = Math.abs(num);
@@ -102,15 +82,17 @@ function updateSkills(resource, num) {
                 skills[skill].exp = 0;
                 // console.log("Level Up! " + skill + skills[skill].level);
                 // 
-                levelUpMessage.textContent = `Level up! ${skill} → ${skills[skill].level}`;
-                // 
-                levelUpMessage.classList.remove('hidden');
+                let levelup = `Level up! ${skill} → ${skills[skill].level}`;
+                const rect = document.getElementById('prestige').getBoundingClientRect();
+                triggerFloatUpText(rect.x, rect.y, levelup, '#F4D03F');
+
+                // levelUpMessage.classList.remove('hidden');
                 // Hide the message after 3 seconds
-                setTimeout(() => {
-                    // levelUpMessage.style.display = 'none';
-                    // 
-                    levelUpMessage.classList.add('hidden');
-                }, 3000); // 3000 milliseconds (3 seconds)
+                // setTimeout(() => {
+                // levelUpMessage.style.display = 'none';
+                // 
+                // levelUpMessage.classList.add('hidden');
+                // }, 3000); // 3000 milliseconds (3 seconds)
             }
         }
     }
@@ -207,7 +189,6 @@ module.exports = {
     calcCraftBonus,
     isButtonIdVisible,
     setVisibleButton,
-    canBuyBuilding,
     hasGeneratedSkillTable,
     clearSidebar,
 };

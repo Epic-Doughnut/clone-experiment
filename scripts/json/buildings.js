@@ -1,3 +1,8 @@
+const { hasPerk } = require("../perks");
+const { recalcMaxClones } = require("../recalcMaxClones");
+const { recalculateBuildingCost } = require("../recalculateBuildingCost");
+const { updateBuildingButtonCount } = require("../updateBuildingButtonCount");
+
 const buildings = {
 
     /**
@@ -9,7 +14,8 @@ const buildings = {
         "boost": {},
         "count": 0,
         "ratio": 1.3,
-        tooltipDesc: "For when you need a home away from home."
+        tooltipDesc: "For when you need a home away from home.",
+        emoji: '八'
     },
     'hut': {
         basecost: { 'sticks': 50, 'vines': 30 },
@@ -17,7 +23,8 @@ const buildings = {
         boost: {},
         count: 0,
         ratio: 1.2,
-        tooltipDesc: 'A cozy, idyllic chunk of wood.'
+        tooltipDesc: 'A cozy, idyllic chunk of wood.',
+        emoji: '冂'
     },
     "house": {
         "basecost": { "wood": 50, "rocks": 20, 'fish': 10 },
@@ -25,7 +32,8 @@ const buildings = {
         "boost": {},
         "count": 0,
         "ratio": 1.4,
-        tooltipDesc: "Every clone's dream. Minus the white picket fence."
+        tooltipDesc: "Every clone's dream. Minus the white picket fence.",
+        emoji: '介'
     },
     'teepee': {
         basecost: { 'wood': 10, 'hides': 25, 'fish': 15 },
@@ -33,7 +41,8 @@ const buildings = {
         boost: {},
         count: 0,
         ratio: 1.5,
-        tooltipDesc: "Wrap some hides around some wood and call it a home."
+        tooltipDesc: "Wrap some hides around some wood and call it a home.",
+        emoji: '穴'
     },
 
     /**
@@ -45,7 +54,8 @@ const buildings = {
         "boost": {},
         "count": 0,
         "ratio": 1.1,
-        tooltipDesc: "The ultimate storage solution for the pack rat in you."
+        tooltipDesc: "The ultimate storage solution for the pack rat in you.",
+        emoji: '个'
     },
     'stockpile': {
         basecost: { rocks: 30 },
@@ -53,7 +63,8 @@ const buildings = {
         ratio: 1.1,
         boost: {},
         count: 0,
-        tooltipDesc: "Chuck a bunch of logs in a pile, what could happen?"
+        tooltipDesc: "Chuck a bunch of logs in a pile, what could happen?",
+        emoji: '品'
     },
     "drying_racks": {
         "basecost": { "sticks": 30, "fish": 5 },
@@ -61,7 +72,8 @@ const buildings = {
         "boost": {},
         "count": 0,
         "ratio": 1.1,
-        tooltipDesc: "Air drying: Nature's way of preserving food."
+        tooltipDesc: "Air drying: Nature's way of preserving food.",
+        emoji: '四'
     },
     "workshop": {
         "basecost": { "wood": 40, "sticks": 20, "rocks": 10 },
@@ -69,7 +81,8 @@ const buildings = {
         "boost": {},
         "count": 0,
         "ratio": 1.2,
-        tooltipDesc: "DIY's dream destination."
+        tooltipDesc: "DIY's dream destination.",
+        emoji: '𓎰'
     },
     'barn': {
         'basecost': { 'wood': 30, 'wheat': 5 },
@@ -77,7 +90,8 @@ const buildings = {
         'boost': {},
         'count': 0,
         'ratio': 1.2,
-        tooltipDesc: "Hay, what's in that building?"
+        tooltipDesc: "Hay, what's in that building?",
+        emoji: '𓏆'
     },
     'herbalist_hut': {
         basecost: { 'sticks': 50, 'vines': 50, 'herbs': 50 },
@@ -85,7 +99,8 @@ const buildings = {
         boost: { 'herbs': 1.2, vines: 1.1 },
         count: 0,
         ratio: 1.2,
-        tooltipDesc: "A place for brewing and stewing."
+        tooltipDesc: "A place for brewing and stewing.",
+        emoji: '𓏃'
     },
     "bakery": {
         "basecost": {
@@ -97,7 +112,9 @@ const buildings = {
         "boost": {},
         "count": 0,
         "ratio": 1.25,
-        "tooltipDesc": "Freshly baked bread, hot and ready."
+        "tooltipDesc": "Freshly baked bread, hot and ready.",
+        emoji: '𓏖'
+
     },
     "animal_pen": {
         basecost: {
@@ -109,7 +126,8 @@ const buildings = {
         boost: {},
         count: 0,
         ratio: 1.2,
-        tooltipDesc: "A place to put those lesser than you."
+        tooltipDesc: "A place to put those lesser than you.",
+        emoji: '皿'
     },
 
 
@@ -122,7 +140,8 @@ const buildings = {
         boost: { 'wood': 1.05, 'sticks': 1.1 },
         count: 0,
         ratio: 1.2,
-        tooltipDesc: "A nice grove of trees to find wood faster."
+        tooltipDesc: "A nice grove of trees to find wood faster.",
+        emoji: '𓆭𓆭'
     },
     "fish_traps": {
         "basecost": {
@@ -134,7 +153,8 @@ const buildings = {
         },
         "count": 0,
         "ratio": 1.2,
-        tooltipDesc: "Fishing made easy. No patience required."
+        tooltipDesc: "Fishing made easy. No patience required.",
+        emoji: '井'
     },
     "mine": {
         "basecost": {
@@ -147,7 +167,8 @@ const buildings = {
         },
         "count": 0,
         "ratio": 1.2,
-        tooltipDesc: "Dig deep and find your inner ore."
+        tooltipDesc: "Dig deep and find your inner ore.",
+        emoji: '𓊍'
     },
     "campfire": {
         "basecost": {
@@ -158,7 +179,8 @@ const buildings = {
         "boost": { 'all': 1.05 },
         "count": 0,
         "ratio": 1.5,
-        tooltipDesc: "Where stories are told and marshmallows are toasted."
+        tooltipDesc: "Where stories are told and marshmallows are toasted.",
+        emoji: '火'
     },
     "lumber_yard": {
         "basecost": {
@@ -171,7 +193,8 @@ const buildings = {
         },
         "count": 0,
         "ratio": 1.3,
-        tooltipDesc: "Wood you like some more wood?"
+        tooltipDesc: "Wood you like some more wood?",
+        emoji: '𓌏'
     },
     "stone_quarry": {
         "basecost": {
@@ -185,7 +208,8 @@ const buildings = {
         },
         "count": 0,
         "ratio": 1.3,
-        tooltipDesc: "Rock on with your bad self!"
+        tooltipDesc: "Rock on with your bad self!",
+        emoji: '𓊎'
     },
     "fishery": {
         "basecost": {
@@ -198,7 +222,8 @@ const buildings = {
         },
         "count": 0,
         "ratio": 1.2,
-        tooltipDesc: "Fish are friends. And food."
+        tooltipDesc: "Fish are friends. And food.",
+        emoji: '𓌤'
     },
     "vineyard": {
         "basecost": {
@@ -211,7 +236,8 @@ const buildings = {
         },
         "count": 0,
         "ratio": 1.2,
-        tooltipDesc: "For the finest vines. What else would it grow?"
+        tooltipDesc: "For the finest vines. What else would it grow?",
+        emoji: '🜌'
     },
     "forge": {
         "basecost": {
@@ -225,9 +251,10 @@ const buildings = {
         },
         "count": 0,
         "ratio": 1.2,
-        tooltipDesc: "Melt, mold, and make marvelous metals."
+        tooltipDesc: "Melt, mold, and make marvelous metals.",
+        emoji: '𓊫'
     },
-    'water_well': {
+    'water_pump': {
         'basecost': {
             'rocks': 30,
             'rope': 1,
@@ -239,7 +266,8 @@ const buildings = {
         },
         'count': 0,
         'ratio': 1.4,
-        tooltipDesc: "Fresh water on demand!"
+        tooltipDesc: "Fresh water on demand!",
+        emoji: '𓏂'
     },
     'tower': {
         'basecost': {
@@ -251,7 +279,8 @@ const buildings = {
         'boost': { 'hides': 1.05, 'game': 1.1 },
         'count': 0,
         ratio: 1.3,
-        tooltipDesc: "See things from afar."
+        tooltipDesc: "See things from afar.",
+        emoji: '𓊢'
     },
     "tannery": {
         "basecost": {
@@ -264,7 +293,8 @@ const buildings = {
         },
         "count": 0,
         "ratio": 1.3,
-        "tooltipDesc": "Treat hides to make quality leather."
+        "tooltipDesc": "Treat hides to make quality leather.",
+        emoji: '𓃔'
     },
     "marketplace": {
         "basecost": {
@@ -281,7 +311,8 @@ const buildings = {
         },
         "count": 0,
         "ratio": 1.25,
-        "tooltipDesc": "A bustling hub of trade and barter."
+        "tooltipDesc": "A bustling hub of trade and barter.",
+        emoji: '₿'
     },
     "windmill": {
         "basecost": {
@@ -295,7 +326,8 @@ const buildings = {
         },
         "count": 0,
         "ratio": 1.3,
-        "tooltipDesc": "Grind grains efficiently with wind power."
+        "tooltipDesc": "Grind grains efficiently with wind power.",
+        emoji: '҉'
     },
 
 
@@ -313,7 +345,8 @@ const buildings = {
         boost: { ponder: 1.05 },
         count: 0,
         ratio: 1.2,
-        tooltipDesc: "Look, up in the sky! It's a star!"
+        tooltipDesc: "Look, up in the sky! It's a star!",
+        emoji: '𓌩'
     },
     "observatory": {
         "basecost": {
@@ -328,7 +361,8 @@ const buildings = {
         },
         "count": 0,
         "ratio": 1.3,
-        tooltipDesc: "Stargazing has never been so... productive?"
+        tooltipDesc: "Stargazing has never been so... productive?",
+        emoji: '☆'
     },
     "library": {
         "basecost": {
@@ -343,7 +377,8 @@ const buildings = {
         },
         "count": 0,
         "ratio": 1.3,
-        tooltipDesc: "Knowledge is power. And a fire hazard if not stored properly."
+        tooltipDesc: "Knowledge is power. And a fire hazard if not stored properly.",
+        emoji: '🕮'
     },
     "desk": {
         "basecost": {
@@ -355,7 +390,8 @@ const buildings = {
         "boost": { "ponder": 1.05 },
         "count": 0,
         "ratio": 1.2,
-        tooltipDesc: "A writer's block is no match for armor-piercing pencils!"
+        tooltipDesc: "A writer's block is no match for armor-piercing pencils!",
+        emoji: '𓊬'
     }
 };
 
@@ -379,9 +415,24 @@ function getBoost(buildingName, resource) {
     return null;
 }
 
+function resetBuildings() {
+    for (const [key, val] of Object.entries(buildings)) {
+        val['count'] = 0;
+        // Update button text
+        updateBuildingButtonCount(key, 0);
+
+        // Update the cost of the building
+        recalculateBuildingCost(key, buildings, hasPerk);
+
+    }
+    // Update max clones after updating the count
+    recalcMaxClones();
+}
+
 
 module.exports = {
     buildings,
     getBuildingCount,
-    getBoost
+    getBoost,
+    resetBuildings
 };

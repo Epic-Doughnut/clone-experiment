@@ -3,10 +3,10 @@ const { craftedResources } = require('./json/craftedResources');
 const { buildings, getBoost } = require("./json/buildings");
 const { skills } = require('./json/skills');
 const { getWorkers } = require('./jobs');
-const { getToolValueForResource } = require('./tools');
 const { hasPerk } = require('./perks');
 const { isPondered } = require('./ponder');
 const { getFactoryProduction } = require("./factory");
+const { hasPrestige, getLevelOfPrestige } = require("./json/prestige");
 
 // Clones work at 1/4 the speed by default
 var cloneMult = 0.25;
@@ -45,9 +45,17 @@ function calcIncrease(resourceName, delta_time) {
     if (hasPerk('Miner') && (resourceName == 'rocks' || resourceName == 'ore')) total *= 1.25;
     if (hasPerk('Botanist') && (resourceName == 'vines' || resourceName == 'herbs' || resourceName == 'wheat')) total *= 1.25;
 
+    // Apply prestige specific boosts
     // Apply skills to all clones
     for (let skill in skills) {
         if (skills[skill].affectedResources.includes(resourceName)) {
+            if (skill === 'gathering' && hasPrestige('gatheringBoost')) total *= 1.1 * getLevelOfPrestige('gatheringBoost');
+            if (skill === 'masonry' && hasPrestige('masonryBoost')) total *= 1.1 * getLevelOfPrestige('masonryBoost');
+            if (skill === 'carpentry' && hasPrestige('carpentryBoost')) total *= 1.1 * getLevelOfPrestige('carpentryBoost');
+            if (skill === 'thinking' && hasPrestige('thinkingBoost')) total *= 1.1 * getLevelOfPrestige('thinkingBoost');
+            if (skill === 'farming' && hasPrestige('farmingBoost')) total *= 1.1 * getLevelOfPrestige('farmingBoost');
+            if (skill === 'fishing' && hasPrestige('fishingBoost')) total *= 1.1 * getLevelOfPrestige('fishingBoost');
+            if (skill === 'hunting' && hasPrestige('huntingBoost')) total *= 1.1 * getLevelOfPrestige('huntingBoost');
             let skillRatio = 1.06;
             var mult = 1 + (Math.pow(skillRatio, skills[skill].level) - 1) / 100;
             // console.log("Multiplying gain by " + mult);
@@ -72,6 +80,7 @@ function calcIncrease(resourceName, delta_time) {
     }
 
     if (isPondered('fasterResourceGain')) total *= 1.05;
+    if (hasPrestige('cloneBoost')) total *= 1.05 * getLevelOfPrestige('cloneBoost');
 
     // Convert from seconds to milliseconds
     total *= delta_time / 1000;

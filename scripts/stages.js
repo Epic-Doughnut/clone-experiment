@@ -14,8 +14,13 @@ function getAllStages() {
     return stages;
 }
 
+function resetStages() {
+    while (stages.length > 0)
+        stages.pop();
+}
 module.exports = {
     setStage,
     passedStage,
-    getAllStages
+    getAllStages,
+    resetStages
 };

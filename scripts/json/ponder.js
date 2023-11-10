@@ -223,7 +223,13 @@ let ponders = {
     },
 };
 
+function resetPonders() {
+    for (const [key, val] of Object.entries(ponders)) {
+        val.isPondered = false;
+    }
+}
 
 module.exports = {
-    ponders: ponders
+    ponders: ponders,
+    resetPonders
 };

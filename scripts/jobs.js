@@ -7,6 +7,7 @@ const { resources } = require('./json/resources');
 const { getMaterial } = require('./getMaterial');
 const { isPondered } = require("./ponder");
 const { getMax } = require('./helper');
+const { triggerFloatUpText } = require('./triggerFloatUpText');
 
 /* JOBS FUNCTIONALITY */
 
@@ -48,7 +49,7 @@ Object.keys(skills).forEach(skill => {
 
 
 document.querySelectorAll('.btn-increment').forEach(btn => {
-    btn.addEventListener('click', function () {
+    btn.addEventListener('click', function (event) {
         const jobType = this.closest('.job-button').getAttribute('data-job');
         if (getMaterial('clones', resources) > getTotalJobs()) {
             jobCounts[jobType]++;
@@ -58,11 +59,15 @@ document.querySelectorAll('.btn-increment').forEach(btn => {
         updateDisplay(jobType);
         updateTotal();
         console.log(workersDistribution);
+
+        const x = event.clientX; // X coordinate of the click
+        const y = event.clientY; // Y coordinate of the click
+        triggerFloatUpText(x, y, '+1 worker', 'green');
     });
 });
 
 document.querySelectorAll('.btn-decrement').forEach(btn => {
-    btn.addEventListener('click', function () {
+    btn.addEventListener('click', function (event) {
         const jobType = this.closest('.job-button').getAttribute('data-job');
         if (jobCounts[jobType] > 0) {
             jobCounts[jobType]--;
@@ -70,6 +75,10 @@ document.querySelectorAll('.btn-decrement').forEach(btn => {
             distributeWorkers(jobType, jobCounts[jobType]);
             updateDisplay(jobType);
             updateTotal();
+
+            const x = event.clientX; // X coordinate of the click
+            const y = event.clientY; // Y coordinate of the click
+            triggerFloatUpText(x, y, '-1 worker', 'red');
         }
     });
 });
@@ -350,6 +359,15 @@ function switchJob(oldJobId, newJobId) {
     updateDisplay(newJobId);
 }
 
+function resetAllJobs() {
+    // jobCounts = {};
+    for (let skill in skills) {
+        jobCounts[skill] = 0;
+        distributeWorkers(skill, 0);
+        updateTotal();
+        updateDisplay(skill);
+    }
+}
 
 module.exports = {
     clearJobAssignments,
@@ -362,5 +380,6 @@ module.exports = {
     getConnections,
     distributeWorkers,
     updateDisplay,
-    jobCounts
+    jobCounts,
+    resetAllJobs
 };

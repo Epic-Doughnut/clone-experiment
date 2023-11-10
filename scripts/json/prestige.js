@@ -66,4 +66,16 @@ const prestige = {
         level: 0
     }
 };
-exports.prestige = prestige;
+
+function hasPrestige(pres) {
+    return getLevelOfPrestige(pres) > 0;
+}
+
+function getLevelOfPrestige(pres) {
+    return prestige[pres].level;
+}
+module.exports = {
+    prestige,
+    hasPrestige,
+    getLevelOfPrestige
+};

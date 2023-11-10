@@ -365,8 +365,8 @@ function craftResourceQuantity(resourceKey, quantity) {
     // for (let i = 0; i < quantity; ++i) {
     //     craftOne(resourceKey, cost, craftBonus);
     // }
-
-    for (let i = 0; i < quantity; ++i) {
+    for (let i = 0; i < Math.floor(quantity); ++i) { // Only craft whole number, so 1.4 only runs once
+        console.log('crafting', quantity, resourceKey, cost);
         craftOne(resourceKey, cost, calcCraftBonus(resourceKey));
     }
     // for (let mat in cost) {

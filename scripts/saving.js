@@ -1,5 +1,4 @@
 // DEPENDS ON: resources.js
-const { updateBuildingButtonCount, recalculateBuildingCost } = require('./buildings');
 const { updateDisplayValue, calcIncrease, updateEmojiDisplay } = require('./resources');
 const { addTool, getAllTools } = require('./tools');
 const { allVisibleButtons, populateSkillsTable, setVisibleButton } = require('./helper');
@@ -23,6 +22,10 @@ const { getAllStages } = require('./stages');
 const { activeFactoriesProducing, loadFactory } = require('./factory');
 const { recalcMaxClones } = require('./recalcMaxClones');
 const { updateSidebar } = require('./sidebar');
+const { prestige } = require('./json/prestige');
+const { recalculateBuildingCost } = require('./recalculateBuildingCost');
+const { updateBuildingButtonCount } = require('./updateBuildingButtonCount');
+const { updateBuildingList } = require('./buildings');
 
 // import jobCounts;
 /* SAVING */
@@ -48,7 +51,8 @@ function saveGame() {
         message: [],
         connections: new Map(),
         perks: [],
-        factories: {}
+        factories: {},
+        prestige: {}
     };
 
     // Extract exp and level from skills and save to save.skills
@@ -121,6 +125,10 @@ function saveGame() {
 
     save.message = extractTextFromHTML(htmlString); // [message, span]
 
+
+    for (const [key, val] of Object.entries(prestige)) {
+        save.prestige[key] = { cost: val.cost, level: val.level };
+    }
 
     // console.log(combinedText); // "You find yourself alone in a forest"
     // console.log(spanText); // "alone"
@@ -219,27 +227,33 @@ function loadGame() {
     if (typeof savegame.buildings !== 'undefined') {
         for (let b in savegame.buildings) {
             // console.log(b, savegame.buildings[b]);
-            buildings[b].count = savegame.buildings[b];
-            // Update button text
-            updateBuildingButtonCount(b, buildings[b].count);
+            try {
+                buildings[b].count = savegame.buildings[b];
+                // Update button text
+                if (buildings[b].count > 0) {
+                    updateBuildingButtonCount(b, buildings[b].count);
 
-            // Calculate the costs of all the buildings
-            recalculateBuildingCost(b, buildings, hasPerk);
-
-            // Update the max as influenced by this building
-            // TODO: Don't overwrite existing building boosts
-            // if (buildings[b].effects) {
-            //     for (let mat in buildings[b].effects) {
-            //         setMax(mat, buildings[b].count * buildings[b].effects[mat]);
-            //     }
-            // }
+                    // Calculate the costs of all the buildings
+                    recalculateBuildingCost(b, buildings, hasPerk);
+                }
+                // Update the max as influenced by this building
+                // TODO: Don't overwrite existing building boosts
+                // if (buildings[b].effects) {
+                //     for (let mat in buildings[b].effects) {
+                //         setMax(mat, buildings[b].count * buildings[b].effects[mat]);
+                //     }
+                // }
+            }
+            catch (error) {
+                console.warn('error with building', b);
+            }
         }
         updateSidebar();
     }
 
     // After ponders and buildings we can recalculate max clones
     recalcMaxClones();
-
+    updateBuildingList();
 
 
     // If we have a clone, then we ate fish
@@ -306,6 +320,14 @@ function loadGame() {
                 for (let i = 0; i < val; ++i)
                     loadFactory(key);
 
+
+    if (typeof savegame.prestige !== 'undefined') {
+        for (const [key, val] of Object.entries(savegame.prestige)) {
+
+            prestige[key].cost = val['cost'];
+            prestige[key].level = val['level'];
+        }
+    }
 
 }
 

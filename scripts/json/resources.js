@@ -191,8 +191,15 @@ function getResourceConfigById(id) {
     }
     return null;
 }
+
+function resetResources() {
+    for (const [key, val] of Object.entries(resources)) {
+        val.value = 0;
+    }
+}
 module.exports = {
     resources: resources,
     isResource,
-    getResourceConfigById
+    getResourceConfigById,
+    resetResources
 };

@@ -103,9 +103,9 @@ function shouldHide(resourceName) {
 
 function abbreviateNumber(num) {
     function format(value, unit) {
-        if (value < 10) return roundToDecimals(value, 3) + unit;
-        if (value < 100) return roundToDecimals(value, 2) + unit;
-        if (value < 1000) return roundToDecimals(value, 1) + unit;
+        if (value < 10) return roundToDecimals(value, 2) + unit;
+        if (value < 100) return roundToDecimals(value, 1) + unit;
+        if (value < 1000) return roundToDecimals(value, 0) + unit;
         return Math.round(value) + unit;
     }
 
@@ -114,7 +114,7 @@ function abbreviateNumber(num) {
         return (Math.round(number * factor) / factor).toFixed(decimals);
     }
 
-    if (num < 1e3) return roundToDecimals(num, 2); // If less than 1,000
+    if (num < 1e3) return roundToDecimals(num, 1); // If less than 1,000
     if (num < 1e6) return format(num / 1e3, 'K'); // Thousands
     if (num < 1e9) return format(num / 1e6, 'M'); // Millions
     if (num < 1e12) return format(num / 1e9, 'B'); // Billions

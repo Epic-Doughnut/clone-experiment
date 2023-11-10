@@ -6,6 +6,7 @@ body,
 html {
     height: max-content;
     margin: 0;
+    cursor: default;
     /* margin-left: 350px; */
     /* width of sidebar*/
 }
@@ -34,12 +35,10 @@ html {
     display: block;
 }
 
-#prestige {
-    display: none;
-}
 
-#prestige .visible {
+#prestige.visible {
     display: block;
+    background-image: linear-gradient(MidnightBlue, #222);
 }
 
 #emojiGatherDisplay {
@@ -56,11 +55,44 @@ html {
     /* height: 100px; */
 }
 
+#buildingList {
+    display: grid;
+    gap: 10px;
+    font-size: 36px;
+    font-family: monospace;
+    text-wrap: wrap;
+    width: 800px;
+    font-variant-numeric: tabular-nums;
+}
+
+#buildingList span {
+    cursor: default;
+}
+
 #levelUpMessage {
     /* display: none; */
     transition: display 0.5s ease-out;
     color: #F4D03F;
     font-style: italic;
+}
+
+@keyframes floatAndFade {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-50px);
+        /* Adjust the value as needed */
+    }
+}
+
+.float-up-fade-out {
+    pointer-events: none;
+    position: absolute;
+    animation: floatAndFade 2s ease-out forwards;
 }
 
 .tierOneButton {
