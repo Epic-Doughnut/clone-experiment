@@ -3,6 +3,7 @@ const { hasPrestige, getLevelOfPrestige } = require("./json/prestige");
 const { isPondered } = require("./ponder");
 const { setMax } = require("./resources");
 const { passedStage } = require("./stages");
+const { updateBounceAnimation } = require("./updateBounceAnimation");
 
 function recalcMaxClones() {
     let maxClones = 0;
@@ -28,6 +29,7 @@ function recalcMaxClones() {
     // console.log(maxClones);
     // return maxClones;
     setMax('clones', maxClones);
+    updateBounceAnimation();
 }
 
 exports.recalcMaxClones = recalcMaxClones;

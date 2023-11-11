@@ -52,16 +52,24 @@ document.querySelectorAll('.btn-increment').forEach(btn => {
     btn.addEventListener('click', function (event) {
         const jobType = this.closest('.job-button').getAttribute('data-job');
         if (getMaterial('clones', resources) > getTotalJobs()) {
-            jobCounts[jobType]++;
-            // increaseMaterial('clones', -1);
             const x = event.pageX; // X coordinate of the click
             const y = event.pageY; // Y coordinate of the click
-            triggerFloatUpText(x, y, '+1 worker', 'green');
+
+            if (event.shiftKey) {
+                let difference = getMaterial('clones', resources) - getTotalJobs();
+                jobCounts[jobType] += difference;
+                triggerFloatUpText(x, y, `+${difference} workers`, 'green');
+            }
+            else {
+                jobCounts[jobType]++;
+                triggerFloatUpText(x, y, '+1 worker', 'green');
+            }
+
+            distributeWorkers(jobType, jobCounts[jobType]);
+            updateDisplay(jobType);
+            updateTotal();
+            // console.log(workersDistribution);
         }
-        distributeWorkers(jobType, jobCounts[jobType]);
-        updateDisplay(jobType);
-        updateTotal();
-        console.log(workersDistribution);
 
     });
 });
@@ -69,7 +77,19 @@ document.querySelectorAll('.btn-increment').forEach(btn => {
 document.querySelectorAll('.btn-decrement').forEach(btn => {
     btn.addEventListener('click', function (event) {
         const jobType = this.closest('.job-button').getAttribute('data-job');
-        if (jobCounts[jobType] > 0) {
+        if (event.shiftKey) {
+            let numWorkers = jobCounts[jobType];
+            jobCounts[jobType] = 0;
+
+            distributeWorkers(jobType, jobCounts[jobType]);
+            updateDisplay(jobType);
+            updateTotal();
+
+            const x = event.pageX; // X coordinate of the click
+            const y = event.pageY; // Y coordinate of the click
+            if (numWorkers > 0) triggerFloatUpText(x, y, `-${numWorkers} workers`, 'red');
+        }
+        else if (jobCounts[jobType] > 0) {
             jobCounts[jobType]--;
             // increaseMaterial('clones', 1);
             distributeWorkers(jobType, jobCounts[jobType]);

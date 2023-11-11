@@ -1,4 +1,4 @@
-const { buildings } = require('./json/buildings');
+const { buildings, isPopBuilding } = require('./json/buildings');
 const { buttons } = require('./json/buttons');
 const { resources } = require('./json/resources');
 const { increaseMaterial, increaseMax, } = require('./resources');
@@ -11,6 +11,7 @@ const { updateSidebar } = require('./sidebar');
 const { updateBuildingButtonCount } = require('./updateBuildingButtonCount');
 const { recalculateBuildingCost } = require('./recalculateBuildingCost');
 const { canBuyBuilding } = require('./canBuyBuilding');
+const { updateTooltip, hideTooltip } = require('./updateTooltip');
 
 /* BUILDINGS */
 
@@ -65,7 +66,7 @@ function createBuildingButton(buildingKey, buildings) {
     // if (building.effects && building.effects['clones']) {
     //     requirementString += ` && passedStage('clones')`;
     // }
-    const requirementFunction = createRequirementFunction(building.cost, building);
+    const requirementFunction = createRequirementFunction(building.cost, buildingKey);
 
     const button = {
         'class': 'tooltip ' + buildingKey,
@@ -80,14 +81,18 @@ function createBuildingButton(buildingKey, buildings) {
     return button;
 }
 
-function createRequirementFunction(costs, building) {
-    return function (resources) {
+function createRequirementFunction(costs, buildingKey) {
+    return function () {
         const costCondition = Object.entries(costs)
-            .every(([material, amount]) => getMaterial(material, resources) >= Math.floor(amount / 2));
+            .every(([material, amount]) => {
+                const hasEnoughResource = getMaterial(material) >= Math.floor(amount / 2);
+                // console.log(`Checking ${material}: Need ${Math.floor(amount / 2)}, Have ${getMaterial(material, resources)}, Result: ${hasEnoughResource}`);
+                return hasEnoughResource;
+            });
+        // console.log(`PassedStage for ${buildingKey}: ${passedStage('clones')}`);
+        // console.log(`Cost condition for ${buildingKey}: ${costCondition}`);
 
-        const cloneCondition = !building.effects || !building.effects['clones'] || passedStage('clones');
-
-        return costCondition && cloneCondition;
+        return passedStage('clones') && costCondition;
     };
 }
 
@@ -190,6 +195,14 @@ function updateBuildingList() {
 
             // Add the span with the calculated font size
             buildingList.innerHTML += `<span class = 'tooltip' style='grid-column:${col}; grid-row:${row}; font-size:${fontSize}px' tooltipDesc='${key}'>${val.emoji || '?'}</span>`;
+            buildingList.querySelectorAll('span.tooltip').forEach((span) => {
+                span.addEventListener('mouseenter', () => {
+                    updateTooltip(span);
+                });
+                span.addEventListener('mouseleave', () => {
+                    hideTooltip();
+                });
+            });
         }
     }
 }

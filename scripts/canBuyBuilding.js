@@ -1,5 +1,6 @@
 const { resources } = require('./json/resources');
 const { getMaterial } = require('./getMaterial');
+const { passedStage } = require('./stages');
 
 /**
  *
@@ -18,6 +19,9 @@ function canBuyBuilding(buildingName) {
             break;
         }
     }
+
+    // Can't buy cloning buildings before clones unlocked
+    if (building.effects && building.effects['clones'] && !passedStage('clones')) canBuy = false;
 
     // console.log('can we buy ',buildingName,canBuy);
     return canBuy;

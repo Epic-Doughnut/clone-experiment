@@ -1,14 +1,14 @@
-const { craftedResources, getCraftedResourceConfigById, resetCraftedResources } = require('./json/craftedResources');
+const { craftedResources, resetCraftedResources } = require('./json/craftedResources');
 const { buildings, resetBuildings } = require("./json/buildings");
 const { ponders, resetPonders } = require("./json/ponder");
 const { buttons } = require("./json/buttons");
-const { resources, getResourceConfigById, resetResources } = require('./json/resources');
+const { resources, resetResources } = require('./json/resources');
 
 const { saveGame, loadGame } = require("./saving");
-const { generateTooltipCost, appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource, calcIncrease, updateResourceIncreaseRates, calcSecondsRemaining, increaseMax, updateDisplayValue } = require('./resources');
+const { generateTooltipCost, appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource, calcIncrease, updateResourceIncreaseRates, increaseMax, updateDisplayValue } = require('./resources');
 const { buyMaxBuildings, buyBuilding, createBuildingButton } = require('./buildings');
 const { hasPerk, selectAbility, resetPerks } = require('./perks');
-const { getMax, clearSidebar } = require('./helper');
+const { clearSidebar } = require('./helper');
 const { makeVisible } = require('./makeVisible');
 const { updateButtonVisibility } = require('./updateButtonVisibility');
 const { getCraftedResource } = require('./getCraftedResource');
@@ -25,6 +25,8 @@ const { initializeResourceTags, updateSidebar } = require('./sidebar');
 const { prestige } = require('./json/prestige');
 const { recalculateBuildingCost } = require('./recalculateBuildingCost');
 const { triggerFloatUpText } = require('./triggerFloatUpText');
+const { updateBounceAnimation } = require('./updateBounceAnimation');
+const { updateTooltip, hideTooltip } = require('./updateTooltip');
 
 
 
@@ -335,6 +337,7 @@ function render() {
 
     try {
         updateButtonVisibility();
+        // updateBounceAnimation();
         if (currentHoverButton !== null) updateTooltip(currentHoverButton);
     } catch (err) {
         console.warn(err);
@@ -611,7 +614,10 @@ function update(delta_time, total_time) {
 // window.setInterval(render, 100) // Update visuals 10 times per second
 // window.setInterval(tick, 1000); // Every tick lasts for 1 second
 // window.setInterval(saveGame, 10000); // Save the game every 10 seconds
-
+window.onbeforeunload = function () {
+    // We use a function rather than shorthand because savegame returns a string
+    if (!currentlyDeleting) saveGame();
+};
 
 
 // const myResources = {};
@@ -680,73 +686,7 @@ function updateUI(resourceName) {
 
 
 
-
-
-const tooltip = document.getElementById('dynamic-tooltip');
-
-function showTooltip(target, desc, effect, cost) {
-    let content = '';
-
-    if (desc) {
-        content += `<span >${desc}</span><hr>`;
-    }
-
-    if (effect) {
-        content += `<span style="color:#00ABE7">${effect}</span><hr>`;
-    }
-
-    if (cost) {
-        // content += `<span style="color:#F4D03F">${cost}</span><br>`;
-        try {
-            var str = '';
-            for (const [material, amount] of Object.entries(cost)) {
-                // const material = req;
-                const hasEnough = getMaterial(material, resources) >= amount;/* Your logic to check if there's enough of the material */;
-                var colorClass = hasEnough ? 'enough' : 'not-enough';
-                if (getMax(material) < amount) colorClass = 'exceeds-max';
-                str += `<span class="tooltip-${material} ${colorClass}">${amount.toFixed(0)} ${material}</span>`;
-
-                let secondsRemaining = 0;
-                if (resources[material]) secondsRemaining = calcSecondsRemaining(material, amount);
-                // console.log(secondsRemaining);
-                if (secondsRemaining > 0 && colorClass != 'exceeds-max') { str += `<span class="time-remaining">(${(secondsRemaining).toFixed(0)} seconds)</span>`; }
-                str += `<br>`;
-            }
-            content += str;
-
-
-        } catch (error) {
-            content += cost;
-            // console.error("Couldn't make normal cost for button: ", target, cost, error);
-        }
-    }
-    // console.log(target, content);
-    // @ts-ignore
-    tooltip.innerHTML = content;
-    // @ts-ignore
-    tooltip.style.left = (target.getBoundingClientRect().right + 5) + 'px';
-    // @ts-ignore
-    tooltip.style.top = (target.getBoundingClientRect().top - tooltip.offsetHeight / 2) + 'px';
-    // @ts-ignore
-    tooltip.style.display = 'block';
-}
-
-function hideTooltip() {
-    // @ts-ignore
-    tooltip.style.display = 'none';
-}
-
-function updateTooltip(button) {
-    const desc = button.getAttribute('data-tooltip-desc') || button.getAttribute('tooltipDesc');
-    const effect = button.getAttribute('data-tooltip-effect');
-    // const cost = button.getAttribute('data-tooltip-cost');
-
-    const config = getResourceConfigById(button.id) || getCraftedResourceConfigById(button.id) || buildings[button.getAttribute('data_building')] || ponders[button.getAttribute('unlock')];
-    // console.log(config);
-    const cost = (config && config.cost) || button.getAttribute('tooltipCost') || button.getAttribute('data-tooltip-cost');
-    showTooltip(button, desc, effect, cost);
-}
-
+let currentlyDeleting = false;
 
 // After all has been loaded
 document.addEventListener('DOMContentLoaded', (event) => {
@@ -876,7 +816,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
                 // @ts-ignore
                 else if (button.id === 'deleteSaveButton' && confirm("Are you sure you want to delete your save data? This will reset all your progress.")) {
-                    localStorage.removeItem('save'); location.reload();
+                    localStorage.removeItem('save'); currentlyDeleting = true; location.reload();
                 }
                 // @ts-ignore
                 else if (button.id === 'clearJobAssignments') clearJobAssignments();
@@ -986,9 +926,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // Update the jobs counter
     updateTotal();
+    updateBounceAnimation();
 
 
 });
+
+
 
 function nextFibonacci(n) {
     let a = n * (1 + Math.sqrt(5)) / 2.0;

@@ -1,6 +1,5 @@
-const { getCraftedResource } = require('./getCraftedResource');
 const { getMaterial } = require('./getMaterial');
-const { craftedResources, getCraftedResourceConfigById } = require('./json/craftedResources');
+const { craftedResources } = require('./json/craftedResources');
 const { resources } = require('./json/resources');
 // Assuming these are defined globally
 // var manufacturedMap = {

@@ -19,13 +19,6 @@ html {
 }
 
 
-#alone {
-    cursor: pointer;
-    padding: .25em;
-    user-select: none;
-    color: aliceblue;
-    /* padding-bottom: .5em; */
-}
 
 #eatFish {
     background-image: linear-gradient(#267A30, #222);
@@ -93,6 +86,8 @@ html {
     pointer-events: none;
     position: absolute;
     animation: floatAndFade 2s ease-out forwards;
+    background-color: #212121;
+    border-radius: 3px;
 }
 
 .tierOneButton {

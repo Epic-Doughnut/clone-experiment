@@ -1,0 +1,35 @@
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0) scaleY(1);
+    }
+
+    50% {
+        transform: translateY(-10px) scaleY(1.4);
+        /* Bounce height and stretch */
+    }
+}
+
+#alone {
+    cursor: pointer;
+    padding: .25em;
+    user-select: none;
+    color: aliceblue;
+    /* padding-bottom: .5em; */
+    /* animation: bounce 1s ease 1; */
+    animation: none;
+    /* Start after 10 seconds */
+    transform-origin: center bottom;
+    /* Set the origin of transformation */
+}
+
+/* Stop the animation when hovering */
+#alone:hover {
+    animation-play-state: paused;
+}
+
+#alone.bouncing {
+    animation: bounce 1s ease;
+    /* Apply the bounce animation */
+}

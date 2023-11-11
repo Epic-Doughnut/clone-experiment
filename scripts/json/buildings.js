@@ -429,10 +429,25 @@ function resetBuildings() {
     recalcMaxClones();
 }
 
+function isPopBuilding(buildingName) {
+    switch (buildingName) {
+        case 'shelter':
+        case 'hut':
+        case 'house':
+        case 'teepee':
+            return true;
+            break;
+        default:
+            return false;
+            break;
+    }
+}
+
 
 module.exports = {
     buildings,
     getBuildingCount,
     getBoost,
-    resetBuildings
+    resetBuildings,
+    isPopBuilding
 };

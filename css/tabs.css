@@ -27,6 +27,7 @@
     cursor: pointer;
     transition: 0.3s;
     clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 50%);
+    background-image: linear-gradient(#556, #445);
 }
 
 .tab-button.active {
