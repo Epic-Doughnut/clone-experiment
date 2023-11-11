@@ -765,7 +765,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     var canUnlock = true;
                     for (let material in ponders[unlockAttr].cost) {
                         if (getMaterial(material, resources) < ponders[unlockAttr].cost[material]) {
-                            console.log("Cannot unlock " + unlockAttr);
+                            // console.log("Cannot unlock " + unlockAttr);
                             canUnlock = false;
                             break;
                         }
@@ -782,7 +782,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
                         // @ts-ignore
                         button.display = 'none';
 
-                        console.log("Unlocking " + unlockAttr);
+                        // console.log("Unlocking " + unlockAttr);
+                        // Refresh the page when buying organized storage to generate the groups
+                        if (unlockAttr === 'organization') location.reload();
                     }
                 }
 
