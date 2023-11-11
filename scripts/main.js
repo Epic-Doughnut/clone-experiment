@@ -785,7 +785,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     function getCRKeyFromID(id) {
         for (const [r, val] of Object.entries(craftedResources)) {
             console.log(r, val, id);
-            if (val.id + "Button" === id) return r;
+            if (val.id === id) return r;
         }
         return 'error ' + id;
     }
@@ -855,11 +855,15 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 if (button.id.slice(0, 6) === "gather") toggleResource(getRKeyFromID(button.id));
 
                 // @ts-ignore
-                else if (button.id.slice(0, 5) === 'craft')
+                else if (button.id.slice(0, 5) === 'craft') {
                     // @ts-ignore
-                    if (event.shiftKey) craftAllResources(getCRKeyFromID(button.id));
-                    // @ts-ignore
-                    else craftResource(getCRKeyFromID(button.id));
+                    let cr = getCRKeyFromID(button.id);
+                    console.log('clicked cr: ', cr);
+                    if (event.shiftKey) craftAllResources(cr);
+                    else craftResource(cr);
+                    triggerFloatUpText(event.pageX, event.pageY, `+${cr}`, 'aqua');
+
+                }
 
                 // @ts-ignore
                 else if (button.id === 'saveButton') saveGame();

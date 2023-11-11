@@ -216,7 +216,7 @@ function updateResourceIncreaseRates() {
 function createCraftedResourceButton(config) {
     const button = document.createElement('button');
     button.className = config.class + ' tooltip';
-    button.setAttribute('id', config.id + 'Button');
+    button.setAttribute('id', config.id);
     button.setAttribute('requirement', config.requiredStage);
     const resourceName = Object.keys(craftedResources).find(key => craftedResources[key] === config);
     // const cleanCount = parseFloat(craftedResources[resourceName].value).toFixed(0);

@@ -8,7 +8,9 @@ function canCraft(resourceKey) {
 
     // Check if all requirements are met
     try {
+        // console.log(resourceKey, requirements);
         for (let mat in requirements) {
+
             if (getMaterial(mat, resources) < requirements[mat]) {
                 canCraft = false;
                 break;

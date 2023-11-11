@@ -54,15 +54,15 @@ document.querySelectorAll('.btn-increment').forEach(btn => {
         if (getMaterial('clones', resources) > getTotalJobs()) {
             jobCounts[jobType]++;
             // increaseMaterial('clones', -1);
+            const x = event.pageX; // X coordinate of the click
+            const y = event.pageY; // Y coordinate of the click
+            triggerFloatUpText(x, y, '+1 worker', 'green');
         }
         distributeWorkers(jobType, jobCounts[jobType]);
         updateDisplay(jobType);
         updateTotal();
         console.log(workersDistribution);
 
-        const x = event.clientX; // X coordinate of the click
-        const y = event.clientY; // Y coordinate of the click
-        triggerFloatUpText(x, y, '+1 worker', 'green');
     });
 });
 
@@ -76,8 +76,8 @@ document.querySelectorAll('.btn-decrement').forEach(btn => {
             updateDisplay(jobType);
             updateTotal();
 
-            const x = event.clientX; // X coordinate of the click
-            const y = event.clientY; // Y coordinate of the click
+            const x = event.pageX; // X coordinate of the click
+            const y = event.pageY; // Y coordinate of the click
             triggerFloatUpText(x, y, '-1 worker', 'red');
         }
     });

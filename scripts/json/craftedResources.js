@@ -8,7 +8,7 @@ const { passedStage } = require('../stages');
 const craftedResources = {
     'sharprocks': {
         text: 'Sharp Rocks',
-        id: 'craftSharprocks',
+        id: 'craftSharprocksButton',
         value: 0,
         cost: { 'rocks': 2 },
         craftedOnce: false,
@@ -19,7 +19,7 @@ const craftedResources = {
         // tool: 'Bare Hands'
     },
     'rope': {
-        id: 'craftRope',
+        id: 'craftRopeButton',
         value: 0,
         cost: { 'vines': 3 },
         craftedOnce: false,
@@ -30,7 +30,7 @@ const craftedResources = {
         // tool: 'Bare Hands'
     },
     'handle': {
-        id: 'craftHandle',
+        id: 'craftHandleButton',
         value: 0,
         cost: { 'sticks': 2 },
         craftedOnce: false,
@@ -41,7 +41,7 @@ const craftedResources = {
         // tool: 'Sharp Rock'
     },
     'staff': {
-        id: 'craftStaff',
+        id: 'craftStaffButton',
         value: 0,
         cost: { 'handle': 2, 'rope': 1 },
         craftedOnce: false,
@@ -52,7 +52,7 @@ const craftedResources = {
         // tool: 'Bare Hands'
     },
     'fishingrod': {
-        id: 'craftFishingrod',
+        id: 'craftFishingrodButton',
         text: 'Fishing Rod',
         value: 0,
         cost: { 'staff': 1, 'rope': 2 },
@@ -64,7 +64,7 @@ const craftedResources = {
         // tool: 'Bare Hands'
     },
     'spear': {
-        id: 'craftSpear',
+        id: 'craftSpearButton',
         value: 0,
         cost: {
             'staff': 1,
@@ -79,7 +79,7 @@ const craftedResources = {
         // tool: 'Bare Hands'
     },
     'axe': {
-        id: 'craftAxe',
+        id: 'craftAxeButton',
         value: 0,
         cost: { 'handle': 1, 'rope': 1, 'sharprocks': 2 },
         craftedOnce: false,
@@ -90,7 +90,7 @@ const craftedResources = {
         // tool: 'Bare Hands'
     },
     'pickaxe': {
-        id: 'craftPickaxe',
+        id: 'craftPickaxeButton',
         value: 0,
         cost: {
             'handle': 1,
@@ -106,7 +106,7 @@ const craftedResources = {
     },
 
     'glass': {
-        id: 'craftGlass',
+        id: 'craftGlassButton',
         value: 0,
         cost: { 'sand': 10 },
         craftedOnce: false,
@@ -115,7 +115,7 @@ const craftedResources = {
         class: 'glassBlowing'
     },
     'paper': {
-        id: 'craftPaper',
+        id: 'craftPaperButton',
         value: 0,
         cost: { 'wood': 12 },
         craftedOnce: false,
@@ -124,7 +124,7 @@ const craftedResources = {
         class: 'paper'
     },
     'gold': {
-        id: 'craftGold',
+        id: 'craftGoldButton',
         value: 0,
         cost: { 'ore': 100 },
         craftedOnce: false,
@@ -134,7 +134,7 @@ const craftedResources = {
         class: 'metalWorking'
     },
     'iron': {
-        id: 'craftIron',
+        id: 'craftIronButton',
         value: 0,
         cost: { 'ore': 20 },
         craftedOnce: false,
@@ -144,7 +144,7 @@ const craftedResources = {
         class: 'metalWorking'
     },
     'silver': {
-        id: 'craftSilver',
+        id: 'craftSilverButton',
         value: 0,
         cost: { 'ore': 50 },
 
@@ -155,7 +155,7 @@ const craftedResources = {
         class: 'metalWorking'
     },
     'bricks': {
-        id: 'craftBricks',
+        id: 'craftBricksButton',
         value: 0,
         cost: { 'clay': 15 },
         craftedOnce: false,
@@ -178,7 +178,7 @@ const craftedResources = {
 
 function getCraftedResourceConfigById(id) {
     for (const [c, val] of Object.entries(craftedResources)) {
-        if (val.id + "Button" === id || val.id === id) {
+        if (val.id === id || val.id === id) {
             return val;
         }
     }
@@ -188,7 +188,7 @@ function getCraftedResourceConfigById(id) {
 function getCraftedResourceKeyByConfig(config) {
     for (let k in craftedResources) {
         // console.log(k);
-        if (craftedResources[k].id + 'Button' === config.id) return k;
+        if (craftedResources[k].id === config.id) return k;
     }
     return null;
 }

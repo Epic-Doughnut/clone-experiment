@@ -5,8 +5,6 @@ const { isPondered, canUnlock } = require('./ponder');
 const { getCraftedResourceKeyByConfig } = require("./json/craftedResources");
 const { isButtonIdVisible, setVisibleButton } = require('./helper');
 const { canCraft } = require('./canCraft');
-const { getMaterial } = require('./getMaterial');
-const { passedStage } = require('./stages');
 const { canBuyBuilding } = require('./canBuyBuilding');
 /**
  * Changes the states of buttons between 'hidden', 'purchasable', and 'button-disabled'
@@ -15,8 +13,8 @@ function updateButtonVisibility() {
     const selectButtons = document.querySelectorAll('button'); // Adjust the selector accordingly
 
     selectButtons.forEach(button => {
-        const buttonConfig = buttons[button.id]; /* get the button's configuration using its data attribute or ID, etc. */ /* get the button's configuration using its data attribute or ID, etc. *//* get the button's configuration using its data attribute or ID, etc. */ /* get the button's configuration using its data attribute or ID, etc. */;
-        if (!buttonConfig) return;
+        const buttonConfig = buttons[button.id]; /* get the button's configuration using its data attribute or ID, etc. */;
+        if (!buttonConfig) { /*console.warn('no button config found for', button, button.id); */return; }
         // console.log(buttonConfig.data_building, buttonConfig.requirement);
         // Reset all states first
         button.classList.remove('hidden', 'purchasable', 'button-disabled');
@@ -28,7 +26,7 @@ function updateButtonVisibility() {
         // If requirement is met, it should be visible
         try {
             // let getMaterial = require('./getMaterial').getMaterial;
-            if (buttonConfig.requirement()) {
+            if (buttonConfig.requirement && buttonConfig.requirement()) {
                 state = 'button-disabled';
                 // always purchasable gather buttons
                 if (buttonConfig.tab && !buttonConfig.data_building) {
@@ -67,13 +65,11 @@ function updateButtonVisibility() {
             if (buttonConfig.craftedOnce) state = 'button-disabled';
 
 
-            // If we can afford this craft, it should be purchasable
-            // 
             var crafted = getCraftedResourceConfigById(buttonConfig.id);
             // console.log(crafted);
             if (crafted.value > 0) state = 'button-disabled';
 
-            // 
+            // If we can afford this craft, it should be purchasable
             const key = getCraftedResourceKeyByConfig(crafted);
             // console.log(key);
             // 
