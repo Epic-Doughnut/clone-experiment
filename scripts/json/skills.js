@@ -21,11 +21,11 @@ const skills = {
         level: 0,
         affectedResources: ['ponder']
     },
-    smithing: {
-        exp: 0,
-        level: 0,
-        affectedResources: ['axe', 'pickaxe', 'spear', 'glass', 'iron', 'silver', 'gold']
-    },
+    // smithing: {
+    //     exp: 0,
+    //     level: 0,
+    //     affectedResources: ['axe', 'pickaxe', 'spear', 'glass', 'iron', 'silver', 'gold']
+    // },
     farming: {
         exp: 0,
         level: 0,

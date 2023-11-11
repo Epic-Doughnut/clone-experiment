@@ -306,7 +306,7 @@ const visibilityRules = [
         action: () => recalcMaxClones()
     },
     {
-        condition: () => getMaterial('clones') >= 30,
+        condition: () => getMaterial('clones') >= 40,
         action: () => makeVisible('prestige')
     },
     {
@@ -949,6 +949,28 @@ function isekai() {
     const overlay = document.getElementById('overlay');
     const overlayText = document.getElementById('overlay-text');
     const overlayButton = document.getElementById('overlay-button');
+    const overlayBackButton = document.getElementById('overlay-back-button'); // Get the "Go Back" button
+
+    overlayButton.addEventListener('click', () => {
+        // Give husks afterwards
+        increaseMaterial('husks', getMaterial('clones'));
+        increaseMaterial('clones', -getMaterial('clones'));
+        // Reset functions to be executed when "Continue" is clicked
+        resetResources();
+        resetCraftedResources();
+        resetPonders();
+        resetPerks();
+        resetBuildings();
+        resetAllJobs();
+        resetStages();
+        // Close the overlay
+        overlay.style.display = 'none';
+    });
+
+    overlayBackButton.addEventListener('click', () => {
+        // Just close the overlay without executing reset functions
+        overlay.style.display = 'none';
+    });
 
     // Convert clones to husks
     const oldHuskValue = document.getElementById('husksIsekaiValue');
@@ -956,9 +978,7 @@ function isekai() {
     if (oldHuskValue) huskValue = oldHuskValue;
     else huskValue = document.createElement('p');
     huskValue.id = 'husksIsekaiValue';
-    increaseMaterial('husks', getMaterial('clones'));
-    increaseMaterial('clones', -getMaterial('clones'));
-    huskValue.textContent = 'Husks: ' + getMaterial('husks');
+    huskValue.innerHTML = `Husks:  ${getMaterial('husks')} <br> You will get ${getMaterial('clones')} Husks post-isekai.`;
     huskValue.style.opacity = '0';
     overlay.prepend(huskValue);
     // Overlay
@@ -967,15 +987,10 @@ function isekai() {
 
     fadeToBlack();
 
-    // Reset all resources
-    resetResources();
-    resetCraftedResources();
-    resetPonders();
-    resetPerks();
-    resetBuildings();
-    resetAllJobs();
-    resetStages();
-
+    setTimeout(() => {
+        // @ts-ignore
+        overlayBackButton.style.opacity = '1';
+    }, 5000);
 
     function createPrestigeButtons() {
 

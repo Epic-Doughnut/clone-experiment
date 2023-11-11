@@ -21,7 +21,7 @@ function canBuyBuilding(buildingName) {
     }
 
     // Can't buy cloning buildings before clones unlocked
-    if (building.effects && building.effects['clones'] && !passedStage('clones')) canBuy = false;
+    if (building.effects && building.effects['clones'] && !passedStage('clone')) canBuy = false;
 
     // console.log('can we buy ',buildingName,canBuy);
     return canBuy;

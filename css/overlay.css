@@ -62,3 +62,11 @@
     gap: 20px;
     width: 70%;
 }
+
+#overlay-back-button {
+    opacity: 0;
+}
+
+#husksIsekaiValue {
+    text-align: center;
+}

@@ -415,6 +415,8 @@ function getBoost(buildingName, resource) {
     return null;
 }
 
+
+
 function resetBuildings() {
     for (const [key, val] of Object.entries(buildings)) {
         val['count'] = 0;

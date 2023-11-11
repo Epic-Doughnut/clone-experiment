@@ -45,7 +45,7 @@ html {
     overflow-wrap: break-word;
     /* max-width: 600px; */
     width: 800px;
-    /* height: 100px; */
+    height: 100px;
 }
 
 #buildingList {

@@ -1,6 +1,6 @@
 const { resources } = require("./json/resources");
 const { craftedResources } = require('./json/craftedResources');
-const { buildings, getBoost } = require("./json/buildings");
+
 const { skills } = require('./json/skills');
 const { getWorkers } = require('./jobs');
 const { hasPerk } = require('./perks');
@@ -13,7 +13,7 @@ var cloneMult = 0.25;
 // console.log('initial', workersDistribution);
 function calcIncrease(resourceName, delta_time) {
     var total = 0;
-
+    const buildings = require("./json/buildings").buildings;
     // clones increase by 1 per second as long as there's space
     // if (resource === 'clones' && passedStage('clone')) {
     //     total = 1;
@@ -63,11 +63,12 @@ function calcIncrease(resourceName, delta_time) {
         }
     }
 
-
+    // console.log(getBoost('campfi'))
     // All buildings after level
-    for (let building in buildings) {
-        const boostData = getBoost(building, resourceName);
+    for (const building of Object.keys(buildings)) {
+        const boostData = require("./json/buildings").getBoost(building, resourceName);
         if (boostData) {
+
             var increase = Math.pow(boostData, buildings[building].count);
             if (isPondered('effectiveBuildings')) increase *= 1.01;
             total *= increase;

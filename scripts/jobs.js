@@ -69,6 +69,7 @@ document.querySelectorAll('.btn-increment').forEach(btn => {
             updateDisplay(jobType);
             updateTotal();
             // console.log(workersDistribution);
+
         }
 
     });
@@ -88,6 +89,7 @@ document.querySelectorAll('.btn-decrement').forEach(btn => {
             const x = event.pageX; // X coordinate of the click
             const y = event.pageY; // Y coordinate of the click
             if (numWorkers > 0) triggerFloatUpText(x, y, `-${numWorkers} workers`, 'red');
+
         }
         else if (jobCounts[jobType] > 0) {
             jobCounts[jobType]--;
@@ -99,6 +101,7 @@ document.querySelectorAll('.btn-decrement').forEach(btn => {
             const x = event.pageX; // X coordinate of the click
             const y = event.pageY; // Y coordinate of the click
             triggerFloatUpText(x, y, '-1 worker', 'red');
+
         }
     });
 });
@@ -144,6 +147,8 @@ function distributeWorkers(skill, totalWorkers) {
     // Evenly distribute workers among the affected resources
     for (let resource of affectedResources) {
         workersDistribution.set(resource, perResource);
+        if (perResource > 0) moveBallFromJobToResource(skill, resource);
+
     }
 
     // Distribute any remaining workers due to rounding
@@ -152,10 +157,56 @@ function distributeWorkers(skill, totalWorkers) {
         if (remainingWorkers > 0) {
             workersDistribution.set(resource, workersDistribution.get(resource) + 1);
             remainingWorkers--;
+            moveBallFromJobToResource(skill, resource);
+
         }
     }
 
+
     // console.log(workersDistribution);
+}
+
+function moveBallFromJobToResource(jobType, affectedResource) {
+    // Find the job button
+    const jobButton = Array.from(document.querySelectorAll('.job-button'))
+        .find(btn => btn.getAttribute('data-job') === jobType);
+
+    if (!jobButton) return; // Job button not found
+
+
+    const resourceDisplay = document.getElementById(`resource-${affectedResource}`);
+    if (!resourceDisplay || resourceDisplay.style.display === 'none') return; // Resource display not found
+
+    // Calculate positions
+    const jobButtonRect = jobButton.getBoundingClientRect();
+    const resourceRect = resourceDisplay.getBoundingClientRect();
+
+    // Create a ball element
+    const ball = document.createElement('div');
+    ball.style.position = 'absolute';
+    ball.style.width = '10px';
+    ball.style.height = '10px';
+    ball.style.borderRadius = '50%';
+    ball.style.backgroundColor = 'white';
+    ball.style.opacity = '.8';
+    ball.style.left = `${jobButtonRect.left + window.scrollX}px`;
+    ball.style.top = `${jobButtonRect.top + window.scrollY}px`;
+    document.body.appendChild(ball);
+
+    // Animate the ball
+    const animation = ball.animate([
+        { transform: `translate(${resourceRect.left - jobButtonRect.left}px, ${resourceRect.top - jobButtonRect.top}px)` }
+    ], {
+        duration: 1000, // Animation duration in milliseconds
+        // fill: 'forwards' // Keep the ball at the end position after animation
+        easing: 'cubic-bezier(.23,-0.34,0,1.06)'
+    });
+
+    // Event listener to hide the ball after animation
+    animation.onfinish = () => {
+        ball.style.display = 'none';
+    };
+
 }
 
 
