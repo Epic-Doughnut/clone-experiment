@@ -154,6 +154,7 @@ function increaseMaterial(material, num) {
     // document.querySelector("#" + material + "Value").textContent = resources[material].value;
 
 }
+window.increaseMaterial = increaseMaterial;
 
 
 function updateResourceIncreaseRates() {

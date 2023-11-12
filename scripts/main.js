@@ -678,7 +678,6 @@ function updateUI(resourceName) {
 
 
 let currentlyDeleting = false;
-window.increaseMaterial = increaseMaterial;
 
 // After all has been loaded
 document.addEventListener('DOMContentLoaded', (event) => {
