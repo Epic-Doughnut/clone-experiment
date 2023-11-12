@@ -6,7 +6,7 @@ const { makeVisible } = require('./makeVisible');
 const { getCraftedResource } = require('./getCraftedResource');
 const { getMaterial } = require('./getMaterial');
 
-const { getAllPerks, addPerk, hasPerk } = require('./perks');
+const { getAllPerks, addPerk, hasPerk, selectAbility } = require('./perks');
 const { isPondered } = require('./ponder');
 const { jobCounts, setConnections, getConnections, distributeWorkers, updateDisplay } = require('./jobs');
 const { total_time } = require('./main');
@@ -308,7 +308,7 @@ function loadGame() {
 
     if (typeof savegame.perks !== 'undefined') {
         // myPerks = savegame.perks;
-        for (let perk in savegame.perks) {
+        for (let [i, perk] of Object.entries(savegame.perks)) {
             addPerk(perk);
             require('./selectCorrectPerkButton').selectCorrectPerkButton(perk);
         }
