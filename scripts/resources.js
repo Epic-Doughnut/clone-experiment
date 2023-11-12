@@ -19,6 +19,7 @@ const { getCraftedResource } = require('./getCraftedResource');
 const { calcIncrease } = require("./calcIncrease");
 const { updateSidebar } = require("./sidebar");
 const { passedStage, getAllStages } = require("./stages"); // Used for eval functions
+const { updateDisplayValue } = require("./sidebar");
 // console.log(capitalizeFirst);
 
 /**
@@ -80,51 +81,9 @@ function calcSecondsRemaining(resourceName, needed) {
 
 
 
-// Call this function once to set up your resource tags
-// initializeResourceTags();
 const resourcesContainer = document.getElementById('resources');
+exports.resourcesContainer = resourcesContainer;
 
-
-function updateDisplayValue(material) {
-    const element = resourcesContainer.querySelector(`#${material}Value`);
-    const elementIncrease = resourcesContainer.querySelector(`#${material}IncreaseRate`);
-    const craftedButton = document.querySelector(`button#craft${capitalizeFirst(material)}`);
-    // try { if (!element) createResourceTag(material); }
-    // catch (error) { }
-
-
-    // console.log(material, element, craftedButton);
-    if (element) {
-        try {
-            let max = (getMax(material) && getMax(material) < Infinity) ? getMax(material).toFixed(2) : '∞';
-            element.textContent = `${getMaterial(material).toFixed(2)} / ${max}`;
-
-            if (elementIncrease) {
-                elementIncrease.textContent = calcIncrease(material, 1000).toFixed(2);
-            }
-        } catch (error) {
-            console.error(element, material, error);
-        }
-
-        if (resources[material]) {
-            if (resources[material].isGetting) {
-                const sidebarText = document.querySelector("#resources").querySelector('#resource-' + material);
-                // @ts-ignore
-                if (sidebarText) sidebarText.style.fontWeight = 'bold';
-
-            }
-
-        }
-    }
-    if (craftedButton) {
-        const countSpan = craftedButton.querySelector(`#${material}Value`);
-        // console.log('crafted button was found', countSpan, material, getCraftedResource(material));
-        if (countSpan) countSpan.textContent = getCraftedResource(material).toFixed(0);
-        else console.warn(`Resource button found but no count span for: ${material}`);
-
-    }
-
-}
 
 function setMax(material, num) {
     resources[material].max = num;
@@ -187,7 +146,7 @@ function increaseMaterial(material, num) {
 
 
 
-    updateSidebar();
+    // updateSidebar();
 
 
 
@@ -414,7 +373,6 @@ module.exports = {
     craftAllResources,
     craftResource,
     updateEmojiDisplay,
-    updateDisplayValue,
     generateTooltipCost,
     calcSecondsRemaining,
     appendCraftedResourceButtons,

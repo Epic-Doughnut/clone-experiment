@@ -1,4 +1,4 @@
-const { hasPrestige } = require('./json/prestige');
+const { hasPrestige, getLevelOfPrestige } = require('./json/prestige');
 
 /**
  *
@@ -14,7 +14,7 @@ function recalculateBuildingCost(buildingKey, buildings, hasPerk) {
             building.cost[material] = Math.round(building.basecost[material] * Math.pow(building.ratio, building.count));
 
             if (hasPerk('Architect')) building.cost[material] *= 0.75; // 25% reduction for architects
-            if (hasPrestige('cheaperBuildings')) building.cost[material] *= 0.95; // 5% reduction
+            if (hasPrestige('cheaperBuildings')) building.cost[material] *= Math.pow(0.95, getLevelOfPrestige('cheaperBuildings')); // 5% reduction
         }
     }
 

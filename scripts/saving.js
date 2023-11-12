@@ -1,5 +1,5 @@
 // DEPENDS ON: resources.js
-const { updateDisplayValue, calcIncrease, updateEmojiDisplay } = require('./resources');
+const { calcIncrease, updateEmojiDisplay } = require('./resources');
 const { addTool, getAllTools } = require('./tools');
 const { allVisibleButtons, populateSkillsTable, setVisibleButton } = require('./helper');
 const { makeVisible } = require('./makeVisible');
@@ -161,7 +161,7 @@ function loadGame() {
             resources[i].value = savegame.resources[i].value;
             resources[i].max = savegame.resources[i].max;
             console.log("Updating resources for " + i + " to " + savegame.resources[i].value, savegame.resources[i].max);
-            if (resources[i].value != 0) updateDisplayValue(i);
+            if (resources[i].value != 0) require('./sidebar').updateDisplayValue(i);
         }
     }
 
@@ -179,7 +179,7 @@ function loadGame() {
             craftedResources[key].value = savegame.craftedResources[key].value;
             if (Number.isNaN(craftedResources[key].value)) craftedResources[key].value = 0;
             craftedResources[key].craftedOnce = savegame.craftedResources[key].craftedOnce;
-            updateDisplayValue(key);
+            require('./sidebar').updateDisplayValue(key);
         }
     }
 

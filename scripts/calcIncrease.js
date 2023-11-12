@@ -8,6 +8,7 @@ const { isPondered } = require('./ponder');
 const { getFactoryProduction } = require("./factory");
 const { hasPrestige, getLevelOfPrestige } = require("./json/prestige");
 const { getMaterial } = require("./getMaterial");
+const { hasTool } = require("./tools");
 
 // Clones work at 1/4 the speed by default
 var cloneMult = 0.25;
@@ -83,6 +84,14 @@ function calcIncrease(resourceName, delta_time) {
 
     if (isPondered('fasterResourceGain')) total *= 1.05;
     if (hasPrestige('cloneBoost')) total *= 1.05 * getLevelOfPrestige('cloneBoost');
+
+    // Check tools
+    if (resourceName === 'wood' && getMaterial('axe') > 1) total *= 1 + Math.log(getMaterial('axe'));
+    if (resourceName === 'ore' && getMaterial('pickaxe') > 1) total *= 1 + Math.log(getMaterial('pickaxe'));
+    if (resourceName === 'fish' && getMaterial('fishingrod') > 1) total *= 1 + Math.log(getMaterial('fishingrod'));
+    if (resourceName === 'game' && getMaterial('spear') > 1) total *= 1 + Math.log(getMaterial('spear'));
+    if (resourceName === 'ponder' && getMaterial('paper') > 1) total *= 1 + Math.log(getMaterial('paper'));
+    if (resourceName === 'sticks' && getMaterial('staff') > 1) total *= 1 + Math.log(getMaterial('staff'));
 
     // Need at least 10 husks to boost mathematically (ln(1) = 0)
     if (getMaterial('husks') > 10) total *= 1 + Math.log(getMaterial('husks') / 10);

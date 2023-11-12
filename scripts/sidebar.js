@@ -1,8 +1,11 @@
+const { calcIncrease } = require("./calcIncrease");
 const { capitalizeFirst } = require('./capitalizeFirst');
-const { getMaterial } = require('./getMaterial');
-const { getMax } = require('./helper');
-const { resources } = require('./json/resources');
+const { getMaterial } = require("./getMaterial");
+const { getMax } = require("./helper");
+const { resources } = require("./json/resources");
+// @ts-ignore
 const { isPondered } = require('./ponder');
+
 
 
 
@@ -46,7 +49,7 @@ function createResourceGroupContainer(groupName) {
 
 // Iterates over each group and resource to create tags
 function initializeResourceTags(withGroups) {
-    if (isPondered('organization')) withGroups = true;
+    // if (isPondered('organization')) withGroups = true;
     console.log("initialzing resource tags");
     console.trace();
     // Define groups for your resources
@@ -73,10 +76,14 @@ function initializeResourceTags(withGroups) {
 
 
             // Hide the element if we should, otherwise create a resource tag
+            console.log(resourceName, shouldHide(resourceName), getMaterial(resourceName));
             if (shouldHide(resourceName)) {
                 parentElement.style.display = 'none';
             }
-            console.log(shouldHide);
+            else {
+                parentElement.style.display = '';
+            }
+            // console.log(shouldHide);
 
         });
     }
@@ -124,12 +131,17 @@ function abbreviateNumber(num) {
     return num.toString();
 }
 
+/**
+ * Updates the resource count and maxes of all resources
+ * @returns 
+ */
 function updateSidebar() {
     const allMaterials = require('./factory').allMaterials;
-    Array.from(allMaterials).forEach(r => { if (resources[r]) require('./resources').updateDisplayValue(r); });
+    Array.from(allMaterials).forEach(r => { if (resources[r]) updateDisplayValue(r); });
 
+    // @ts-ignore
     for (const [index, resourceName] of Object.entries(allMaterials)) {
-
+        if (resources[resourceName]) continue;
         const parentElement = document.getElementById('resource-' + resourceName);
         if (!parentElement) { console.warn('no parent element found for', resourceName); return; }
 
@@ -243,4 +255,53 @@ function createResourceTag(resourceName, groupName) {
 module.exports = {
     updateSidebar,
     initializeResourceTags,
+    updateDisplayValue
 };
+/**
+ * Updates the display value of one resource, a specific updateSidebar()
+ * @param {string} material
+ */
+function updateDisplayValue(material) {
+    const element = resourcesContainer.querySelector(`#${material}Value`);
+    const elementIncrease = resourcesContainer.querySelector(`#${material}IncreaseRate`);
+    // const craftedButton = document.querySelector(`button#craft${capitalizeFirst(material)}`);
+    // try { if (!element) createResourceTag(material); }
+    // catch (error) { }
+    // console.log(material, element, craftedButton);
+    if (element) {
+        try {
+            let max = (getMax(material) && getMax(material) < Infinity) ? getMax(material).toFixed(1) : '∞';
+            element.textContent = `${getMaterial(material).toFixed(1)} / ${max}`;
+
+            if (elementIncrease) {
+                elementIncrease.textContent = calcIncrease(material, 1000).toFixed(1);
+            }
+            console.log(material, shouldHide(material), getMaterial(material));
+            if (shouldHide(material)) {
+                // @ts-ignore
+                element.parentElement.style.display = 'none';
+            } else {
+                // @ts-ignore
+                element.parentElement.style.display = '';
+            }
+        } catch (error) {
+            console.error(element, material, error);
+        }
+
+        if (resources[material]) {
+            if (resources[material].isGetting) {
+                const sidebarText = document.querySelector("#resources").querySelector('#resource-' + material);
+                // @ts-ignore
+                if (sidebarText) sidebarText.style.fontWeight = 'bold';
+
+            }
+
+        }
+    }
+    // if (craftedButton) {
+    //     const countSpan = craftedButton.querySelector(`#${material}Value`);
+    //     // console.log('crafted button was found', countSpan, material, getCraftedResource(material));
+    //     if (countSpan) countSpan.textContent = getCraftedResource(material).toFixed(0);
+    //     else console.warn(`Resource button found but no count span for: ${material}`);
+    // }
+}

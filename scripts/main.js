@@ -5,7 +5,7 @@ const { buttons } = require("./json/buttons");
 const { resources, resetResources } = require('./json/resources');
 
 const { saveGame, loadGame } = require("./saving");
-const { generateTooltipCost, appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource, calcIncrease, updateResourceIncreaseRates, increaseMax, updateDisplayValue } = require('./resources');
+const { generateTooltipCost, appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource, calcIncrease, updateResourceIncreaseRates, increaseMax } = require('./resources');
 const { buyMaxBuildings, buyBuilding, createBuildingButton } = require('./buildings');
 const { hasPerk, selectAbility, resetPerks } = require('./perks');
 const { clearSidebar } = require('./helper');
@@ -21,18 +21,13 @@ const { drawAllConnections, updateTotal, clearJobAssignments, resetAllJobs } = r
 const { capitalizeFirst } = require('./capitalizeFirst');
 const { passedStage, resetStages } = require('./stages');
 const { recalcMaxClones } = require('./recalcMaxClones');
-const { initializeResourceTags, updateSidebar } = require('./sidebar');
+const { initializeResourceTags, updateSidebar, updateDisplayValue } = require('./sidebar');
 const { prestige } = require('./json/prestige');
 const { recalculateBuildingCost } = require('./recalculateBuildingCost');
 const { triggerFloatUpText } = require('./triggerFloatUpText');
 const { updateBounceAnimation } = require('./updateBounceAnimation');
 const { updateTooltip, hideTooltip } = require('./updateTooltip');
 const { canCraft } = require('./canCraft');
-
-
-
-// Initialize values
-// let skilled = false;
 
 
 function setTotalTime(time) {
@@ -44,18 +39,15 @@ function setTotalTime(time) {
 
 
 /* GATHERING MATERIALS*/
-
-
-
-
-
-
 const sidebarParent = document.querySelector("#resources");
 function stopAllGathering() {
     for (const [key, val] of Object.entries(resources)) {
         val.isGetting = false;
         const rButton = document.querySelector("#gather" + capitalizeFirst(key));
-        if (rButton) rButton.textContent = val.defaultText;
+        if (rButton) {
+            rButton.textContent = val.defaultText;
+            rButton.classList.remove('gathering');
+        }
 
         // Set sidebar to not bold
         const sidebarText = sidebarParent.querySelector('#resource-' + key);
@@ -75,6 +67,8 @@ function toggleResource(resourceKey) {
     const sidebarText = sidebarParent.querySelector('#resource-' + resourceKey);
     const resourceButton = document.querySelector('#gather' + resourceKey.charAt(0).toUpperCase() + resourceKey.slice(1));
     emojiGatherDiv.textContent = '𓀟'; // Default emoji 𓀟
+
+
     if (!resource.isGetting) {
         stopAllGathering(); // Stop all gathering actions
         resource.isGetting = true;
@@ -85,8 +79,10 @@ function toggleResource(resourceKey) {
         // @ts-ignore
         emojiGatherDiv.textContent = resource.emoji;
         console.log(resource.emoji);
+        resourceButton.classList.add('gathering');
     } else {
         resource.isGetting = false;
+        resourceButton.classList.remove('gathering');
         // @ts-ignore
         resourceButton.textContent = resource.defaultText;
         // @ts-ignore
@@ -150,13 +146,13 @@ function generateButtons() {
     // const jobContainer = document.getElementById('jobsTab');
     // You can add more containers for different tabs as needed
 
-    const productionColumns = createColumns(productionContainer);
+    // const productionColumns = createColumns(productionContainer);
     const experimentColumns = createColumns(experimentContainer);
     const ponderColumns = createColumns(ponderContainer);
     // const jobColumns = createColumns(jobContainer);
     // Similarly, create columns for other tabs as needed
 
-    let productionColumnIndex = 0;
+    let productionColumnIndex = 1;
     let experimentColumnIndex = 0;
     let ponderColumnIndex = 0;
     // @ts-ignore
@@ -201,8 +197,13 @@ function generateButtons() {
         }
         // Append to the appropriate column based on the tab property
         if (btn.tab === 'production') {
-            productionColumns[productionColumnIndex].appendChild(buttonElement);
+            //style='grid-column:${col}; grid-row:${row};
+            buttonElement.style.gridColumn = productionColumnIndex.toString();
+            // buttonElement.style.gridRow = '0';
             productionColumnIndex = (productionColumnIndex + 1) % 3;
+            productionContainer.appendChild(buttonElement);
+            // productionColumns[productionColumnIndex].appendChild(buttonElement);
+            // productionColumnIndex = (productionColumnIndex + 1) % 3;
 
         } else if (btn.tab === 'experiment') {
             experimentColumns[experimentColumnIndex].appendChild(buttonElement);
@@ -315,7 +316,7 @@ const visibilityRules = [
         action: () => makeVisible('clay')
     },
     {
-        condition: () => document.getElementById('toggle-basics') && isPondered('organization'),
+        condition: () => !document.getElementById('toggle-basics') && isPondered('organization'),
         action: () => initializeResourceTags(true)
     }
 ];
@@ -395,18 +396,7 @@ function showTab(tabName) {
         drawAllConnections();
 
     console.log(prevTab, '>', tabName);
-    // if (tabName === 'factoryTab') {
-    //     if (prevTab != 'factoryTab') {
 
-    //         clearSidebar();
-    //         initializeResourceTags();
-    //     }
-    // }
-    // else if (prevTab === 'factoryTab') {
-    //     clearSidebar();
-    //     updateSidebar();
-    // }
-    // clearSidebar();
     updateSidebar();
 }
 
@@ -704,17 +694,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
     appendCraftedResourceButtons();
 
     updateSidebar();
-    // for (const [resourceName, v] of Object.entries(resources))
-    //     updateDisplayValue(resourceName);
+
     showTab('productionTab');
     require('./trade').generateTradeTable(resources);
 
-    // const groupCheck = document.getElementById('groupCheck');
-    // groupCheck.addEventListener('change', () => {
-    //     // Toggle visibility of groups
-    //     initializeResourceTags(groupCheck.checked);
-    //     console.log('groups? ', groupCheck.checked);
-    // });
 
     function getRKeyFromID(id) {
         for (const [r, val] of Object.entries(resources)) {
@@ -741,8 +724,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
             // if (button.classList.contains('tooltip')) updateTooltip(button);
             // updateTooltip(button);
 
+            // BUILDING BUTTONS
             // @ts-ignore
             if (button.getAttribute('data_building') && button.getAttribute('data_building') !== 'undefined' && button.classList.contains('purchasable')) {
+
                 // @ts-ignore
                 var building = button.getAttribute('data_building');
                 const x = event.pageX;
@@ -756,8 +741,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 }
 
             }
+            // PONDER BUTTONS
             // @ts-ignore
-            if (button.classList.contains('unlock')) {
+            else if (button.classList.contains('unlock')) {
                 // @ts-ignore
                 const unlockAttr = button.getAttribute('unlock');
                 // console.log('click');
@@ -790,9 +776,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 }
 
             }
-
+            // OTHER BUTTONS
             // @ts-ignore
-            if (button.id !== 'undefined') {
+            else if (button.id !== 'undefined') {
                 // console.log(button);
                 // @ts-ignore
                 if (button.id.slice(0, 6) === "gather") toggleResource(getRKeyFromID(button.id));
@@ -865,6 +851,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             const color = text === '+1 Clone' ? 'green' : 'red';
             triggerFloatUpText(x, y, text, color);
             updateTotal();
+            updateDisplayValue('clones');
         }
     });
 
@@ -953,9 +940,8 @@ function isekai() {
     const overlayBackButton = document.getElementById('overlay-back-button'); // Get the "Go Back" button
 
     overlayButton.addEventListener('click', () => {
-        // Give husks afterwards
-        increaseMaterial('husks', getMaterial('clones'));
-        increaseMaterial('clones', -getMaterial('clones'));
+        const husksDue = getMaterial('clones');
+
         // Reset functions to be executed when "Continue" is clicked
         resetResources();
         resetCraftedResources();
@@ -964,8 +950,16 @@ function isekai() {
         resetBuildings();
         resetAllJobs();
         resetStages();
+
+        // Give husks afterwards
+        increaseMaterial('husks', husksDue);
+
+
         // Close the overlay
         overlay.style.display = 'none';
+
+        // location.reload();
+        initializeResourceTags(false);
     });
 
     overlayBackButton.addEventListener('click', () => {

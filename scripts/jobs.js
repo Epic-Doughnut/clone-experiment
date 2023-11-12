@@ -171,7 +171,7 @@ function moveBallFromJobToResource(jobType, affectedResource) {
     const jobButton = Array.from(document.querySelectorAll('.job-button'))
         .find(btn => btn.getAttribute('data-job') === jobType);
 
-    if (!jobButton) return; // Job button not found
+    if (!jobButton || jobButton.style.display === 'none') return; // Job button not found
 
 
     const resourceDisplay = document.getElementById(`resource-${affectedResource}`);

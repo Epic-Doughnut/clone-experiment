@@ -88,7 +88,7 @@ let ponders = {
         id: 'ponderOrganization',
         isPondered: false,
         requirement: () => true,
-        text: 'Organizized Storage',
+        text: 'Organized Storage',
         tooltipDesc: 'Organize your storage by groups',
         cost: { 'ponder': 200 }
     },

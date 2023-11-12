@@ -21,6 +21,14 @@
     /* or whatever your desired default display value is */
 }
 
+#productionTab.active {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* Adjust the number of columns as needed */
+    grid-gap: 10px;
+    /* Adjust the gap between items as needed */
+}
+
 .tab-button {
     width: 120px;
     padding-right: 20px;
@@ -45,6 +53,10 @@
 
 .tab-content>.content.active {
     display: flex;
+}
+
+.tab-content {
+    margin-left: 400px;
 }
 
 .experiment-tab {

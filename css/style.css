@@ -1,4 +1,8 @@
 #productionTab>* {
+    display: block;
+}
+
+.content:not(.active) {
     display: none;
 }
 

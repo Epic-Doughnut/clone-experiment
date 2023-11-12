@@ -14,8 +14,12 @@ button {
     text-align: justify;
 }
 
-button .gathering {
-    background-color: #66a;
+button.visible {
+    display: block;
+}
+
+button.gathering {
+    background-image: linear-gradient(#66a, #448);
 }
 
 .button-disabled {
