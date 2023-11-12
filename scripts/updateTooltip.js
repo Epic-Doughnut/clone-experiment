@@ -15,7 +15,7 @@ function showTooltip(target, desc, effect, cost) {
     }
 
     if (effect) {
-        content += `<span style="color:#00ABE7">${effect}</span><hr>`;
+        content += `<span style="color:#4cf">${effect}</span><hr>`;
     }
 
     if (cost) {

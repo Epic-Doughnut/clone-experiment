@@ -7,6 +7,7 @@ const { hasPerk } = require('./perks');
 const { isPondered } = require('./ponder');
 const { getFactoryProduction } = require("./factory");
 const { hasPrestige, getLevelOfPrestige } = require("./json/prestige");
+const { getMaterial } = require("./getMaterial");
 
 // Clones work at 1/4 the speed by default
 var cloneMult = 0.25;
@@ -83,6 +84,8 @@ function calcIncrease(resourceName, delta_time) {
     if (isPondered('fasterResourceGain')) total *= 1.05;
     if (hasPrestige('cloneBoost')) total *= 1.05 * getLevelOfPrestige('cloneBoost');
 
+    // Need at least 10 husks to boost mathematically (ln(1) = 0)
+    if (getMaterial('husks') > 10) total *= 1 + Math.log(getMaterial('husks') / 10);
     // Convert from seconds to milliseconds
     total *= delta_time / 1000;
     // round total to nearest thousandth

@@ -131,7 +131,7 @@ function populateSkillsTable() {
             let skillText = document.createElement('span');
 
             // 
-            skillText.textContent = '[' + skills[skill].level + ']   ' + skill;
+            skillText.textContent = '[level ' + skills[skill].level + ']   ' + skill;
             skillText.setAttribute('id', 'level-' + skill);
             skillText.style.position = 'absolute';
             skillText.style.left = '10px';
@@ -167,7 +167,7 @@ function populateSkillsTable() {
                 // @ts-ignore
                 progressBar.style.width = skills[skill].exp + '%';
                 let skillName = document.querySelector("#level-" + skill);
-                skillName.textContent = '[' + skills[skill].level + ']   ' + skill;
+                skillName.textContent = '[level ' + skills[skill].level + ']   ' + skill;
             }
         }
     }

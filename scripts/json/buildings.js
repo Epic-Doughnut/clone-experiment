@@ -258,7 +258,8 @@ const buildings = {
         'basecost': {
             'rocks': 30,
             'rope': 1,
-            'wood': 10
+            'wood': 10,
+            'wheat': 2
         },
         'effects': { 'freshwater': 30 },
         'boost': {

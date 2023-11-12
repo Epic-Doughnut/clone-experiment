@@ -39,7 +39,7 @@ const skills = {
     fishing: {
         exp: 0,
         level: 0,
-        affectedResources: ['fish', 'freshwater']
+        affectedResources: ['fish']
     },
     hunting: {
         exp: 0,

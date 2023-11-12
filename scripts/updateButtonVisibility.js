@@ -64,10 +64,10 @@ function updateButtonVisibility() {
         if (buttonConfig.id && buttonConfig.id.slice(0, 5) === 'craft') {
             // If we haven't unlocked the button, never display it
             // console.log(buttonConfig.requiredStage);
-            if (buttonConfig.requiredStage && !passedStage(buttonConfig.requiredStage)) {
-                state = 'hidden';
+            // if (buttonConfig.requiredStage && !passedStage(buttonConfig.requiredStage)) {
+            //     state = 'hidden';
 
-            }
+            // }
             // never hide this button once its been unlocked
             if (buttonConfig.craftedOnce) state = 'button-disabled';
 
@@ -80,7 +80,9 @@ function updateButtonVisibility() {
             const key = getCraftedResourceKeyByConfig(crafted);
             // console.log(key);
             // 
-            if (canCraft(key) && state != 'hidden') state = 'purchasable';
+            if (canCraft(key))
+                if (!buttonConfig.requiredStage || buttonConfig.requiredStage && passedStage(buttonConfig.requiredStage)) state = 'purchasable';
+                else state = 'hidden';
         }
 
         // If we can afford this building, it should be purchasable

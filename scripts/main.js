@@ -27,6 +27,7 @@ const { recalculateBuildingCost } = require('./recalculateBuildingCost');
 const { triggerFloatUpText } = require('./triggerFloatUpText');
 const { updateBounceAnimation } = require('./updateBounceAnimation');
 const { updateTooltip, hideTooltip } = require('./updateTooltip');
+const { canCraft } = require('./canCraft');
 
 
 
@@ -171,7 +172,7 @@ function generateButtons() {
 
         buttonElement.id = key;
         buttonElement.className = btn.class;
-        buttonElement.textContent = btn.text;
+        buttonElement.textContent = btn.text.split('_').join(' ');
 
         // buttonElement.style.textAlign = 'center';
         if (btn.tooltipDesc) buttonElement.setAttribute('data-tooltip-desc', btn.tooltipDesc);
@@ -744,8 +745,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
             if (button.getAttribute('data_building') && button.getAttribute('data_building') !== 'undefined' && button.classList.contains('purchasable')) {
                 // @ts-ignore
                 var building = button.getAttribute('data_building');
-                const x = event.clientX;
-                const y = event.clientY;
+                const x = event.pageX;
+                const y = event.pageY;
                 if (event.shiftKey) {
                     let count = buyMaxBuildings(building);
                     triggerFloatUpText(x, y, `+${count} ${capitalizeFirst(building)}s`, 'aqua');
@@ -801,9 +802,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     // @ts-ignore
                     let cr = getCRKeyFromID(button.id);
                     console.log('clicked cr: ', cr);
+                    if (canCraft(cr)) triggerFloatUpText(event.pageX, event.pageY, `+${cr}`, 'aqua');
                     if (event.shiftKey) craftAllResources(cr);
                     else craftResource(cr);
-                    triggerFloatUpText(event.pageX, event.pageY, `+${cr}`, 'aqua');
 
                 }
 
@@ -859,8 +860,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
             // Hardcoded instead to avoid increase affected by productivity bonuses
             if (resources['clones'].value < resources['clones'].max) { resources['clones'].value += 1; }
             else text = 'Max Clones';
-            const x = event.clientX; // X coordinate of the click
-            const y = event.clientY; // Y coordinate of the click
+            const x = event.pageX; // X coordinate of the click
+            const y = event.pageY; // Y coordinate of the click
             const color = text === '+1 Clone' ? 'green' : 'red';
             triggerFloatUpText(x, y, text, color);
             updateTotal();

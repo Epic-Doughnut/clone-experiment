@@ -12,6 +12,7 @@ const { updateBuildingButtonCount } = require('./updateBuildingButtonCount');
 const { recalculateBuildingCost } = require('./recalculateBuildingCost');
 const { canBuyBuilding } = require('./canBuyBuilding');
 const { updateTooltip, hideTooltip } = require('./updateTooltip');
+const { isPondered } = require('./ponder');
 
 /* BUILDINGS */
 
@@ -34,6 +35,7 @@ function generateEffectString(building) {
 
     for (let [resource, boost] of Object.entries(building.boost)) {
         let percentageBoost = Math.round((boost - 1) * 100);
+        if (isPondered('effectiveBuildings')) percentageBoost *= 1.01;
         effectParts.push(`+${percentageBoost}% ${resource} production`);
 
     }
@@ -209,6 +211,7 @@ function updateBuildingList() {
 
 function buyMaxBuildings(buildingName) {
     let i = 0;
+    // TODO update with cool formula
     while (canBuyBuilding(buildingName)) {
         buyBuilding(buildingName);
         ++i;
