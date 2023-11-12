@@ -43,9 +43,9 @@ function calcIncrease(resourceName, delta_time) {
 
 
     // Apply perks production boost
-    if (hasPerk('Lumberjack') && (resourceName == 'wood' || resourceName == 'sticks')) total *= 1.25;
-    if (hasPerk('Miner') && (resourceName == 'rocks' || resourceName == 'ore')) total *= 1.25;
-    if (hasPerk('Botanist') && (resourceName == 'vines' || resourceName == 'herbs' || resourceName == 'wheat')) total *= 1.25;
+    if (hasPerk('Lumberjack') && (resourceName == 'wood' || resourceName == 'sticks')) total *= 1.75;
+    if (hasPerk('Miner') && (resourceName == 'rocks' || resourceName == 'ore')) total *= 1.75;
+    if (hasPerk('Botanist') && (resourceName == 'vines' || resourceName == 'herbs' || resourceName == 'wheat')) total *= 1.75;
 
     // Apply prestige specific boosts
     // Apply skills to all clones
@@ -86,12 +86,12 @@ function calcIncrease(resourceName, delta_time) {
     if (hasPrestige('cloneBoost')) total *= 1.05 * getLevelOfPrestige('cloneBoost');
 
     // Check tools
-    if (resourceName === 'wood' && getMaterial('axe') > 1) total *= 1 + Math.log(getMaterial('axe'));
-    if (resourceName === 'ore' && getMaterial('pickaxe') > 1) total *= 1 + Math.log(getMaterial('pickaxe'));
-    if (resourceName === 'fish' && getMaterial('fishingrod') > 1) total *= 1 + Math.log(getMaterial('fishingrod'));
-    if (resourceName === 'game' && getMaterial('spear') > 1) total *= 1 + Math.log(getMaterial('spear'));
-    if (resourceName === 'ponder' && getMaterial('paper') > 1) total *= 1 + Math.log(getMaterial('paper'));
-    if (resourceName === 'sticks' && getMaterial('staff') > 1) total *= 1 + Math.log(getMaterial('staff'));
+    if (resourceName === 'wood' && getMaterial('axe') > 10) total *= 1 + Math.log(getMaterial('axe') / 10);
+    if (resourceName === 'ore' && getMaterial('pickaxe') > 10) total *= 1 + Math.log(getMaterial('pickaxe') / 10);
+    if (resourceName === 'fish' && getMaterial('fishingrod') > 10) total *= 1 + Math.log(getMaterial('fishingrod') / 10);
+    if (resourceName === 'game' && getMaterial('spear') > 10) total *= 1 + Math.log(getMaterial('spear') / 10);
+    if (resourceName === 'ponder' && getMaterial('paper') > 10) total *= 1 + Math.log(getMaterial('paper') / 10);
+    if (resourceName === 'sticks' && getMaterial('staff') > 10) total *= 1 + Math.log(getMaterial('staff') / 10);
 
     // Need at least 10 husks to boost mathematically (ln(1) = 0)
     if (getMaterial('husks') > 10) total *= 1 + Math.log(getMaterial('husks') / 10);

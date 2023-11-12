@@ -689,7 +689,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     loadGame();
 
     clearSidebar();
-    initializeResourceTags(); // check if we need groups
+    initializeResourceTags(isPondered('organization')); // check if we need groups
 
     appendCraftedResourceButtons();
 
@@ -734,7 +734,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 const y = event.pageY;
                 if (event.shiftKey) {
                     let count = buyMaxBuildings(building);
-                    triggerFloatUpText(x, y, `+${count} ${capitalizeFirst(building)}s`, 'aqua');
+                    triggerFloatUpText(x, y, `+${count} ${capitalizeFirst(building).split('_').join(' ')}s`, 'aqua');
                 } else {
                     buyBuilding(building);
                     triggerFloatUpText(x, y, `+1 ${capitalizeFirst(building)}`, 'aqua');
