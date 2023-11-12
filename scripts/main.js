@@ -678,10 +678,10 @@ function updateUI(resourceName) {
 
 
 let currentlyDeleting = false;
+window.increaseMaterial = increaseMaterial;
 
 // After all has been loaded
 document.addEventListener('DOMContentLoaded', (event) => {
-    window.increaseMaterial = increaseMaterial;
     generatePonderButtons(ponders);
     // appendCraftedResourceButtons();
     generateButtons(); // Call this once on page load or game initialization
