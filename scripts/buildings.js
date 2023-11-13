@@ -1,18 +1,16 @@
 const { buildings, isPopBuilding } = require('./json/buildings');
-const { buttons } = require('./json/buttons');
-const { resources } = require('./json/resources');
 const { increaseMaterial, increaseMax, } = require('./resources');
 const { updateTotal } = require('./jobs');
 const { hasPerk } = require('./perks');
 const { getMaterial } = require('./getMaterial');
 const { passedStage } = require('./stages');
 const { recalcMaxClones } = require('./recalcMaxClones');
-const { updateSidebar } = require('./sidebar');
+
 const { updateBuildingButtonCount } = require('./updateBuildingButtonCount');
 const { recalculateBuildingCost } = require('./recalculateBuildingCost');
 const { canBuyBuilding } = require('./canBuyBuilding');
 const { isPondered } = require('./ponder');
-const { updateBuildingList, addToBuildingList } = require('./updateBuildingList');
+const { updateBuildingList } = require('./updateBuildingList');
 
 /* BUILDINGS */
 

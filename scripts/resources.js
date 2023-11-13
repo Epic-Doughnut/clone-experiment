@@ -17,7 +17,7 @@ const { getMaterial } = require('./getMaterial');
 const { isPondered } = require('./ponder');
 const { getCraftedResource } = require('./getCraftedResource');
 const { calcIncrease } = require("./calcIncrease");
-const { updateSidebar } = require("./sidebar");
+const { updateSidebar, abbreviateNumber } = require("./sidebar");
 const { passedStage, getAllStages } = require("./stages"); // Used for eval functions
 const { updateDisplayValue } = require("./sidebar");
 // console.log(capitalizeFirst);
@@ -154,6 +154,7 @@ function increaseMaterial(material, num) {
     // document.querySelector("#" + material + "Value").textContent = resources[material].value;
 
 }
+// Globally display for dev purposes
 window.increaseMaterial = increaseMaterial;
 
 
@@ -236,7 +237,7 @@ function generateTooltipCost(requirements) {
 
         const hasEnough = getMaterial(material, resources) >= requirements[material];/* Your logic to check if there's enough of the material */;
         const colorClass = hasEnough ? 'enough' : 'not-enough';
-        str += `<span class="tooltip-${material} ${colorClass}">${requirements[material]} ${material}</span><br>`;
+        str += `<span class="tooltip-${material} ${colorClass}">${abbreviateNumber(requirements[material])} ${material}</span><br>`;
 
     }
     return str;
@@ -270,7 +271,6 @@ function updateEmojiDisplay() {
 
         while ((emojiDisplay.offsetWidth > 600) && fontSize > 30) {
             // 10 is a minimum font-size threshold to prevent an infinite loop
-            // console.log(emojiDisplay.offsetWidth, emojiDisplay.offsetHeight);
             fontSize -= 1; // decrease the font size
             emojiDisplay.style.fontSize = `${fontSize}px`;
         }

@@ -109,6 +109,7 @@ function shouldHide(resourceName) {
 }
 
 function abbreviateNumber(num) {
+    if (typeof num !== 'number') return num;
     function format(value, unit) {
         if (value < 10) return roundToDecimals(value, 2) + unit;
         if (value < 100) return roundToDecimals(value, 1) + unit;
@@ -255,7 +256,8 @@ function createResourceTag(resourceName, groupName) {
 module.exports = {
     updateSidebar,
     initializeResourceTags,
-    updateDisplayValue
+    updateDisplayValue,
+    abbreviateNumber
 };
 /**
  * Updates the display value of one resource, a specific updateSidebar()
@@ -270,8 +272,8 @@ function updateDisplayValue(material) {
     // console.log(material, element, craftedButton);
     if (element) {
         try {
-            let max = (getMax(material) && getMax(material) < Infinity) ? getMax(material).toFixed(1) : '∞';
-            element.textContent = `${getMaterial(material).toFixed(1)} / ${max}`;
+            // let max = (getMax(material) && getMax(material) < Infinity) ? getMax(material).toFixed(1) : '∞';
+            element.textContent = `${abbreviateNumber(getMaterial(material))} / ${abbreviateNumber(getMax(material))}`;
 
             if (elementIncrease) {
                 elementIncrease.textContent = calcIncrease(material, 1000).toFixed(1);

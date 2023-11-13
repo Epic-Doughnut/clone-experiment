@@ -224,6 +224,26 @@ function loadGame() {
     if (isPondered('skillsTable')) {
         populateSkillsTable();
     }
+
+    // Perks before buildings to update costs
+    if (typeof savegame.perks !== 'undefined') {
+        // myPerks = savegame.perks;
+        for (let [i, perk] of Object.entries(savegame.perks)) {
+            addPerk(perk);
+            require('./selectCorrectPerkButton').selectCorrectPerkButton(perk);
+        }
+    }
+
+
+    if (typeof savegame.prestige !== 'undefined') {
+        for (const [key, val] of Object.entries(savegame.prestige)) {
+
+            prestige[key].cost = val['cost'];
+            prestige[key].level = val['level'];
+        }
+    }
+
+
     if (typeof savegame.buildings !== 'undefined') {
         for (let b in savegame.buildings) {
             // console.log(b, savegame.buildings[b]);
@@ -306,13 +326,6 @@ function loadGame() {
 
     updateEmojiDisplay();
 
-    if (typeof savegame.perks !== 'undefined') {
-        // myPerks = savegame.perks;
-        for (let [i, perk] of Object.entries(savegame.perks)) {
-            addPerk(perk);
-            require('./selectCorrectPerkButton').selectCorrectPerkButton(perk);
-        }
-    }
 
     if (typeof savegame.factories !== 'undefined')
         for (const [key, val] of Object.entries(savegame.factories))
@@ -321,13 +334,6 @@ function loadGame() {
                     loadFactory(key);
 
 
-    if (typeof savegame.prestige !== 'undefined') {
-        for (const [key, val] of Object.entries(savegame.prestige)) {
-
-            prestige[key].cost = val['cost'];
-            prestige[key].level = val['level'];
-        }
-    }
 
 }
 

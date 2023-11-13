@@ -796,12 +796,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 buildingAudio.volume = sfxVolume;
                 buildingAudio.play();
 
+                const buildingString = capitalizeFirst(building).split('_').join(' ');
                 if (event.shiftKey) {
                     let count = buyMaxBuildings(building);
-                    triggerFloatUpText(x, y, `+${count} ${capitalizeFirst(building).split('_').join(' ')}s`, 'aqua');
+                    triggerFloatUpText(x, y, `+${count} ${buildingString}s`, 'aqua');
                 } else {
                     buyBuilding(building);
-                    triggerFloatUpText(x, y, `+1 ${capitalizeFirst(building)}`, 'aqua');
+                    triggerFloatUpText(x, y, `+1 ${buildingString}`, 'aqua');
                 }
 
             }

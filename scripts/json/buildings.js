@@ -13,7 +13,7 @@ const buildings = {
         "effects": { "clones": 1 },
         "boost": {},
         "count": 0,
-        "ratio": 1.3,
+        "ratio": 1.4,
         tooltipDesc: "For when you need a home away from home.",
         emoji: '八'
     },
@@ -22,7 +22,7 @@ const buildings = {
         'effects': { 'clones': 1 },
         boost: {},
         count: 0,
-        ratio: 1.2,
+        ratio: 1.4,
         tooltipDesc: 'A cozy, idyllic chunk of wood.',
         emoji: '冂'
     },
@@ -31,7 +31,7 @@ const buildings = {
         "effects": { "clones": 2 },
         "boost": {},
         "count": 0,
-        "ratio": 1.4,
+        "ratio": 1.5,
         tooltipDesc: "Every clone's dream. Minus the white picket fence.",
         emoji: '介'
     },
@@ -49,7 +49,7 @@ const buildings = {
         effects: { 'clones': 3 },
         boost: {},
         count: 0,
-        ratio: 1.6,
+        ratio: 1.7,
         tooltipDesc: 'Keep yourself safe.',
         emoji: '+'
     },
@@ -67,7 +67,7 @@ const buildings = {
         emoji: '个'
     },
     'stockpile': {
-        basecost: { rocks: 30 },
+        basecost: { rocks: 30, wood: 40 },
         effects: { wood: 100 },
         ratio: 1.1,
         boost: {},
