@@ -153,7 +153,7 @@ function createFactoryDiv() {
         const initialOption = document.createElement('option');
         initialOption.value = '';
         initialOption.textContent = text;
-        initialOption.disabled = true;
+        // initialOption.disabled = true;
         initialOption.selected = true;
         selectElement.appendChild(initialOption);
     }
