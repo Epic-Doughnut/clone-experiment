@@ -222,7 +222,7 @@ const buildings = {
             "sticks": 20
         },
         "effects": {},
-        "boost": { 'all': 1.05 },
+        "boost": { 'all': 1.02 },
         "count": 0,
         "ratio": 1.5,
         tooltipDesc: "Where stories are told and marshmallows are toasted.",

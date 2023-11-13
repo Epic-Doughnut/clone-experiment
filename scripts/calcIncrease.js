@@ -127,7 +127,7 @@ function calcIncrease(resourceName, delta_time) {
         if (boostData) {
 
             var increase = Math.pow(boostData, buildings[building].count);
-            if (isPondered('effectiveBuildings')) increase *= 1.01;
+            if (isPondered('effectiveBuildings')) increase *= 1.03;
             total *= increase;
         }
     }

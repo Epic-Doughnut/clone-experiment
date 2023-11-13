@@ -114,7 +114,7 @@ let ponders = {
         requirement: () => true,
         isPondered: false,
         text: "Buildings I",
-        tooltipDesc: "Increase building effects by 1%",
+        tooltipDesc: "Increase building effects by 3%",
         cost: { 'ponder': 180 },
     },
     'agriculture': {
