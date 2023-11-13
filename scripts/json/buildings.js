@@ -44,6 +44,15 @@ const buildings = {
         tooltipDesc: "Wrap some hides around some wood and call it a home.",
         emoji: '穴'
     },
+    'hospital': {
+        basecost: { concrete: 10, medicine: 20, fish: 20 },
+        effects: { 'clones': 3 },
+        boost: {},
+        count: 0,
+        ratio: 1.6,
+        tooltipDesc: 'Keep yourself safe.',
+        emoji: '+'
+    },
 
     /**
      * STORAGE
@@ -129,6 +138,43 @@ const buildings = {
         tooltipDesc: "A place to put those lesser than you.",
         emoji: '皿'
     },
+    'reservoir': {
+        basecost: {
+            rocks: 100,
+            clay: 50,
+            water: 10
+        },
+        effects: { 'water': 100 },
+        boost: {},
+        count: 0,
+        ratio: 1.3,
+        tooltipDesc: "A hole filled with water. Useful.",
+        emoji: '𓈞'
+    },
+    'stone_depot': {
+        basecost: {
+            rocks: 200
+        },
+        effects: { 'rocks': 250 },
+        boost: {},
+        count: 0,
+        ratio: 1.2,
+        tooltipDesc: "A big stack of rocks.",
+        emoji: '𓈓'
+    },
+    'warehouse': {
+        basecost: {
+            crates: 10,
+            concrete: 20
+        },
+        effects: { 'wood': 100, 'rocks': 100, 'clay': 100, 'sand': 100 },
+        boost: {},
+        count: 0,
+        ratio: 1.3,
+        tooltipDesc: 'Put stuff in a box inside a larger box.',
+        emoji: '𓇦'
+    },
+
 
 
     /**
@@ -328,9 +374,49 @@ const buildings = {
         "count": 0,
         "ratio": 1.3,
         "tooltipDesc": "Grind grains efficiently with wind power.",
-        emoji: '҉'
+        emoji: '𓇬'
     },
-
+    'garden': {
+        basecost: {
+            beams: 20,
+            herbs: 20,
+            berries: 50,
+            freshwater: 10
+        },
+        effects: {},
+        boost: { 'berries': 1.1, 'herbs': 1.1, 'sticks': 1.05 },
+        count: 0,
+        ratio: 1.3,
+        tooltipDesc: "Nice nature, carefully cultivated.",
+        emoji: '𓆷'
+    },
+    'sand_scoop': {
+        basecost: { beams: 10, iron: 5 },
+        effects: {},
+        boost: { 'sand': 1.1 },
+        count: 0,
+        ratio: 1.2,
+        tooltipDesc: 'Scoop the sand from the shore? Sure!',
+        emoji: '𓄛'
+    },
+    'traps': {
+        basecost: { nails: 10, sticks: 20, herbs: 20 },
+        effects: {},
+        boost: { 'game': 1.1 },
+        count: 0,
+        ratio: 1.2,
+        tooltipDesc: "Watch your step!",
+        emoji: '𓄦'
+    },
+    'rock_role': {
+        basecost: { slabs: 20, freshwater: 30 },
+        effects: {},
+        boost: { 'rocks': 1.2 },
+        count: 0,
+        ratio: 1.3,
+        tooltipDesc: 'In order to gather the rock you must become the rock.',
+        emoji: '𓆇'
+    },
 
 
     /**

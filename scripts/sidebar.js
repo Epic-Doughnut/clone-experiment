@@ -276,7 +276,7 @@ function updateDisplayValue(material) {
             if (elementIncrease) {
                 elementIncrease.textContent = calcIncrease(material, 1000).toFixed(1);
             }
-            console.log(material, shouldHide(material), getMaterial(material));
+            // console.log(material, shouldHide(material), getMaterial(material));
             if (shouldHide(material)) {
                 // @ts-ignore
                 element.parentElement.style.display = 'none';

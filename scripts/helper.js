@@ -41,7 +41,8 @@ function getAffectedResources(skill) {
 function getMax(material) {
     if (isResource(material)) {
         let max = resources[material].max;
-        if (hasPrestige('storageSpace')) max *= 1.05 * getLevelOfPrestige('storageSpace');
+        if (hasPrestige('storageSpace') && material !== 'clones') max *= 1.05 * getLevelOfPrestige('storageSpace');
+        else if (material === 'clones' && hasPrestige('maxClones')) max += getLevelOfPrestige('maxClones');
         return max;
     } else {
         return Infinity;
