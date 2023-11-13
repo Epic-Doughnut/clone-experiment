@@ -262,10 +262,8 @@ const buildings = {
             "wood": 40,
             "rope": 15
         },
-        "effects": {},
-        "boost": {
-            "fish": 1.1
-        },
+        "effects": { 'fish': 50 },
+        "boost": {},
         "count": 0,
         "ratio": 1.2,
         tooltipDesc: "Fish are friends. And food.",

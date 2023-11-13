@@ -174,12 +174,18 @@ function createFactoryDiv() {
 }
 
 function loadFactory(crafting) {
+    console.log("loading a factory for ", crafting);
     let div = createFactoryDiv();
     div.querySelector('select').value = crafting;
     // @ts-ignore
     document.querySelector(`#resource-${crafting}`).style.color = 'thistle';
     div.querySelector('.factoryCost').innerHTML = '';
     div.querySelector('.factoryCost').innerHTML += `${require('./resources').generateTooltipCost(craftedResources[crafting].cost)}`;
+
+    const buyFactoryButton = document.getElementById('buyFactoryButton');
+
+    newFactorySilverCost *= 1.2;
+    buyFactoryButton.setAttribute('tooltipCost', `${newFactorySilverCost.toFixed(0)} silver`);
 
 }
 
@@ -197,7 +203,7 @@ function manufacture(resources, goalResource) {
     let arr = [];
     resources.forEach(resource => arr.push(getMaterial(resource) / craftedResources[goalResource].cost[resource]));
     let num = Math.min(manufactureBulk, ...arr);
-    console.log(num, manufactureBulk, ...arr);
+    // console.log(num, manufactureBulk, ...arr);
     num *= manufactureBonus;
     // The factories get to be half price of normal crafting bc efficiency
     require('./resources').craftResourceQuantity(goalResource, num);
@@ -206,6 +212,7 @@ function manufacture(resources, goalResource) {
 }
 
 function upgradeBulk() {
+    if (getMaterial('silver') < bulkUpgradeCost) return;
     manufactureBulk += 2;
     bulkUpgradeCost += 10;
 
@@ -222,7 +229,7 @@ function attemptManufacture() {
         // @ts-ignore
         const goalResource = rightSelect.value;
         const resources = switchedManufacturedMap[goalResource];
-        console.log("checking factory", goalResource);
+        // console.log("checking factory", goalResource);
         if (resources && goalResource) {
             manufacture(resources, goalResource);
         }

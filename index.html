@@ -12,8 +12,18 @@
 
 <body>
 	<!-- <button id="darkModeToggle">Light Mode</button> -->
-	<button id="saveButton">Save</button>
-	<button id="deleteSaveButton">Delete Save Data</button>
+	<button id="optionsButton">Options</button>
+
+	<div id="optionsMenu" style="display: none;">
+		<label for="musicVolume">Music Volume:</label>
+		<input type="range" id="musicVolume" min="0" max="1" step="0.01">
+		<br>
+		<label for="sfxVolume">SFX Volume:</label>
+		<input type="range" id="sfxVolume" min="0" max="1" step="0.01">
+		<button id="saveButton">Save</button>
+		<button id="deleteSaveButton">Delete Save Data</button>
+	</div>
+
 	<div id="page-transition-overlay"></div>
 
 

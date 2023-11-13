@@ -66,17 +66,17 @@ function initializeResourceTags(withGroups) {
     for (let [groupName, groupOfResources] of Object.entries(resourceGroups)) {
 
         groupOfResources.forEach(resourceName => {
-            console.log(resourceName, groupName);
+            // console.log(resourceName, groupName);
             let parentElement = document.getElementById('resource-' + resourceName);
 
             if (!withGroups) groupName = null; // Set group to resources
 
             if (!parentElement) parentElement = createResourceTag(resourceName, groupName);
-            console.log(parentElement);
+            // console.log(parentElement);
 
 
             // Hide the element if we should, otherwise create a resource tag
-            console.log(resourceName, shouldHide(resourceName), getMaterial(resourceName));
+            // console.log(resourceName, shouldHide(resourceName), getMaterial(resourceName));
             if (shouldHide(resourceName)) {
                 parentElement.style.display = 'none';
             }

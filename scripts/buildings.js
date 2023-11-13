@@ -12,7 +12,7 @@ const { updateBuildingButtonCount } = require('./updateBuildingButtonCount');
 const { recalculateBuildingCost } = require('./recalculateBuildingCost');
 const { canBuyBuilding } = require('./canBuyBuilding');
 const { isPondered } = require('./ponder');
-const { updateBuildingList } = require('./updateBuildingList');
+const { updateBuildingList, addToBuildingList } = require('./updateBuildingList');
 
 /* BUILDINGS */
 
@@ -147,6 +147,7 @@ function buyBuilding(buildingName) {
     recalculateBuildingCost(buildingName, buildings, hasPerk);
 
 
+    // addToBuildingList(buildingName, building.emoji);
     updateBuildingList();
 }
 function buyMaxBuildings(buildingName) {

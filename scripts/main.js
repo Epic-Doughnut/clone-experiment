@@ -348,9 +348,55 @@ function render() {
 }
 
 
+// MUSIC MANAGER
 
+const audioFiles = [
+    './audio/song1.wav',
+    './audio/song2.wav',
+    './audio/song3.wav',
+    './audio/song4.wav',
+    './audio/song5.wav',
+    './audio/song6.wav',
 
+];
 
+let currentAudio = null;
+let timeoutId = null;
+
+function playRandomTrack() {
+    // Stop current audio if playing
+    if (currentAudio) {
+        return;
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+    }
+
+    // Select a random track
+    const randomIndex = Math.floor(Math.random() * audioFiles.length);
+    currentAudio = new Audio(audioFiles[randomIndex]);
+    currentAudio.volume = musicVolume;
+    // Play the selected track
+    currentAudio.play();
+
+    // Schedule the next track
+    scheduleNextTrack();
+}
+
+function scheduleNextTrack() {
+    // Clear any existing timeout
+    if (timeoutId) {
+        clearTimeout(timeoutId);
+    }
+
+    // When the current track ends, wait for up to 60 seconds before playing the next
+    const silenceDuration = Math.random() * 30000 + 5000; // Random silence duration 5 - 65 seconds
+    currentAudio.onended = () => {
+        timeoutId = setTimeout(playRandomTrack, silenceDuration);
+    };
+}
+
+let musicVolume = .5;
+let sfxVolume = .5;
 
 
 
@@ -364,11 +410,18 @@ function showTab(tabName) {
         if (content.classList.contains('active')) {
             prevTab = content.id;
             // @ts-ignore
-            content.style.opacity = '0';
-            setTimeout(() => { content.classList.remove("active"); }, 100);
+            // setTimeout(() => { content.classList.remove("active"); }, 100);
         }
     }
+    if (tabName === prevTab) return;
 
+    let tabAudio = new Audio('./audio/tab.wav');
+    tabAudio.volume = sfxVolume;
+    tabAudio.play();
+
+    let prevTabElement = document.getElementById(prevTab);
+    prevTabElement.classList.remove('active');
+    prevTabElement.style.opacity = '0';
     // Get all tab buttons and remove the active class
     let tabs = document.querySelectorAll(".tab-button");
     for (let tab of tabs) {
@@ -684,8 +737,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
     generatePonderButtons(ponders);
     // appendCraftedResourceButtons();
     generateButtons(); // Call this once on page load or game initialization
+    makeFactoryButtons();
 
     initializeResourceTags();
+
     loadGame();
 
     clearSidebar();
@@ -716,6 +771,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
     document.addEventListener("click", (event) => {
         // @ts-ignore
         if (event.target.matches("button")) {
+
+            // Start the music playback
+            playRandomTrack();
+
             // one of our buttons was clicked
             const button = event.target;
             // console.log('clicked', button);
@@ -732,6 +791,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 var building = button.getAttribute('data_building');
                 const x = event.pageX;
                 const y = event.pageY;
+
+                let buildingAudio = new Audio('./audio/building.wav');
+                buildingAudio.volume = sfxVolume;
+                buildingAudio.play();
+
                 if (event.shiftKey) {
                     let count = buyMaxBuildings(building);
                     triggerFloatUpText(x, y, `+${count} ${capitalizeFirst(building).split('_').join(' ')}s`, 'aqua');
@@ -769,6 +833,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
                         // @ts-ignore
                         button.display = 'none';
 
+                        let ponderAudio = new Audio('./audio/ponder.wav');
+                        ponderAudio.volume = sfxVolume;
+                        ponderAudio.play();
+
+
                         // console.log("Unlocking " + unlockAttr);
                         // Refresh the page when buying organized storage to generate the groups
                         if (unlockAttr === 'organization') location.reload();
@@ -785,6 +854,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
                 // @ts-ignore
                 else if (button.id.slice(0, 5) === 'craft') {
+                    let craftAudio = new Audio('./audio/craft.wav');
+                    craftAudio.volume = sfxVolume;
+                    craftAudio.play();
+
                     // @ts-ignore
                     let cr = getCRKeyFromID(button.id);
                     console.log('clicked cr: ', cr);
@@ -888,8 +961,24 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 
     }
-    makeFactoryButtons();
-    // createFactoryDiv();
+
+    // Options menu
+    document.getElementById('optionsButton').addEventListener('click', function () {
+        const optionsMenu = document.getElementById('optionsMenu');
+        optionsMenu.style.display = optionsMenu.style.display === 'none' ? 'block' : 'none';
+    });
+
+
+    document.getElementById('musicVolume').addEventListener('input', function () {
+        musicVolume = this.value;
+        currentAudio.volume = musicVolume;
+    });
+
+    document.getElementById('sfxVolume').addEventListener('input', function () {
+        sfxVolume = this.value;
+    });
+
+
 
 
     requestAnimationFrame(loop);
@@ -917,6 +1006,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // Update the jobs counter
     updateTotal();
     updateBounceAnimation();
+
 
 
 });
@@ -950,6 +1040,10 @@ function isekai() {
         resetBuildings();
         resetAllJobs();
         resetStages();
+        // Set max of all resources to 100
+        for (let [r, val] of Object.entries(resources)) {
+            val.max = 100;
+        }
 
         // Give husks afterwards
         increaseMaterial('husks', husksDue);

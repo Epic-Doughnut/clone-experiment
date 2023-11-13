@@ -11,6 +11,7 @@ html {
     height: max-content;
     margin: 0;
     cursor: default;
+    user-select: none;
     /* margin-left: 350px; */
     /* width of sidebar*/
 }
@@ -47,9 +48,10 @@ html {
     font-size: 48px;
     text-wrap: wrap;
     overflow-wrap: break-word;
+    overflow-y: scroll;
     /* max-width: 600px; */
     width: 800px;
-    height: 100px;
+    height: 120px;
 }
 
 #buildingList {
@@ -157,7 +159,7 @@ html {
     /* This ensures the element doesn't respond to clicks. */
 }
 
-#saveButton {
+/* #saveButton {
     position: fixed;
     bottom: 60px;
     right: 10px;
@@ -167,7 +169,7 @@ html {
     position: fixed;
     bottom: 110px;
     right: 10px;
-}
+} */
 
 
 #main {

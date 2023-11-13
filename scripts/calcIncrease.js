@@ -12,7 +12,80 @@ const { hasTool } = require("./tools");
 
 // Clones work at 1/4 the speed by default
 var cloneMult = 0.25;
-// console.log('initial', workersDistribution);
+
+// Perks
+
+const perkBoosts = {
+    'Lumberjack': ['wood', 'sticks'],
+    'Miner': ['rocks', 'ore'],
+    'Botanist': ['vines', 'herbs', 'wheat'],
+    // Add other perks as needed
+};
+
+
+function applyPerkBoost(total, resourceName) {
+    for (const [perk, resources] of Object.entries(perkBoosts)) {
+        if (resources.includes(resourceName) && hasPerk(perk)) {
+            total *= 1.75; // 75% bonus to specific
+        }
+    }
+    return total;
+}
+
+// Skills
+
+const skillBoosts = {
+    'gathering': ['gatheringBoost'],
+    'masonry': ['masonryBoost'],
+    'carpentry': ['carpentryBoost'],
+    'thinking': ['thinkingBoost'],
+    'farming': ['farmingBoost'],
+    'fishing': ['fishingBoost'],
+    'hunting': ['huntingBoost'],
+};
+
+function applySkillBoost(total, resourceName) {
+    for (const [skill, boosts] of Object.entries(skillBoosts)) {
+        if (skills[skill].affectedResources.includes(resourceName)) {
+            boosts.forEach(boost => {
+                if (hasPrestige(boost)) {
+                    total *= 1.1 * getLevelOfPrestige(boost);
+                }
+            });
+            let skillRatio = 1.06;
+            let mult = 1 + (Math.pow(skillRatio, skills[skill].level) - 1) / 100;
+            total *= mult;
+        }
+    }
+    return total;
+}
+
+// Tools
+
+const resourceToolMap = {
+    'wood': 'axe',
+    'ore': 'pickaxe',
+    'fish': 'fishingrod',
+    'game': 'spear',
+    'ponder': 'paper',
+    'sticks': 'staff',
+    // Add more mappings as needed
+};
+
+function applyToolBoost(total, resourceName) {
+    const toolName = resourceToolMap[resourceName];
+    if (toolName && getMaterial(toolName) > 10) {
+        total *= 1 + Math.log10(getMaterial(toolName) / 10);
+    }
+    return total;
+}
+
+/**
+ * Calculate the amount a resource should increase by in a given time period
+ * @param {string} resourceName The resource to calculate
+ * @param {number} delta_time How much time has elapsed
+ * @returns The amount that resource should increase by
+ */
 function calcIncrease(resourceName, delta_time) {
     var total = 0;
     const buildings = require("./json/buildings").buildings;
@@ -43,27 +116,9 @@ function calcIncrease(resourceName, delta_time) {
 
 
     // Apply perks production boost
-    if (hasPerk('Lumberjack') && (resourceName == 'wood' || resourceName == 'sticks')) total *= 1.75;
-    if (hasPerk('Miner') && (resourceName == 'rocks' || resourceName == 'ore')) total *= 1.75;
-    if (hasPerk('Botanist') && (resourceName == 'vines' || resourceName == 'herbs' || resourceName == 'wheat')) total *= 1.75;
-
-    // Apply prestige specific boosts
+    total = applyPerkBoost(total, resourceName);
     // Apply skills to all clones
-    for (let skill in skills) {
-        if (skills[skill].affectedResources.includes(resourceName)) {
-            if (skill === 'gathering' && hasPrestige('gatheringBoost')) total *= 1.1 * getLevelOfPrestige('gatheringBoost');
-            if (skill === 'masonry' && hasPrestige('masonryBoost')) total *= 1.1 * getLevelOfPrestige('masonryBoost');
-            if (skill === 'carpentry' && hasPrestige('carpentryBoost')) total *= 1.1 * getLevelOfPrestige('carpentryBoost');
-            if (skill === 'thinking' && hasPrestige('thinkingBoost')) total *= 1.1 * getLevelOfPrestige('thinkingBoost');
-            if (skill === 'farming' && hasPrestige('farmingBoost')) total *= 1.1 * getLevelOfPrestige('farmingBoost');
-            if (skill === 'fishing' && hasPrestige('fishingBoost')) total *= 1.1 * getLevelOfPrestige('fishingBoost');
-            if (skill === 'hunting' && hasPrestige('huntingBoost')) total *= 1.1 * getLevelOfPrestige('huntingBoost');
-            let skillRatio = 1.06;
-            var mult = 1 + (Math.pow(skillRatio, skills[skill].level) - 1) / 100;
-            // console.log("Multiplying gain by " + mult);
-            total *= mult;
-        }
-    }
+    total = applySkillBoost(total, resourceName);
 
     // console.log(getBoost('campfi'))
     // All buildings after level
@@ -86,20 +141,11 @@ function calcIncrease(resourceName, delta_time) {
     if (hasPrestige('cloneBoost')) total *= 1.05 * getLevelOfPrestige('cloneBoost');
 
     // Check tools
-    if (resourceName === 'wood' && getMaterial('axe') > 10) total *= 1 + Math.log(getMaterial('axe') / 10);
-    if (resourceName === 'ore' && getMaterial('pickaxe') > 10) total *= 1 + Math.log(getMaterial('pickaxe') / 10);
-    if (resourceName === 'fish' && getMaterial('fishingrod') > 10) total *= 1 + Math.log(getMaterial('fishingrod') / 10);
-    if (resourceName === 'game' && getMaterial('spear') > 10) total *= 1 + Math.log(getMaterial('spear') / 10);
-    if (resourceName === 'ponder' && getMaterial('paper') > 10) total *= 1 + Math.log(getMaterial('paper') / 10);
-    if (resourceName === 'sticks' && getMaterial('staff') > 10) total *= 1 + Math.log(getMaterial('staff') / 10);
+    total = applyToolBoost(total, resourceName);
 
     // Need at least 10 husks to boost mathematically (ln(1) = 0)
     if (getMaterial('husks') > 10) total *= 1 + Math.log(getMaterial('husks') / 10);
     // Convert from seconds to milliseconds
-    total *= delta_time / 1000;
-    // round total to nearest thousandth
-    total = parseFloat(total.toFixed(3));
-    // console.log("time for resources", delta_time, resourceName, total);
-    return total;
+    return parseFloat((total * delta_time / 1000).toFixed(3));
 }
 exports.calcIncrease = calcIncrease;

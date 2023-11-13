@@ -11,6 +11,7 @@ const { triggerFloatUpText } = require('./triggerFloatUpText');
 
 /* JOBS FUNCTIONALITY */
 
+const jobAudio = new Audio('./audio/job.wav');
 
 const jobCounts = {};
 for (let skill in skills) {
@@ -51,12 +52,19 @@ Object.keys(skills).forEach(skill => {
 document.querySelectorAll('.btn-increment').forEach(btn => {
     btn.addEventListener('click', function (event) {
         const jobType = this.closest('.job-button').getAttribute('data-job');
+        jobAudio.play();
         if (getMaterial('clones', resources) > getTotalJobs()) {
             const x = event.pageX; // X coordinate of the click
             const y = event.pageY; // Y coordinate of the click
 
             if (event.shiftKey) {
                 let difference = getMaterial('clones', resources) - getTotalJobs();
+                jobCounts[jobType] += difference;
+                triggerFloatUpText(x, y, `+${difference} workers`, 'green');
+            }
+            else if (event.ctrlKey) {
+                // Add 10 or max clones
+                let difference = Math.min(10, getMaterial('clones', resources) - getTotalJobs());
                 jobCounts[jobType] += difference;
                 triggerFloatUpText(x, y, `+${difference} workers`, 'green');
             }
@@ -77,32 +85,34 @@ document.querySelectorAll('.btn-increment').forEach(btn => {
 
 document.querySelectorAll('.btn-decrement').forEach(btn => {
     btn.addEventListener('click', function (event) {
+
         const jobType = this.closest('.job-button').getAttribute('data-job');
+        const x = event.pageX; // X coordinate of the click
+        const y = event.pageY; // Y coordinate of the click
+        jobAudio.play();
         if (event.shiftKey) {
             let numWorkers = jobCounts[jobType];
             jobCounts[jobType] = 0;
 
-            distributeWorkers(jobType, jobCounts[jobType]);
-            updateDisplay(jobType);
-            updateTotal();
-
-            const x = event.pageX; // X coordinate of the click
-            const y = event.pageY; // Y coordinate of the click
             if (numWorkers > 0) triggerFloatUpText(x, y, `-${numWorkers} workers`, 'red');
+
+        }
+        else if (event.ctrlKey) {
+            // Subtract 10 or max clones
+            let difference = Math.min(10, jobCounts[jobType]);
+            jobCounts[jobType] -= difference;
+            triggerFloatUpText(x, y, `-${difference} workers`, 'red');
 
         }
         else if (jobCounts[jobType] > 0) {
             jobCounts[jobType]--;
-            // increaseMaterial('clones', 1);
-            distributeWorkers(jobType, jobCounts[jobType]);
-            updateDisplay(jobType);
-            updateTotal();
 
-            const x = event.pageX; // X coordinate of the click
-            const y = event.pageY; // Y coordinate of the click
             triggerFloatUpText(x, y, '-1 worker', 'red');
 
         }
+        distributeWorkers(jobType, jobCounts[jobType]);
+        updateDisplay(jobType);
+        updateTotal();
     });
 });
 
