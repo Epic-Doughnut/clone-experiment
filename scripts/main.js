@@ -390,7 +390,7 @@ function scheduleNextTrack() {
 
     // When the current track ends, wait for up to 60 seconds before playing the next
     const silenceDuration = Math.random() * 30000 + 5000; // Random silence duration 5 - 65 seconds
-    currentAudio.onended = () => {
+    currentAudio.onfinish = () => {
         timeoutId = setTimeout(playRandomTrack, silenceDuration);
     };
 }
