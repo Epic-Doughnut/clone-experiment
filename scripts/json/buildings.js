@@ -71,14 +71,14 @@ const buildings = {
         "effects": { "wood": 50, "sticks": 50, "rocks": 20 },
         "boost": {},
         "count": 0,
-        "ratio": 1.1,
+        "ratio": 1.2,
         tooltipDesc: "The ultimate storage solution for the pack rat in you.",
         emoji: '个'
     },
     'stockpile': {
         basecost: { rocks: 30, wood: 40 },
         effects: { wood: 100 },
-        ratio: 1.1,
+        ratio: 1.2,
         boost: {},
         count: 0,
         tooltipDesc: "Chuck a bunch of logs in a pile, what could happen?",
@@ -89,7 +89,7 @@ const buildings = {
         "effects": { "fish": 20 },
         "boost": {},
         "count": 0,
-        "ratio": 1.1,
+        "ratio": 1.2,
         tooltipDesc: "Air drying: Nature's way of preserving food.",
         emoji: '四'
     },
@@ -98,7 +98,7 @@ const buildings = {
         "effects": { 'rocks': 50, 'ore': 50, 'sand': 100, 'clay': 50 },
         "boost": {},
         "count": 0,
-        "ratio": 1.2,
+        "ratio": 1.4,
         tooltipDesc: "DIY's dream destination.",
         emoji: '𓎰'
     },
