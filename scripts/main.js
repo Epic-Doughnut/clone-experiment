@@ -477,7 +477,6 @@ document.addEventListener('keydown', function (event) {
         case '2':
             if (passedStage('tab-button')) showTab('experimentTab');
             break;
-        // Add cases for other tabs as needed
         case '3':
             if (passedStage('ponder-tab')) showTab('ponderTab');
             break;
@@ -506,9 +505,27 @@ document.addEventListener('keydown', function (event) {
             if (getCurrentTab() === 'combatTab') switchStance('careful');
             break;
         case 'f':
-            if (getCurrentTab() === 'combatTab') combat();
+            if (getCurrentTab() === 'combatTab' && !document.getElementById('startCombat').disabled) combat();
+            else toggleResource('fish');
             break;
-
+        case 's':
+            toggleResource('sticks');
+            break;
+        case 'r':
+            if (passedStage('rocks')) toggleResource('rocks');
+            break;
+        case 'v':
+            if (passedStage('vines')) toggleResource('vines');
+            break;
+        case 'w':
+            if (passedStage('wood')) toggleResource('wood');
+            break;
+        case 'o':
+            if (passedStage('ore')) toggleResource('ore');
+            break;
+        case 'p':
+            if (passedStage('ponder-tab')) toggleResource('ponder');
+            break;
         default:
             break;
     }

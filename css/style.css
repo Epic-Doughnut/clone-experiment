@@ -8,10 +8,11 @@
 
 body,
 html {
-    height: max-content;
+    height: min-content;
     margin: 0;
     cursor: default;
     user-select: none;
+    background-color: #222;
     /* margin-left: 350px; */
     /* width of sidebar*/
 }
