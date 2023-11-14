@@ -185,11 +185,12 @@
 								<p>Cavalry: <span id="cavalryTroops">10</span></p>
 								<p>Artillery: <span id="artilleryTroops">10</span></p>
 							</div> -->
-							<button id='aggressiveStance' class="stance"
+							<button id='aggressiveStance' class="stance tooltip" tooltipdesc="More Might, Less Loot"
 								onclick="switchStance('aggressive')">Aggressive</button>
-							<button id="balancedStance" class="stance" onclick="switchStance('balanced')"
-								disabled>Balanced</button>
-							<button id='carefulStance' class='stance' onclick="switchStance('careful')">Careful</button>
+							<button id="balancedStance" class="stance tooltip" tooltipdesc="A balanced stance"
+								onclick="switchStance('balanced')" disabled>Balanced</button>
+							<button id='carefulStance' class='stance tooltip' tooltipdesc="More Loot, Less Might"
+								onclick="switchStance('careful')">Careful</button>
 						</td>
 						<td class='tooltip' id='playerMight'>20</td>
 						<td style="color:red" id="chanceToWin">15%</td>

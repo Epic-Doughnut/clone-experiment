@@ -28,7 +28,7 @@ const { triggerFloatUpText } = require('./triggerFloatUpText');
 const { updateBounceAnimation } = require('./updateBounceAnimation');
 const { updateTooltip, hideTooltip } = require('./updateTooltip');
 const { canCraft } = require('./canCraft');
-const { calculateWinChance, combat, refreshValues } = require('./combat');
+const { calculateWinChance, combat, refreshValues, switchStance } = require('./combat');
 
 
 function setTotalTime(time) {
@@ -374,7 +374,6 @@ let timeoutId = null;
 function playRandomTrack() {
     // Stop current audio if playing
     if (currentAudio) {
-        return;
         currentAudio.pause();
         currentAudio.currentTime = 0;
     }
@@ -398,7 +397,7 @@ function scheduleNextTrack() {
 
     // When the current track ends, wait for up to 30 seconds before playing the next
     const silenceDuration = Math.random() * 30000 + 5000; // Random silence duration 5 - 35 seconds
-    currentAudio.onfinish = () => {
+    currentAudio.onended = () => {
         timeoutId = setTimeout(playRandomTrack, silenceDuration);
     };
 }
@@ -408,19 +407,23 @@ let sfxVolume = .5;
 
 
 
+function getCurrentTab() {
+    let tab = '';
+    for (let content of tabContainers) {
+        if (content.classList.contains('active')) {
+            tab = content.id;
+        }
+    }
+    return tab;
+}
+
 // Switch tabs
 let tabContainers = document.querySelectorAll(".tab-content > .content"); // Direct children only
 function showTab(tabName) {
     console.log("show tab: " + tabName);
     // Get all main container divs and hide them
-    let prevTab = '';
-    for (let content of tabContainers) {
-        if (content.classList.contains('active')) {
-            prevTab = content.id;
-            // @ts-ignore
-            // setTimeout(() => { content.classList.remove("active"); }, 100);
-        }
-    }
+    let prevTab = getCurrentTab();
+
     if (tabName === prevTab) return;
 
     let tabAudio = new Audio('./audio/tab.wav');
@@ -490,6 +493,22 @@ document.addEventListener('keydown', function (event) {
         case '7':
             if (passedStage('factoryTab')) showTab('factoryTab');
             break;
+        case '8':
+            if (passedStage('combatTab')) showTab('combatTab');
+            break;
+        case 'a':
+            if (getCurrentTab() === 'combatTab') switchStance('aggressive');
+            break;
+        case 'b':
+            if (getCurrentTab() === 'combatTab') switchStance('balanced');
+            break;
+        case 'c':
+            if (getCurrentTab() === 'combatTab') switchStance('careful');
+            break;
+        case 'f':
+            if (getCurrentTab() === 'combatTab') combat();
+            break;
+
         default:
             break;
     }
@@ -784,7 +803,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         if (event.target.matches("button")) {
 
             // Start the music playback
-            playRandomTrack();
+            if (currentAudio === null) playRandomTrack();
 
             // one of our buttons was clicked
             const button = event.target;

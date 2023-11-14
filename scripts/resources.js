@@ -129,7 +129,7 @@ function increaseMaterial(material, num) {
 
     }
     else if (material in craftedResources) {
-        // console.log('crafting a material', material, num);
+        console.log('crafting a material', material, num);
         craftedResources[material].value += num;
         updateDisplayValue(material);
         updateSkills(material, num);

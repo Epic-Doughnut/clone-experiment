@@ -1,19 +1,31 @@
 const { getMaterial } = require("./getMaterial");
+const { increaseMaterial } = require("./resources");
 
 
 const lootTable = {
     husks: { probability: 0.05, quantity: 1 },
-    sticks: { probability: 0.15, quantity: 100 },
-    vines: { probability: 0.10, quantity: 50 },
-    rocks: { probability: 0.20, quantity: 150 },
-    fish: { probability: 0.10, quantity: 60 },
-    wood: { probability: 0.15, quantity: 100 },
-    // ... add other resources similarly ...
-    silver: { probability: 0.01, quantity: 20 },
-    bricks: { probability: 0.05, quantity: 80 },
-    steel: { probability: 0.02, quantity: 30 },
-    // ... continue for all resources ...
+
+    nails: { probability: 0.10, quantity: 50 },
+    slabs: { probability: 0.20, quantity: 50 },
+    beams: { probability: 0.10, quantity: 60 },
+
+    axe: { probability: 0.15, quantity: 5 },
+    spear: { probability: 1, quantity: 5 },
+
+    gold: { probability: .1, quantity: 10 },
+    iron: { probability: 0.15, quantity: 50 },
+    silver: { probability: 0.05, quantity: 20 },
+    steel: { probability: 0.10, quantity: 30 },
+
+    bricks: { probability: 0.15, quantity: 80 },
+
 };
+
+let currLoot = {};
+
+function getCurrLoot() {
+    return currLoot;
+}
 
 function generateLoot() {
     let loot = {};
@@ -23,18 +35,20 @@ function generateLoot() {
             if (quantity > 0) loot[resource] = quantity;
         }
     }
+    currLoot = loot;
+    console.log(currLoot);
     return loot;
 }
 
 
 
 // script.js
+const arena = document.getElementById('arena');
 function createBalls(team, count) {
-    const arena = document.getElementById('arena');
     for (let i = 0; i < count; i++) {
         const ball = document.createElement('div');
         ball.className = `ball ${team}`;
-        ball.style.left = `${team === 'player' ? 10 : 270}px`; // Starting positions
+        ball.style.left = `${team === 'player' ? 10 : 90}%`; // Starting positions
         ball.style.top = `${10 + i * 30}px`;
         arena.appendChild(ball);
         if (team === 'player') playerTroops.push(ball);
@@ -43,31 +57,74 @@ function createBalls(team, count) {
 }
 let playerTroops = [];
 let enemyTroops = [];
+let animations = [];
 function startAnimation() {
+
     const balls = document.querySelectorAll('.ball');
+    const animTime = 3000;
     balls.forEach(ball => {
         const isplayerTeam = ball.classList.contains('player');
-        const targetX = isplayerTeam ? 280 : -280; // Target positions
-        console.log(ball, targetX);
-        ball.animate([
+        const targetX = isplayerTeam ? arena.offsetWidth : -arena.offsetWidth; // Target positions
+        // console.log(ball, targetX);
+        animations.push(ball.animate([
             { transform: `translateX(${targetX}px)` }
         ], {
-            duration: 2000,
-            fill: 'forwards'
+            duration: animTime,
+            fill: 'none'
         }).finished.then(() => {
-            ball.remove(); // Remove ball after reaching target
-        });
+            ball.remove();
+        }));
     });
     update();
+
+    setTimeout(() => {
+        const playerBalls = document.querySelectorAll('.player').length;
+        const enemyBalls = document.querySelectorAll('.enemy').length;
+
+        if (playerBalls === 0 || enemyBalls === 0) {
+            return;
+        }
+
+        for (const ball of document.querySelectorAll('.ball')) {
+            ball.remove();
+        }
+        // Need to battle again
+        createBalls('player', playerBalls);
+        createBalls('enemy', enemyBalls);
+        startAnimation();
+
+    }, animTime - 100); // Need to execute before the balls are deleted
 }
 
+let hasRewarded = false;
 function checkForWin() {
+    if (hasRewarded) return;
     const playerBalls = document.querySelectorAll('.player').length;
     const enemyBalls = document.querySelectorAll('.enemy').length;
     if (playerBalls === 0 || enemyBalls === 0) {
         const combatResult = document.getElementById('combatResult');
         combatResult.textContent = (`${playerBalls === 0 ? 'The Enemy' : 'You'} won!`);
+        // @ts-ignore
+        fightButton.disabled = false;
+
+        // Reward the player their loot
+        if (playerBalls > 0) {
+            hasRewarded = true;
+            let stanceMult = 1;
+            if (getStance() === 'aggressive') stanceMult = .75;
+            if (getStance() === 'careful') stanceMult = 1.25;
+
+            for (const [lootName, value] of Object.entries(currLoot)) {
+                increaseMaterial(lootName, value * stanceMult);
+                combatResult.innerHTML += `<br>+${value * stanceMult} ${lootName}`;
+            }
+            generateLoot();
+            refreshValues();
+        }
+        return true;
     }
+    return false;
+
 }
 function detectCollisions(player, enemy) {
     for (let i = 0; i < player.length; i++) {
@@ -92,19 +149,19 @@ function isColliding(ball1, ball2) {
     );
 }
 
-function handleCollision(ball1, ball2) {
-    // Example: Remove balls on collision
-    ball1.remove();
-    ball2.remove();
+function handleCollision(playerBall, enemyBall) {
+    if (Math.random() < .5) enemyBall.remove();
+    else playerBall.remove();
+
 }
 
 // Call this function continuously, e.g., using requestAnimationFrame
 function update() {
 
+    // @ts-ignore
     const balls = document.querySelectorAll('.ball');
     detectCollisions(playerTroops, enemyTroops);
-    checkForWin();
-    requestAnimationFrame(update);
+    if (!checkForWin()) requestAnimationFrame(update);
 }
 
 function calcRounding() {
@@ -125,21 +182,38 @@ function calcRounding() {
     return [playerCount, enemyCount];
 }
 
+const fightButton = document.querySelector('button#startCombat');
+/**
+ * Main combat function, start everything
+ */
 function combat() {
+    // Remove all balls
+    for (const ball of document.querySelectorAll('.ball')) {
+        ball.remove();
+    }
+
+    // for (const [i, animation] of Object.entries(animations)) {
+    //     animation.pause();
+    // }
     // Round down the balls to 12
     let [playerCount, enemyCount] = calcRounding();
 
     createBalls('player', playerCount);
     createBalls('enemy', enemyCount);
 
+    const combatResult = document.getElementById('combatResult');
+    combatResult.textContent = '';
 
+    // @ts-ignore
+    fightButton.disabled = true;
+    hasRewarded = false;
     startAnimation();
 }
 
 function calculatePlayerMight() {
     let might = getMaterial('violence') + getMaterial('spear');
-    if (stance === 'aggressive') might *= 1.2;
-    else if (stance === 'careful') might *= 0.8;
+    if (getStance() === 'aggressive') might *= 1.2;
+    else if (getStance() === 'careful') might *= 0.8;
     return might;
 }
 function calculateEnemyMight() {
@@ -150,41 +224,56 @@ function calculateWinChance() {
     const chanceSpread = 200; // Larger means smaller armies have higher chance to beat larger armies
     const playerMight = calculatePlayerMight();
     const enemyMight = calculateEnemyMight();
-    const chance = 100 / (1 + Math.pow(10, (enemyMight - playerMight) / chanceSpread));
+    const chance = 1 / (1 + Math.pow(10, (enemyMight - playerMight) / chanceSpread));
 
     const playerMightElement = document.getElementById('playerMight');
     playerMightElement.textContent = playerMight.toFixed(0);
-    playerMightElement.setAttribute('tooltipdesc', `${getMaterial('violence')} violence + ${getMaterial('spear')} spears`);
+    playerMightElement.setAttribute('tooltipdesc', `${getMaterial('violence').toFixed(0)} violence + ${getMaterial('spear').toFixed(0)} spears`);
 
     const enemyMightElement = document.getElementById('enemyMight');
     enemyMightElement.textContent = enemyMight.toFixed(0);
 
     const chanceElement = document.getElementById('chanceToWin');
-    chanceElement.textContent = (chance).toFixed(1) + '%';
+    chanceElement.textContent = (chance * 100).toFixed(1) + '%';
 
-    chanceElement.style.color = (`hsl(${((chance / 100) * 120).toString(10)},100%,50%)`);
+    chanceElement.style.color = (`hsl(${(chance * 120).toString(10)},100%,50%)`);
 
     return chance;
 }
 
 let stance = 'balanced';
+
+function getStance() {
+    return stance;
+}
+
+function setStance(newStance) {
+    stance = newStance;
+}
+
 const stanceButtons = document.querySelectorAll('button.stance');
 function switchStance(newStance) {
     console.log('switch stance to ', newStance);
     stanceButtons.forEach(element => {
+        // @ts-ignore
         element.disabled = false;
     });
+    // @ts-ignore
     document.querySelector(`#${newStance}Stance`).disabled = true;
-    stance = newStance;
+    setStance(newStance);
 }
+exports.switchStance = switchStance;
+// @ts-ignore
 window.switchStance = switchStance;
 
 
 function refreshValues() {
-    const battleLoot = generateLoot();
+    console.log(getCurrLoot());
+    if (Object.keys(getCurrLoot()).length < 1) generateLoot();
+
     const lootList = document.getElementById('lootList');
     lootList.innerHTML = '';
-    for (const [resource, quantity] of Object.entries(battleLoot)) {
+    for (const [resource, quantity] of Object.entries(getCurrLoot())) {
         lootList.innerHTML += `<span>${resource} (${quantity})</span> <br>`;
     }
 
