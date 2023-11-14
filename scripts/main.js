@@ -28,7 +28,7 @@ const { triggerFloatUpText } = require('./triggerFloatUpText');
 const { updateBounceAnimation } = require('./updateBounceAnimation');
 const { updateTooltip, hideTooltip } = require('./updateTooltip');
 const { canCraft } = require('./canCraft');
-const { setupGame } = require('./combat');
+const { calculateWinChance, combat, refreshValues } = require('./combat');
 
 
 function setTotalTime(time) {
@@ -322,6 +322,10 @@ const visibilityRules = [
     {
         condition: () => !document.getElementById('toggle-basics') && isPondered('organization'),
         action: () => initializeResourceTags(true)
+    },
+    {
+        condition: () => passedStage('combatTab'),
+        action: () => calculateWinChance()
     }
 ];
 
@@ -451,6 +455,9 @@ function showTab(tabName) {
 
     if (tabName === 'jobsTab')
         drawAllConnections();
+
+    if (tabName === 'combatTab')
+        refreshValues();
 
     console.log(prevTab, '>', tabName);
 
@@ -908,7 +915,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 }
                 // @ts-ignore
                 else if (button.id === 'startCombat') {
-                    setupGame(5, 5);
+                    combat();
                 }
             }
 

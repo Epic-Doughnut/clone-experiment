@@ -8,7 +8,7 @@ const jobRequiredPonders = {
     'fishing': 'fishing',
     'smithing': 'not-unlockable',
     'farming': 'agriculture',
-    'combat': 'combat',
+    'combat': 'combatTab',
     'hunting': 'hunting'
 };
 exports.jobRequiredPonders = jobRequiredPonders;

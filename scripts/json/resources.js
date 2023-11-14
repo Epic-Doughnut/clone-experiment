@@ -174,6 +174,16 @@ const resources = {
         defaultText: "",
         emoji: 'X',
         'max': 1000
+    },
+    'violence': {
+        value: 0,
+        id: 'gatherViolence',
+        isGetting: false,
+        isVisible: false,
+        activeText: '',
+        defaultText: '',
+        emoji: '',
+        max: 100
     }
 };
 function isResource(resource) {

@@ -31,4 +31,9 @@
             background-color: firebrick;
         }
 
+        .stance:disabled {
+            background-image: linear-gradient(#882, #444);
+            cursor: default;
+        }
+
         /* Add more styles as needed */

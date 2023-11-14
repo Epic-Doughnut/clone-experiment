@@ -87,7 +87,7 @@ function showTooltip(target, desc, effect, cost) {
 
         }
     } catch (error) {
-        content += cost;
+        if (cost !== undefined && cost !== 'undefined') content += cost;
         // console.error("Couldn't make normal cost for button: ", target, cost, error);
     }
     // console.log(target, content);

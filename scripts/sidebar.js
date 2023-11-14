@@ -54,7 +54,7 @@ function initializeResourceTags(withGroups) {
     console.trace();
     // Define groups for your resources
     const resourceGroups = {
-        'special': ['clones', 'husks', 'ponder'],
+        special: ['clones', 'husks', 'ponder', 'violence'],
         basics: ['sticks', 'berries', 'fish', 'game', 'wheat', 'freshwater'],
         materials: ['wood', 'sand', 'clay', 'vines', 'rocks', 'hides', 'herbs'],
         tools: ['sharprocks', 'rope', 'handle', 'fishingrod', 'pickaxe', 'axe', 'spear', 'staff'],

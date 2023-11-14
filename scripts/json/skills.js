@@ -34,7 +34,7 @@ const skills = {
     combat: {
         exp: 0,
         level: 0,
-        affectedResources: []
+        affectedResources: ['violence']
     },
     fishing: {
         exp: 0,

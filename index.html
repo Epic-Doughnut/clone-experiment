@@ -171,21 +171,27 @@
 			<table style="width: 100%;">
 				<tbody>
 					<tr>
-						<td>Troops: <span id="assignedTroops">18</span>/<span id="maxTroops">20</span></td>
+						<!-- <td>Troops: <span id="assignedTroops">18</span>/<span id="maxTroops">20</span></td> -->
+						<td id="combatLoot">Potential Loot:<br> <span id="lootList"></span></td>
 						<td class="tooltip" tooltipdesc="Might comes from violence and spears">Your Might</td>
 						<td>Chance to Win</td>
 						<td>Enemy Might</td>
 					</tr>
 					<tr>
 						<td rowspan="2">
-							<div id="troopAssignments">
+							<!-- <div id="troopAssignments">
 								<p>Spearmen: <span id="spearmenTroops">10</span></p>
 								<p>Archers: <span id="archerTroops">10</span></p>
 								<p>Cavalry: <span id="cavalryTroops">10</span></p>
 								<p>Artillery: <span id="artilleryTroops">10</span></p>
-							</div>
+							</div> -->
+							<button id='aggressiveStance' class="stance"
+								onclick="switchStance('aggressive')">Aggressive</button>
+							<button id="balancedStance" class="stance" onclick="switchStance('balanced')"
+								disabled>Balanced</button>
+							<button id='carefulStance' class='stance' onclick="switchStance('careful')">Careful</button>
 						</td>
-						<td id='playerMight'>20</td>
+						<td class='tooltip' id='playerMight'>20</td>
 						<td style="color:red" id="chanceToWin">15%</td>
 						<td id="enemyMight">40</td>
 					</tr>
@@ -202,6 +208,12 @@
 							<button class='tooltip' tooltipdesc='Arraign your enemies before the bar of violence'
 								tooltipcost="Violence & Spears" id="startCombat">Fight</button>
 						</td>
+
+					</tr>
+					<tr>
+						<td><span id="combatResult"></span></td>
+						<td colspan="3" align="right">Each ball is ~<span id="approximateBall">1</span> Might</td>
+
 					</tr>
 				</tbody>
 			</table>

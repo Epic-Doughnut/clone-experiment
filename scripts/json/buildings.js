@@ -53,6 +53,15 @@ const buildings = {
         tooltipDesc: 'Keep yourself safe.',
         emoji: '+'
     },
+    'barracks': {
+        basecost: { spear: 20, violence: 1, wood: 200 },
+        effects: { 'clones': 1, 'violence': 20 },
+        boost: {},
+        count: 0,
+        ratio: 1.5,
+        tooltipDesc: 'A hall of raucous soldiers.',
+        emoji: '𓈏'
+    },
 
     /**
      * STORAGE
@@ -174,7 +183,18 @@ const buildings = {
         tooltipDesc: 'Put stuff in a box inside a larger box.',
         emoji: '𓇦'
     },
-
+    'military_school': {
+        basecost: {
+            bricks: 20,
+            violence: 10
+        },
+        effects: { 'violence': 100 },
+        boost: { 'violence': 1.05 },
+        count: 0,
+        ratio: 1.4,
+        tooltipDesc: 'Learn the art of hurting others.',
+        emoji: '𓇻'
+    },
 
 
     /**
