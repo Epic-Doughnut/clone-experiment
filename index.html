@@ -167,6 +167,46 @@
 			<div id="factories" style="display: flex; flex-direction: column;"></div>
 		</div>
 
+		<div id="combatTab" class="combatTab content" data-target="combatTab">
+			<table style="width: 100%;">
+				<tbody>
+					<tr>
+						<td>Troops: <span id="assignedTroops">18</span>/<span id="maxTroops">20</span></td>
+						<td class="tooltip" tooltipdesc="Might comes from violence and spears">Your Might</td>
+						<td>Chance to Win</td>
+						<td>Enemy Might</td>
+					</tr>
+					<tr>
+						<td rowspan="2">
+							<div id="troopAssignments">
+								<p>Spearmen: <span id="spearmenTroops">10</span></p>
+								<p>Archers: <span id="archerTroops">10</span></p>
+								<p>Cavalry: <span id="cavalryTroops">10</span></p>
+								<p>Artillery: <span id="artilleryTroops">10</span></p>
+							</div>
+						</td>
+						<td id='playerMight'>20</td>
+						<td style="color:red" id="chanceToWin">15%</td>
+						<td id="enemyMight">40</td>
+					</tr>
+					<tr>
+
+
+						<td rowspan="2" colspan="3">
+							<div id="arena"></div>
+						</td>
+
+					</tr>
+					<tr>
+						<td>
+							<button class='tooltip' tooltipdesc='Arraign your enemies before the bar of violence'
+								tooltipcost="Violence & Spears" id="startCombat">Fight</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
 
 	</div>
 

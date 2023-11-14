@@ -125,8 +125,8 @@ let ponders = {
         tooltipDesc: "Find some seeds from all those plants",
         cost: { 'ponder': 180 }
     },
-    'combat': {
-        id: 'ponderCombat',
+    'combatTab': {
+        id: 'ponderCombatTab',
         requirement: () => true,
         isPondered: false,
         text: "Combat",

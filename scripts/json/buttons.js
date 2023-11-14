@@ -121,6 +121,14 @@ const buttons = {
         requirement: () => passedStage('factoryTab'),
         hide: () => false
     },
+    'combatTabButton': {
+        class: 'tab-button',
+        text: "Combat",
+        showTab: 'combatTab',
+        tab: 'tabs',
+        requirement: () => passedStage('combatTab'),
+        hide: () => false
+    },
 
     /* PONDER TAB */
     'gatherPonder': {
@@ -132,6 +140,7 @@ const buttons = {
         requirement: () => passedStage('ponder-tab'),
         hide: () => false
     },
+
 };
 
 module.exports = {

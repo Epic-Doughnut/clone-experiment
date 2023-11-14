@@ -28,6 +28,7 @@ const { triggerFloatUpText } = require('./triggerFloatUpText');
 const { updateBounceAnimation } = require('./updateBounceAnimation');
 const { updateTooltip, hideTooltip } = require('./updateTooltip');
 const { canCraft } = require('./canCraft');
+const { setupGame } = require('./combat');
 
 
 function setTotalTime(time) {
@@ -218,6 +219,9 @@ function generateButtons() {
             // jobColumns[jobColumnIndex].appendChild(buttonElement);
             // jobColumnIndex = (jobColumnIndex + 1) % 3;
         }
+        else {
+            document.getElementById(btn.tab).appendChild(btn);
+        }
         // Add more conditions for other tabs as needed
 
         // Update tooltip for buildings
@@ -388,8 +392,8 @@ function scheduleNextTrack() {
         clearTimeout(timeoutId);
     }
 
-    // When the current track ends, wait for up to 60 seconds before playing the next
-    const silenceDuration = Math.random() * 30000 + 5000; // Random silence duration 5 - 65 seconds
+    // When the current track ends, wait for up to 30 seconds before playing the next
+    const silenceDuration = Math.random() * 30000 + 5000; // Random silence duration 5 - 35 seconds
     currentAudio.onfinish = () => {
         timeoutId = setTimeout(playRandomTrack, silenceDuration);
     };
@@ -901,6 +905,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 // @ts-ignore
                 else if (button.id === 'prestige') {
                     isekai();
+                }
+                // @ts-ignore
+                else if (button.id === 'startCombat') {
+                    setupGame(5, 5);
                 }
             }
 
