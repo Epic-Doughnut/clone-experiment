@@ -69,6 +69,7 @@ function getFactoryProduction(resource) {
 // Function to update resource production and consumption
 // @ts-ignore
 function updateFactoryResourceTracking(oldProduced, newProduced) {
+    // if (newProduced === null) return;
     // If this factory was previously producing something, reduce the count
     if (oldProduced && oldProduced !== 'none') {
         activeFactoriesProducing[oldProduced]--;
@@ -144,10 +145,12 @@ function createFactoryDiv() {
         this.setAttribute('data-produced', newProduced);
 
 
-        // @ts-ignore
-        document.querySelector(`#resource-${newProduced}`).style.color = 'thistle';
-        leftText.innerHTML = '';
-        leftText.innerHTML += `${require('./resources').generateTooltipCost(craftedResources[rightSelect.value].cost)}`;
+        if (newProduced && newProduced !== 'none') {
+            // @ts-ignore
+            document.querySelector(`#resource-${newProduced}`).style.color = 'thistle';
+            leftText.innerHTML = '';
+            leftText.innerHTML += `${require('./resources').generateTooltipCost(craftedResources[rightSelect.value].cost)}`;
+        }
 
     });
 
@@ -179,11 +182,14 @@ function createFactoryDiv() {
 function loadFactory(crafting) {
     console.log("loading a factory for ", crafting);
     let div = createFactoryDiv();
-    div.querySelector('select').value = crafting;
-    // @ts-ignore
-    document.querySelector(`#resource-${crafting}`).style.color = 'thistle';
-    div.querySelector('.factoryCost').innerHTML = '';
-    div.querySelector('.factoryCost').innerHTML += `${require('./resources').generateTooltipCost(craftedResources[crafting].cost)}`;
+    if (crafting) {
+        div.querySelector('select').value = crafting;
+
+        // @ts-ignore
+        document.querySelector(`#resource-${crafting}`).style.color = 'thistle';
+        div.querySelector('.factoryCost').innerHTML = '';
+        div.querySelector('.factoryCost').innerHTML += `${require('./resources').generateTooltipCost(craftedResources[crafting].cost)}`;
+    }
 
     const buyFactoryButton = document.getElementById('buyFactoryButton');
 

@@ -17,7 +17,7 @@ const { buyFactory, attemptManufacture, upgradeBulk } = require('./factory');
 const { isPondered, generatePonderButtons } = require("./ponder");
 const { hasTool, addTool } = require('./tools');
 const { getAteFish, setAteFish } = require('./ateFish');
-const { drawAllConnections, updateTotal, clearJobAssignments, resetAllJobs } = require('./jobs');
+const { updateTotal, clearJobAssignments, resetAllJobs } = require('./jobs');
 const { capitalizeFirst } = require('./capitalizeFirst');
 const { passedStage, resetStages } = require('./stages');
 const { recalcMaxClones } = require('./recalcMaxClones');
@@ -28,7 +28,9 @@ const { triggerFloatUpText } = require('./triggerFloatUpText');
 const { updateBounceAnimation } = require('./updateBounceAnimation');
 const { updateTooltip, hideTooltip } = require('./updateTooltip');
 const { canCraft } = require('./canCraft');
-const { calculateWinChance, combat, refreshValues, switchStance } = require('./combat');
+const { calculateWinChance, combat, switchStance } = require('./combat');
+const { showTab, getCurrentTab } = require('./showTab');
+const { sfxVolume, musicVolume } = require('./audio');
 
 
 function setTotalTime(time) {
@@ -60,11 +62,16 @@ function stopAllGathering() {
 
 const emojiGatherDiv = document.querySelector('#emojiGatherDisplay');
 function toggleResource(resourceKey) {
+
+    const gatherAudio = new Audio('./audio/gather.wav');
+    gatherAudio.volume = sfxVolume;
+    gatherAudio.play();
+
     const resource = resources[resourceKey];
 
-    // emojiDiv.textContent = '𓆮';
+
     const sidebarParent = document.querySelector("#resources");
-    // @ts-ignore
+
     const sidebarText = sidebarParent.querySelector('#resource-' + resourceKey);
     const resourceButton = document.querySelector('#gather' + resourceKey.charAt(0).toUpperCase() + resourceKey.slice(1));
     emojiGatherDiv.textContent = '𓀟'; // Default emoji 𓀟
@@ -418,72 +425,6 @@ function scheduleNextTrack() {
         timeoutId = setTimeout(playRandomTrack, silenceDuration);
     };
 }
-
-let musicVolume = .5;
-let sfxVolume = .5;
-
-
-
-function getCurrentTab() {
-    let tab = '';
-    for (let content of tabContainers) {
-        if (content.classList.contains('active')) {
-            tab = content.id;
-        }
-    }
-    return tab;
-}
-
-// Switch tabs
-let tabContainers = document.querySelectorAll(".tab-content > .content"); // Direct children only
-function showTab(tabName) {
-    console.log("show tab: " + tabName);
-    // Get all main container divs and hide them
-    let prevTab = getCurrentTab();
-
-    if (tabName === prevTab) return;
-
-    let tabAudio = new Audio('./audio/tab.wav');
-    tabAudio.volume = sfxVolume;
-    tabAudio.play();
-
-    let prevTabElement = document.getElementById(prevTab);
-    prevTabElement.classList.remove('active');
-    prevTabElement.style.opacity = '0';
-    // Get all tab buttons and remove the active class
-    let tabs = document.querySelectorAll(".tab-button");
-    for (let tab of tabs) {
-        tab.classList.remove("active");
-    }
-
-    // Show the clicked tab's main container div and make the tab button active
-    let activeContent = document.getElementById(tabName);
-    // @ts-ignore
-
-
-    setTimeout(() => { activeContent.classList.add("active"); }, 100);
-    setTimeout(() => {
-        activeContent.style.opacity = '1';
-    }, 200);
-
-
-    // Get the clicked tab button and make it active
-    const tabString = `#${tabName}Button`;
-    let activeTabButton = document.querySelector(tabString);
-
-    if (activeTabButton) activeTabButton.classList.add("active");
-
-    if (tabName === 'jobsTab')
-        drawAllConnections();
-
-    if (tabName === 'combatTab')
-        refreshValues();
-
-    console.log(prevTab, '>', tabName);
-
-    updateSidebar();
-}
-
 
 /* HOTKEYS */
 document.addEventListener('keydown', function (event) {
