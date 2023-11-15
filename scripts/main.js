@@ -30,7 +30,8 @@ const { updateTooltip, hideTooltip } = require('./updateTooltip');
 const { canCraft } = require('./canCraft');
 const { calculateWinChance, combat, switchStance } = require('./combat');
 const { showTab, getCurrentTab } = require('./showTab');
-const { sfxVolume, musicVolume } = require('./audio');
+const { getSfxVolume, getMusicVolume, setMusicVolume, setSfxVolume } = require('./audio');
+
 
 
 function setTotalTime(time) {
@@ -64,7 +65,7 @@ const emojiGatherDiv = document.querySelector('#emojiGatherDisplay');
 function toggleResource(resourceKey) {
 
     const gatherAudio = new Audio('./audio/gather.wav');
-    gatherAudio.volume = sfxVolume;
+    gatherAudio.volume = getSfxVolume();
     gatherAudio.play();
 
     const resource = resources[resourceKey];
@@ -405,7 +406,7 @@ function playRandomTrack() {
     // Select a random track
     const randomIndex = Math.floor(Math.random() * audioFiles.length);
     currentAudio = new Audio(audioFiles[randomIndex]);
-    currentAudio.volume = musicVolume;
+    currentAudio.volume = getMusicVolume();
     // Play the selected track
     currentAudio.play();
 
@@ -805,7 +806,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 const y = event.pageY;
 
                 let buildingAudio = new Audio('./audio/building.wav');
-                buildingAudio.volume = sfxVolume;
+                buildingAudio.volume = getSfxVolume();
                 buildingAudio.play();
 
                 const buildingString = capitalizeFirst(building).split('_').join(' ');
@@ -847,7 +848,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                         button.display = 'none';
 
                         let ponderAudio = new Audio('./audio/ponder.wav');
-                        ponderAudio.volume = sfxVolume;
+                        ponderAudio.volume = getSfxVolume();
                         ponderAudio.play();
 
 
@@ -868,7 +869,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 // @ts-ignore
                 else if (button.id.slice(0, 5) === 'craft') {
                     let craftAudio = new Audio('./audio/craft.wav');
-                    craftAudio.volume = sfxVolume;
+                    craftAudio.volume = getSfxVolume();
                     craftAudio.play();
 
                     // @ts-ignore
@@ -929,9 +930,15 @@ document.addEventListener('DOMContentLoaded', (event) => {
         if (event.target.matches("#alone")) {
             // increaseMaterial('clones', 1);
             let text = '+1 Clone';
+
             // Hardcoded instead to avoid increase affected by productivity bonuses
             if (resources['clones'].value < resources['clones'].max) { resources['clones'].value += 1; }
             else text = 'Max Clones';
+
+            const cloneAudio = new Audio(text === '+1 Clone' ? './audio/clone.wav' : './audio/failclone.wav');
+            cloneAudio.volume = getSfxVolume();
+            cloneAudio.play();
+
             const x = event.pageX; // X coordinate of the click
             const y = event.pageY; // Y coordinate of the click
             const color = text === '+1 Clone' ? 'green' : 'red';
@@ -984,13 +991,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     document.getElementById('musicVolume').addEventListener('input', function () {
         // @ts-ignore
-        musicVolume = this.value;
-        currentAudio.volume = musicVolume;
+        setMusicVolume(this.value);
+        currentAudio.volume = getMusicVolume();
     });
 
     document.getElementById('sfxVolume').addEventListener('input', function () {
         // @ts-ignore
-        sfxVolume = this.value;
+        setSfxVolume(this.value);
     });
 
 

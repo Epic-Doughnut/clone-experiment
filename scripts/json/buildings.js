@@ -123,7 +123,7 @@ const buildings = {
     "bakery": {
         "basecost": {
             "wood": 80,
-            "wheat": 100,
+            "bread": 10,
             "rocks": 40
         },
         "effects": { 'wheat': 200 },

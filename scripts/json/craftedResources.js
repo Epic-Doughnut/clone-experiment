@@ -164,6 +164,16 @@ const craftedResources = {
         tooltipCost: '',
         class: 'clay'
     },
+    'bread': {
+        id: 'craftBreadButton',
+        value: 0,
+        cost: { wheat: 13 },
+        craftedOnce: false,
+        requiredStage: 'agriculture',
+        tooltipDesc: "I'm gonna grind your wheat to make my bread!",
+        tooltipcost: '',
+        class: 'agriculture'
+    },
     'steel': { value: 0, cost: { 'iron': 5 } },
     'beams': { value: 0, cost: { 'wood': 10 } },
     'crates': { value: 0, cost: { 'wood': 15 } },
@@ -174,7 +184,7 @@ const craftedResources = {
     'concrete': { value: 0, cost: { 'sand': 32 } },
     'wood': { value: 0, cost: { 'sticks': 8 } },
     'sticks': { value: 0, cost: { 'wood': .1 } },
-    
+
 };
 
 function getCraftedResourceConfigById(id) {

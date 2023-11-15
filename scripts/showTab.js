@@ -1,7 +1,7 @@
 const { drawAllConnections } = require('./jobs');
 const { updateSidebar } = require('./sidebar');
 const { refreshValues } = require('./combat');
-const { sfxVolume } = require('./audio');
+const { getSfxVolume } = require('./audio');
 
 function getCurrentTab() {
     let tab = '';
@@ -24,7 +24,7 @@ function showTab(tabName) {
     if (tabName === prevTab) return;
 
     let tabAudio = new Audio('./audio/tab.wav');
-    tabAudio.volume = sfxVolume;
+    tabAudio.volume = getSfxVolume();
     tabAudio.play();
 
     let prevTabElement = document.getElementById(prevTab);

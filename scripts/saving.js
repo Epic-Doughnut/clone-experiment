@@ -252,7 +252,7 @@ function loadGame() {
                 buildings[b].count = savegame.buildings[b];
                 // Update button text
                 if (buildings[b].count > 0) {
-                    updateBuildingButtonCount(b, buildings[b].count);
+                    updateBuildingButtonCount(b, buildings[b].count, buildings[b].emoji);
 
                     // Calculate the costs of all the buildings
                     recalculateBuildingCost(b, buildings, hasPerk);

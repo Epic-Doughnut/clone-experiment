@@ -55,8 +55,8 @@ function initializeResourceTags(withGroups) {
     // Define groups for your resources
     const resourceGroups = {
         special: ['clones', 'husks', 'ponder', 'violence'],
-        basics: ['sticks', 'berries', 'fish', 'game', 'wheat', 'freshwater'],
-        materials: ['wood', 'sand', 'clay', 'vines', 'rocks', 'hides', 'herbs'],
+        food: ['berries', 'fish', 'game', 'wheat', 'bread', 'freshwater'],
+        materials: ['sticks', 'vines', 'rocks', 'wood', 'sand', 'clay', 'hides', 'herbs'],
         tools: ['sharprocks', 'rope', 'handle', 'fishingrod', 'pickaxe', 'axe', 'spear', 'staff'],
         advanced: ['glass', 'paper', 'crates', 'medicine', 'leather'],
         metal: ['ore', 'gold', 'iron', 'silver', 'steel'],

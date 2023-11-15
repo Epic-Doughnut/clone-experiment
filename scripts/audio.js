@@ -1,4 +1,25 @@
 let musicVolume = 0.5;
-exports.musicVolume = musicVolume;
+
+
+function setMusicVolume(vol) {
+    musicVolume = vol;
+}
+function getMusicVolume() {
+    return musicVolume;
+}
+
 let sfxVolume = 0.5;
-exports.sfxVolume = sfxVolume;
+
+function setSfxVolume(vol) {
+    sfxVolume = vol;
+}
+function getSfxVolume() {
+    return sfxVolume;
+}
+
+module.exports = {
+    setMusicVolume,
+    getMusicVolume,
+    setSfxVolume,
+    getSfxVolume
+};

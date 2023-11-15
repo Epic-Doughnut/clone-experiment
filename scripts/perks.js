@@ -24,7 +24,8 @@ function addPerk(perkName) {
     // Do all the one-time updates
     switch (perkName) {
         case 'Architect':
-            for (let b in buildings) {
+            const buildings = require('./json/buildings').buildings;
+            for (let b of Object.keys(buildings)) {
                 require('./recalculateBuildingCost').recalculateBuildingCost(b, buildings, hasPerk);
 
             }

@@ -11,6 +11,7 @@ const { recalculateBuildingCost } = require('./recalculateBuildingCost');
 const { canBuyBuilding } = require('./canBuyBuilding');
 const { isPondered } = require('./ponder');
 const { updateBuildingList } = require('./updateBuildingList');
+const { capitalizeFirst } = require('./capitalizeFirst');
 
 /* BUILDINGS */
 
@@ -67,11 +68,11 @@ function createBuildingButton(buildingKey, buildings) {
     //     requirementString += ` && passedStage('clones')`;
     // }
     const requirementFunction = createRequirementFunction(building.cost, buildingKey);
-
+    console.log('create building button:', building, JSON.parse(JSON.stringify(building.emoji)));
     const button = {
         'class': 'tooltip ' + buildingKey,
         'tab': 'production',
-        'text': `${buildingKey.charAt(0).toUpperCase() + buildingKey.slice(1)}`,
+        'text': `${JSON.parse(JSON.stringify(building.emoji))} ${capitalizeFirst(buildingKey)}`,
         'tooltipDesc': buildings[buildingKey].tooltipDesc || "A mysterious building with untold benefits.",
         'tooltipCost': costs,
         'requirement': () => requirementFunction(),
@@ -139,7 +140,7 @@ function buyBuilding(buildingName) {
 
 
     // Update button text
-    updateBuildingButtonCount(buildingName, building.count);
+    updateBuildingButtonCount(buildingName, building.count, JSON.parse(JSON.stringify(building.emoji)));
 
     // Update the cost of the building
     recalculateBuildingCost(buildingName, buildings, hasPerk);
