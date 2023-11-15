@@ -55,55 +55,69 @@ function clearSidebar() {
 }
 
 
+function invertSkillsToResources(skills) {
+    let resourceToSkillMap = {};
 
+    for (const [skill, data] of Object.entries(skills)) {
+        for (const resource of data.affectedResources) {
+            if (!resourceToSkillMap[resource]) {
+                resourceToSkillMap[resource] = [];
+            }
+            resourceToSkillMap[resource].push(skill);
+        }
+    }
 
+    return resourceToSkillMap;
+}
 
+const resourceToSkillMap = invertSkillsToResources(skills);
+console.log(resourceToSkillMap);
+
+/**
+ * Update the relevant skill of a resource increased by num
+ * @param {string} resource Which resource was updated
+ * @param {number} num How much the resource increased
+ * @returns 
+ */
 function updateSkills(resource, num) {
     num = Math.abs(num);
     if (require('./ponder').isPondered('fasterSkills')) num *= 1.05;
-    // 
-    for (let skill in skills) {
-        // 
-        if (skills[skill].affectedResources.includes(resource)) {
-            // max level 100
-            if (skills[skill].level >= 100) {
-                skills[skill].level = 100;
-                skills[skill].exp = 0;
-                continue;
-            }
-            // 
-            skills[skill].exp += num / Math.pow(1.4, skills[skill].level);
-            // console.log("Updating skill:" + skill + " to " + skills[skill].exp)
 
-
-            if (skills[skill].exp >= 100) {
-                // 
-                skills[skill].level += 1;
-                // 
-                skills[skill].exp = 0;
-                // console.log("Level Up! " + skill + skills[skill].level);
-                // 
-                let levelup = `Level up! ${skill} → ${skills[skill].level}`;
-                const rect = document.getElementById('prestige').getBoundingClientRect();
-                triggerFloatUpText(rect.x, rect.y, levelup, '#F4D03F');
-
-                // levelUpMessage.classList.remove('hidden');
-                // Hide the message after 3 seconds
-                // setTimeout(() => {
-                // levelUpMessage.style.display = 'none';
-                // 
-                // levelUpMessage.classList.add('hidden');
-                // }, 3000); // 3000 milliseconds (3 seconds)
-            }
-        }
+    if (!resourceToSkillMap[resource]) return;
+    const skill = resourceToSkillMap[resource][0].toString();
+    // max level 100
+    if (skills[skill].level >= 100) {
+        skills[skill].level = 100;
+        skills[skill].exp = 0;
+        return;
     }
+    // 
+    skills[skill].exp += num / Math.pow(1.4, skills[skill].level);
+    // console.log("Updating skill:" + skill + " to " + skills[skill].exp)
+
+
+    if (skills[skill].exp >= 100) {
+
+        skills[skill].level += 1;
+        skills[skill].exp = 0;
+
+        // Levelup popup
+        let levelup = `Level up! ${skill} → ${skills[skill].level}`;
+        const rect = document.getElementById('prestige').getBoundingClientRect();
+        triggerFloatUpText(rect.x, rect.y, levelup, '#F4D03F');
+    }
+
+
+    // Update the skills table visualization
     if (require('./stages').passedStage('skillsTable')) {
         populateSkillsTable();
     }
 }
 
 let hasGeneratedSkillTable = false;
-
+/**
+ * Draw the skills table and initialize if needed
+ */
 function populateSkillsTable() {
     const table = document.getElementById('skillsTable');
 
