@@ -159,6 +159,7 @@ function generateButtons() {
     // @ts-ignore
     // @ts-ignore
     // @ts-ignore
+    // @ts-ignore
     let jobColumnIndex = 0;
 
     // Add counters for other tabs as needed
@@ -505,6 +506,7 @@ document.addEventListener('keydown', function (event) {
             if (getCurrentTab() === 'combatTab') switchStance('careful');
             break;
         case 'f':
+            // @ts-ignore
             if (getCurrentTab() === 'combatTab' && !document.getElementById('startCombat').disabled) combat();
             else toggleResource('fish');
             break;
@@ -676,6 +678,7 @@ let time_since_last_save = 0;
 let time_since_manufature = 0;
 function update(delta_time, total_time) {
 
+    // @ts-ignore
     for (const [key, val] of Object.entries(resources)) {
         // console.log("updating " + key);
 
@@ -717,6 +720,7 @@ window.onbeforeunload = function () {
 //     document.getElementById("resourceForm").style.display = "block";
 // });
 
+// @ts-ignore
 function addResource() {
     // @ts-ignore
     const resourceName = document.getElementById("resourceName").value;
@@ -780,6 +784,7 @@ function updateUI(resourceName) {
 let currentlyDeleting = false;
 
 // After all has been loaded
+// @ts-ignore
 document.addEventListener('DOMContentLoaded', (event) => {
     generatePonderButtons(ponders);
     // appendCraftedResourceButtons();
@@ -1025,11 +1030,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 
     document.getElementById('musicVolume').addEventListener('input', function () {
+        // @ts-ignore
         musicVolume = this.value;
         currentAudio.volume = musicVolume;
     });
 
     document.getElementById('sfxVolume').addEventListener('input', function () {
+        // @ts-ignore
         sfxVolume = this.value;
     });
 
@@ -1044,6 +1051,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         // Extract the data from your building or any other data - source
         // const content = "Your tooltip content here";
 
+        // @ts-ignore
         button.addEventListener('mouseenter', function (e) {
             updateTooltip(button);
             currentHoverButton = button;
@@ -1096,6 +1104,7 @@ function isekai() {
         resetAllJobs();
         resetStages();
         // Set max of all resources to 100
+        // @ts-ignore
         for (let [r, val] of Object.entries(resources)) {
             val.max = 100;
         }
@@ -1186,6 +1195,7 @@ function isekai() {
             // Extract the data from your building or any other data - source
             // const content = "Your tooltip content here";
 
+            // @ts-ignore
             button.addEventListener('mouseenter', function (e) {
                 updateTooltip(button);
                 currentHoverButton = button;

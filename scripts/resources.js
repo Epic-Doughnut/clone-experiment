@@ -9,7 +9,7 @@ const { skills } = require('./json/skills');
 
 const { getWorkers, updateTotal } = require('./jobs');
 const { hasTool, } = require('./tools');
-const { updateSkills, calcCraftBonus, getMax } = require("./helper");
+const { calcCraftBonus, getMax } = require("./helper");
 const { canCraft } = require('./canCraft');
 const { capitalizeFirst } = require('./capitalizeFirst');
 const { getMaterial } = require('./getMaterial');
@@ -20,6 +20,7 @@ const { calcIncrease } = require("./calcIncrease");
 const { updateSidebar, abbreviateNumber } = require("./sidebar");
 const { passedStage, getAllStages } = require("./stages"); // Used for eval functions
 const { updateDisplayValue } = require("./sidebar");
+const { updateSkills } = require("./skills");
 // console.log(capitalizeFirst);
 
 /**

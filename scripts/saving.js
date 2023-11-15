@@ -1,7 +1,7 @@
 // DEPENDS ON: resources.js
 const { calcIncrease, updateEmojiDisplay } = require('./resources');
 const { addTool, getAllTools } = require('./tools');
-const { allVisibleButtons, populateSkillsTable, setVisibleButton } = require('./helper');
+const { allVisibleButtons, setVisibleButton } = require('./helper');
 const { makeVisible } = require('./makeVisible');
 const { getCraftedResource } = require('./getCraftedResource');
 const { getMaterial } = require('./getMaterial');
@@ -26,6 +26,7 @@ const { prestige } = require('./json/prestige');
 const { recalculateBuildingCost } = require('./recalculateBuildingCost');
 const { updateBuildingButtonCount } = require('./updateBuildingButtonCount');
 const { updateBuildingList } = require('./buildings');
+const { populateSkillsTable } = require('./skills');
 
 // import jobCounts;
 /* SAVING */
