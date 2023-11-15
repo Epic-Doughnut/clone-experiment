@@ -819,12 +819,19 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
         return 'error ' + id;
     }
+
+    document.addEventListener('scroll', () => {
+        // Start the music playback
+        if (currentAudio === null) playRandomTrack();
+    });
+    document.addEventListener('mousemove', () => {
+        if (currentAudio === null) playRandomTrack();
+    });
     document.addEventListener("click", (event) => {
+
         // @ts-ignore
         if (event.target.matches("button")) {
 
-            // Start the music playback
-            if (currentAudio === null) playRandomTrack();
 
             // one of our buttons was clicked
             const button = event.target;
