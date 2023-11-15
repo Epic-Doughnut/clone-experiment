@@ -291,13 +291,7 @@ const visibilityRules = [
 
     {
         condition: () => getMaterial('fish', resources) >= 5 && !getAteFish(),
-        action: () => {
-            makeVisible('eatFish');
-            // @ts-ignore
-            // document.getElementById('eatFish').style.display = 'block';
-            // // @ts-ignore
-            // document.getElementById('eatFish').classList.add('visible');
-        }
+        action: () => makeVisible('eatFish')
     },
     {
         condition: () => getAteFish(),
@@ -331,12 +325,14 @@ const visibilityRules = [
 
 function render() {
 
-    // console.log('updating visible');
-    visibilityRules.forEach(rule => {
+    for (let i = visibilityRules.length - 1; i >= 0; i--) {
+        const rule = visibilityRules[i];
         if (rule.condition()) {
             rule.action();
+            // Remove the rule from the array
+            visibilityRules.splice(i, 1);
         }
-    });
+    }
 
     for (let tool in toolsToStages) {
         if (!hasTool(tool) && getCraftedResource(tool) > 0) {

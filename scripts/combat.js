@@ -157,11 +157,8 @@ function handleCollision(playerBall, enemyBall) {
 
 // Call this function continuously, e.g., using requestAnimationFrame
 function update() {
-
-    // @ts-ignore
-    const balls = document.querySelectorAll('.ball');
     detectCollisions(playerTroops, enemyTroops);
-    if (!checkForWin()) requestAnimationFrame(update);
+    if (!checkForWin() && !hasRewarded) requestAnimationFrame(update);
 }
 
 function calcRounding() {
