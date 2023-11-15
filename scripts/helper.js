@@ -39,14 +39,21 @@ function getAffectedResources(skill) {
  */
 function getMax(material) {
     if (isResource(material)) {
-        let max = resources[material].max;
-        if (hasPrestige('storageSpace') && material !== 'clones') max *= 1.05 * getLevelOfPrestige('storageSpace');
-        else if (material === 'clones' && hasPrestige('maxClones')) max += getLevelOfPrestige('maxClones');
+        let baseMax = resources[material].max; // Static base max value
+        let max = baseMax;
+
+        if (hasPrestige('storageSpace') && material !== 'clones') {
+            max = baseMax * (1.05 * getLevelOfPrestige('storageSpace'));
+        } else if (material === 'clones' && hasPrestige('maxClones')) {
+            max = baseMax + getLevelOfPrestige('maxClones');
+        }
+
         return max;
     } else {
         return Infinity;
     }
 }
+
 
 function clearSidebar() {
     const sidebar = document.querySelector("#resources");

@@ -99,16 +99,22 @@ function startAnimation() {
 let hasRewarded = false;
 function checkForWin() {
     if (hasRewarded) return;
-    const playerBalls = document.querySelectorAll('.player').length;
-    const enemyBalls = document.querySelectorAll('.enemy').length;
-    if (playerBalls === 0 || enemyBalls === 0) {
+
+    if (battleResult !== null) {
         const combatResult = document.getElementById('combatResult');
-        combatResult.textContent = (`${playerBalls === 0 ? 'The Enemy' : 'You'} won!`);
+        if (battleResult === "player") {
+            combatResult.textContent = "You won!";
+        } else if (battleResult === "enemy") {
+            combatResult.textContent = "The Enemy won!";
+        } else {
+            combatResult.textContent = "It's a draw!";
+        }
+
         // @ts-ignore
         fightButton.disabled = false;
 
-        // Reward the player their loot
-        if (playerBalls > 0) {
+        // Reward the player their loot if they won
+        if (battleResult === "player") {
             hasRewarded = true;
             let stanceMult = 1;
             if (getStance() === 'aggressive') stanceMult = .75;
@@ -121,9 +127,12 @@ function checkForWin() {
             generateLoot();
             refreshValues();
         }
+
         return true;
     }
+
     return false;
+
 
 }
 function detectCollisions(player, enemy) {
@@ -179,24 +188,57 @@ function calcRounding() {
     return [playerCount, enemyCount];
 }
 
+function pauseAnimation() {
+    // const balls = document.querySelectorAll('.ball');
+    animations.forEach(ball => {
+        ball.pause();
+    });
+}
+
 const fightButton = document.querySelector('button#startCombat');
+
+let battleResult = null; // Variable to store battle result
+
+function simulateBattle() {
+    // Perform the battle simulation logic here
+    function calculateBattleResult() {
+        const chanceSpread = 200; // Larger means smaller armies have a higher chance to beat larger armies
+        const playerMight = calculatePlayerMight();
+        const enemyMight = calculateEnemyMight();
+        const playerChance = 1 / (1 + Math.pow(10, (enemyMight - playerMight) / chanceSpread));
+
+        // Generate a random number between 0 and 1 to simulate the battle outcome
+        const randomOutcome = Math.random();
+
+        if (randomOutcome < playerChance) {
+            return 'player'; // Player wins
+        } else {
+            return 'enemy'; // Enemy wins
+        }
+    }
+
+    // Calculate the result and store it in the battleResult variable
+    battleResult = calculateBattleResult();
+    checkForWin();
+}
+
+
+
 /**
  * Main combat function, start everything
  */
 function combat() {
+    battleResult = null;
     // Remove all balls
     for (const ball of document.querySelectorAll('.ball')) {
         ball.remove();
     }
-
-    // for (const [i, animation] of Object.entries(animations)) {
-    //     animation.pause();
-    // }
     // Round down the balls to 12
     let [playerCount, enemyCount] = calcRounding();
 
     createBalls('player', playerCount);
     createBalls('enemy', enemyCount);
+
 
     const combatResult = document.getElementById('combatResult');
     combatResult.textContent = '';
@@ -204,6 +246,7 @@ function combat() {
     // @ts-ignore
     fightButton.disabled = true;
     hasRewarded = false;
+
     startAnimation();
 }
 
@@ -259,13 +302,12 @@ function switchStance(newStance) {
     document.querySelector(`#${newStance}Stance`).disabled = true;
     setStance(newStance);
 }
-exports.switchStance = switchStance;
 // @ts-ignore
 window.switchStance = switchStance;
 
 
 function refreshValues() {
-    console.log(getCurrLoot());
+    // console.log(getCurrLoot());
     if (Object.keys(getCurrLoot()).length < 1) generateLoot();
 
     const lootList = document.getElementById('lootList');
@@ -275,11 +317,18 @@ function refreshValues() {
     }
 
     calcRounding();
+    calculateWinChance();
 }
 
 
 // Example usage
 // setupGame(5, 5); // 5 balls for each team
-exports.combat = combat;
-exports.calculateWinChance = calculateWinChance;
-exports.refreshValues = refreshValues;
+module.exports = {
+    combat,
+    calculateWinChance,
+    refreshValues,
+    pauseAnimation,
+    battleResult,
+    simulateBattle,
+    switchStance
+};

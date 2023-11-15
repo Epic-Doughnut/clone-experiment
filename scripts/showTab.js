@@ -1,6 +1,6 @@
 const { drawAllConnections } = require('./jobs');
 const { updateSidebar } = require('./sidebar');
-const { refreshValues } = require('./combat');
+const { refreshValues, getInCombat, combat, pauseAnimation, battleResult, simulateBattle } = require('./combat');
 const { getSfxVolume } = require('./audio');
 
 function getCurrentTab() {
@@ -26,6 +26,7 @@ function showTab(tabName) {
     let tabAudio = new Audio('./audio/tab.wav');
     tabAudio.volume = getSfxVolume();
     tabAudio.play();
+
 
     let prevTabElement = document.getElementById(prevTab);
     prevTabElement.classList.remove('active');
@@ -54,8 +55,18 @@ function showTab(tabName) {
     if (tabName === 'jobsTab')
         drawAllConnections();
 
-    if (tabName === 'combatTab')
+    if (tabName === 'combatTab') {
         refreshValues();
+        // if (getInCombat()) {
+        //     // If returning to the combatTab and combat was in progress, resume combat
+        //     combat();
+        // }
+        // When returning to the combatTab, resolve the battle if it hasn't been resolved yet
+        if (battleResult === null) {
+            simulateBattle();
+        }
+    }
+
 
     console.log(prevTab, '>', tabName);
 

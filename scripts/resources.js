@@ -115,6 +115,7 @@ function increaseMaterial(material, num) {
             if (isPondered('fasterResourceGain')) num *= 1.05;
             resources[material].value += num;
             updateSkills(material, num);
+            if (material === 'violence') require("./combat").refreshValues();
         } else if (num < 0) { // Subtracting resources
             resources[material].value += num;
         } else { // Already at max
@@ -156,6 +157,7 @@ function increaseMaterial(material, num) {
 
 }
 // Globally display for dev purposes
+// @ts-ignore
 window.increaseMaterial = increaseMaterial;
 
 

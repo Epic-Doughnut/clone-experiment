@@ -1,7 +1,7 @@
 // DEPENDS ON: resources.js
 const { calcIncrease, updateEmojiDisplay } = require('./resources');
 const { addTool, getAllTools } = require('./tools');
-const { allVisibleButtons, setVisibleButton } = require('./helper');
+const { allVisibleButtons, setVisibleButton, getMax } = require('./helper');
 const { makeVisible } = require('./makeVisible');
 const { getCraftedResource } = require('./getCraftedResource');
 const { getMaterial } = require('./getMaterial');
