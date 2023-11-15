@@ -104,7 +104,7 @@ const buildings = {
     },
     'barn': {
         'basecost': { 'wood': 30, 'wheat': 5 },
-        'effects': { 'wheat': 100, 'berries': 40, 'vines': 40 },
+        'effects': { 'wheat': 100, 'vines': 40 },
         'boost': {},
         'count': 0,
         'ratio': 1.2,
@@ -365,12 +365,10 @@ const buildings = {
         "basecost": {
             "wood": 100,
             "rocks": 50,
-            "berries": 40,
             "gold": 1
         },
         "effects": {},
         "boost": {
-            "berries": 1.2,
             "herbs": 1.2,
             'ore': 1.1
         },
@@ -398,11 +396,10 @@ const buildings = {
         basecost: {
             beams: 20,
             herbs: 20,
-            berries: 50,
             freshwater: 10
         },
         effects: {},
-        boost: { 'berries': 1.1, 'herbs': 1.1, 'sticks': 1.05 },
+        boost: { 'herbs': 1.1, 'sticks': 1.05 },
         count: 0,
         ratio: 1.3,
         tooltipDesc: "Nice nature, carefully cultivated.",

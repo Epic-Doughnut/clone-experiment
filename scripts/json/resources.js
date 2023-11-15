@@ -134,17 +134,6 @@ const resources = {
         emoji: '𓀩',
         'max': 50
     },
-    'berries': {
-
-        'value': 0,
-        'id': 'gatherBerries',
-        'isGetting': false,
-        'isVisible': false,
-        'activeText': 'water',
-        'defaultText': 'water',
-        emoji: '𓀩',
-        'max': 50
-    },
     'herbs': {
         'value': 0,
         'id': 'gatherHerbs',
