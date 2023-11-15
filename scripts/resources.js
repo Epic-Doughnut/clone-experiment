@@ -159,6 +159,8 @@ function increaseMaterial(material, num) {
 // Globally display for dev purposes
 // @ts-ignore
 window.increaseMaterial = increaseMaterial;
+// @ts-ignore
+window.increaseMax = increaseMax;
 
 
 function updateResourceIncreaseRates() {

@@ -48,38 +48,43 @@ function generateBuildingTooltipCost(cost) {
 
 
 function createBuildingButton(buildingKey, buildings) {
-    const building = buildings[buildingKey];
+    try {
+        const building = buildings[buildingKey];
 
-    // building.cost = building.basecost;
-    building.cost = JSON.parse(JSON.stringify(building.basecost));
+        // building.cost = building.basecost;
+        building.cost = building.basecost;
 
-    const costs = Object.entries(building.cost)
-        .map(([material, amount]) => `${material}: ${amount}`)
-        .join(', ');
+        const costs = Object.entries(building.cost)
+            .map(([material, amount]) => `${material}: ${amount}`)
+            .join(', ');
 
-    // const halfCostRequirement = Object.entries(building.cost)
-    //     .map(([material, amount]) => `getMaterial('${material},resources') >= ${Math.floor(amount / 2)}`)
-    //     .join(' && ');
+        // const halfCostRequirement = Object.entries(building.cost)
+        //     .map(([material, amount]) => `getMaterial('${material},resources') >= ${Math.floor(amount / 2)}`)
+        //     .join(' && ');
 
-    // let requirementString = `return ${halfCostRequirement}`;
+        // let requirementString = `return ${halfCostRequirement}`;
 
-    // Check if the building has an effect on clones max
-    // if (building.effects && building.effects['clones']) {
-    //     requirementString += ` && passedStage('clones')`;
-    // }
-    const requirementFunction = createRequirementFunction(building.cost, buildingKey);
-    console.log('create building button:', building, JSON.parse(JSON.stringify(building.emoji)));
-    const button = {
-        'class': 'tooltip ' + buildingKey,
-        'tab': 'production',
-        'text': `${JSON.parse(JSON.stringify(building.emoji))} ${capitalizeFirst(buildingKey)}`,
-        'tooltipDesc': buildings[buildingKey].tooltipDesc || "A mysterious building with untold benefits.",
-        'tooltipCost': costs,
-        'requirement': () => requirementFunction(),
-        'data_building': buildingKey,
-    };
+        // Check if the building has an effect on clones max
+        // if (building.effects && building.effects['clones']) {
+        //     requirementString += ` && passedStage('clones')`;
+        // }
+        const requirementFunction = createRequirementFunction(building.cost, buildingKey);
+        console.log('create building button:', building, JSON.parse(JSON.stringify(building.emoji)));
+        const button = {
+            'class': 'tooltip ' + buildingKey,
+            'tab': 'production',
+            'text': `${JSON.parse(JSON.stringify(building.emoji))} ${capitalizeFirst(buildingKey)}`,
+            'tooltipDesc': buildings[buildingKey].tooltipDesc || "A mysterious building with untold benefits.",
+            'tooltipCost': costs,
+            'requirement': () => requirementFunction(),
+            'data_building': buildingKey,
+        };
 
-    return button;
+        return button;
+    } catch (error) {
+        console.error('Could not create building button for', buildingKey, buildings);
+
+    }
 }
 
 function createRequirementFunction(costs, buildingKey) {

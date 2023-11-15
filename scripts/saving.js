@@ -53,7 +53,8 @@ function saveGame() {
         connections: new Map(),
         perks: [],
         factories: {},
-        prestige: {}
+        prestige: {},
+        newBuildings: {}
     };
 
     // Extract exp and level from skills and save to save.skills
@@ -99,6 +100,10 @@ function saveGame() {
 
     for (let b in buildings) {
         save.buildings[b] = buildings[b].count;
+        if (buildings[b].hasOwnProperty('name')) {
+            // save new building data 
+            save.newBuildings[b] = buildings[b];
+        }
     }
 
     // console.log(allVisibleButtons.values());
@@ -244,6 +249,11 @@ function loadGame() {
         }
     }
 
+    if (typeof savegame.newBuildings !== 'undefined') {
+        for (let b in savegame.newBuildings) {
+            buildings[b] = savegame.newBuildings[b];
+        }
+    }
 
     if (typeof savegame.buildings !== 'undefined') {
         for (let b in savegame.buildings) {
@@ -257,20 +267,15 @@ function loadGame() {
                     // Calculate the costs of all the buildings
                     recalculateBuildingCost(b, buildings, hasPerk);
                 }
-                // Update the max as influenced by this building
-                // TODO: Don't overwrite existing building boosts
-                // if (buildings[b].effects) {
-                //     for (let mat in buildings[b].effects) {
-                //         setMax(mat, buildings[b].count * buildings[b].effects[mat]);
-                //     }
-                // }
+
             }
             catch (error) {
-                console.warn('error with building', b);
+                console.warn('error with building', b, error);
             }
         }
         updateSidebar();
     }
+
 
     // After ponders and buildings we can recalculate max clones
     recalcMaxClones();

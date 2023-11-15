@@ -31,6 +31,7 @@ const { canCraft } = require('./canCraft');
 const { calculateWinChance, combat, switchStance } = require('./combat');
 const { showTab, getCurrentTab } = require('./showTab');
 const { getSfxVolume, getMusicVolume, setMusicVolume, setSfxVolume } = require('./audio');
+const { generateRandomBuilding } = require('./generateRandomBuilding');
 
 
 
@@ -746,12 +747,12 @@ let currentlyDeleting = false;
 document.addEventListener('DOMContentLoaded', (event) => {
     generatePonderButtons(ponders);
     // appendCraftedResourceButtons();
-    generateButtons(); // Call this once on page load or game initialization
     makeFactoryButtons();
 
     initializeResourceTags();
 
     loadGame();
+    generateButtons(); // Call this once on page load or game initialization
 
     clearSidebar();
     initializeResourceTags(isPondered('organization')); // check if we need groups
@@ -763,6 +764,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
     showTab('productionTab');
     require('./trade').generateTradeTable(resources);
 
+
+    // for (let i = 0; i < 30; ++i)
+    //     console.log(generateRandomBuilding());
 
     function getRKeyFromID(id) {
         for (const [r, val] of Object.entries(resources)) {
@@ -892,7 +896,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
                 // @ts-ignore
                 else if (button.id === 'deleteSaveButton' && confirm("Are you sure you want to delete your save data? This will reset all your progress.")) {
-                    localStorage.removeItem('save'); currentlyDeleting = true; location.reload();
+                    deleteGame();
                 }
                 // @ts-ignore
                 else if (button.id === 'clearJobAssignments') clearJobAssignments();
@@ -1077,6 +1081,12 @@ function isekai() {
         overlay.style.display = 'none';
 
         // location.reload();
+        const newBuildingsCount = 5;
+        for (let i = 0; i < newBuildingsCount; i++) {
+            const randomBuilding = generateRandomBuilding();
+            buildings[randomBuilding.name.split(' ').join('_')] = randomBuilding;
+        }
+
         initializeResourceTags(false);
     });
 
@@ -1091,7 +1101,7 @@ function isekai() {
     if (oldHuskValue) huskValue = oldHuskValue;
     else huskValue = document.createElement('p');
     huskValue.id = 'husksIsekaiValue';
-    huskValue.innerHTML = `Husks:  ${getMaterial('husks')} <br> You will get ${getMaterial('clones')} Husks post-isekai.`;
+    huskValue.innerHTML = `Husks:  ${getMaterial('husks')} <br> You will get ${getMaterial('clones')} Husks post-isekai.<br>You will receive 5 randomly generated new buildings, unique to this new world.`;
     huskValue.style.opacity = '0';
     overlay.prepend(huskValue);
     // Overlay
@@ -1184,6 +1194,14 @@ module.exports = {
 
     getMessage,
     total_time,
-    currentHoverButton
+    currentHoverButton,
+    deleteGame,
+    isekai
 
 };
+function deleteGame() {
+    localStorage.removeItem('save'); currentlyDeleting = true; location.reload();
+}
+
+window.deleteGame = deleteGame;
+window.isekai = isekai;
