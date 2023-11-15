@@ -820,15 +820,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
         return 'error ' + id;
     }
 
-    document.addEventListener('scroll', () => {
-        // Start the music playback
-        if (currentAudio === null) playRandomTrack();
-    });
-    document.addEventListener('mousemove', () => {
-        if (currentAudio === null) playRandomTrack();
-    });
-    document.addEventListener("click", (event) => {
 
+    document.addEventListener("click", (event) => {
+        // Start the music playback
+        // We need to wait for a click https://developer.chrome.com/blog/autoplay/
+        if (currentAudio === null) playRandomTrack();
         // @ts-ignore
         if (event.target.matches("button")) {
 
