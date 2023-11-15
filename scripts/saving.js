@@ -163,7 +163,7 @@ function loadGame() {
     }
     if (typeof savegame.resources !== "undefined") {
         for (let i in savegame.resources) {
-            if (i.valueOf() === "undefined" || i === null) continue;
+            if (i.valueOf() === "undefined" || i === null || resources[i] === null) continue;
             resources[i].value = savegame.resources[i].value;
             resources[i].max = savegame.resources[i].max;
             console.log("Updating resources for " + i + " to " + savegame.resources[i].value, savegame.resources[i].max);
