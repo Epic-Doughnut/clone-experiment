@@ -68,7 +68,7 @@ function getFactoryProduction(resource) {
 
 // Function to update resource production and consumption
 // @ts-ignore
-function updateFactoryResourceTracking(oldProduced, newProduced, factoryIndex) {
+function updateFactoryResourceTracking(oldProduced, newProduced) {
     // If this factory was previously producing something, reduce the count
     if (oldProduced && oldProduced !== 'none') {
         activeFactoriesProducing[oldProduced]--;
@@ -78,30 +78,33 @@ function updateFactoryResourceTracking(oldProduced, newProduced, factoryIndex) {
     }
 
     // Update the production count for the new resource
-    activeFactoriesProducing[newProduced]++;
-    Array.from(craftedResources[newProduced].cost).forEach((cost) => {
-        activeFactoriesConsuming[cost.resource] += cost.amount;
-    });
+    if (activeFactoriesProducing[newProduced]) activeFactoriesProducing[newProduced]++;
+    else activeFactoriesProducing[newProduced] = 1;
+    if (craftedResources[newProduced]) {
+        Array.from(craftedResources[newProduced].cost).forEach((cost) => {
+            activeFactoriesConsuming[cost.resource] += cost.amount;
+        });
+    }
 }
 
 // Call this whenever a factory's settings change
 // @ts-ignore
 function onFactoryModified(factoryIndex, newProduced) {
     const rightSelect = document.querySelector(`#factory-${factoryIndex} .rightSelect`);
-    updateFactoryResourceTracking(rightSelect.getAttribute('data-produced'), newProduced, factoryIndex);
+    updateFactoryResourceTracking(rightSelect.getAttribute('data-produced'), newProduced);
     rightSelect.setAttribute('data-produced', newProduced);
 }
+// Object.keys(craftedResources).forEach((resource) => {
+//     activeFactoriesProducing[resource] = 0;
+//     Array.from(craftedResources[resource].cost).forEach((cost) => {
+//         if (!activeFactoriesConsuming[cost.resource]) {
+//             activeFactoriesConsuming[cost.resource] = 0;
+//         }
+//     });
+// });
 function createFactoryDiv() {
 
     // Initialize resource tracking objects
-    Object.keys(craftedResources).forEach((resource) => {
-        activeFactoriesProducing[resource] = 0;
-        Array.from(craftedResources[resource].cost).forEach((cost) => {
-            if (!activeFactoriesConsuming[cost.resource]) {
-                activeFactoriesConsuming[cost.resource] = 0;
-            }
-        });
-    });
 
 
     const factoriesContainer = document.getElementById('factories');
@@ -135,7 +138,7 @@ function createFactoryDiv() {
         const newProduced = rightSelect.value;
 
         // Update resource tracking
-        updateFactoryResourceTracking(currentProduced, newProduced, this.dataset.factoryIndex);
+        updateFactoryResourceTracking(currentProduced, newProduced);
 
         // Now update the dataset for the next change event
         this.setAttribute('data-produced', newProduced);
@@ -186,7 +189,7 @@ function loadFactory(crafting) {
 
     newFactorySilverCost *= 1.2;
     buyFactoryButton.setAttribute('tooltipCost', `${newFactorySilverCost.toFixed(0)} silver`);
-
+    updateFactoryResourceTracking('none', crafting);
 }
 
 
