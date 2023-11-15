@@ -303,7 +303,23 @@ const visibilityRules = [
         action: () => navigateTo('stage2.html')
     },
     {
-        condition: () => isPondered('biggerShelter') || isPondered('biggerHut') || isPondered('biggerHouse') || isPondered('biggerTeepee') || isPondered('evenBiggerShelter'),
+        condition: () => isPondered('biggerShelter'),
+        action: () => recalcMaxClones()
+    },
+    {
+        condition: () => isPondered('biggerHut'),
+        action: () => recalcMaxClones()
+    },
+    {
+        condition: () => isPondered('biggerHouse'),
+        action: () => recalcMaxClones()
+    },
+    {
+        condition: () => isPondered('biggerTeepee'),
+        action: () => recalcMaxClones()
+    },
+    {
+        condition: () => isPondered('evenBiggerShelter'),
         action: () => recalcMaxClones()
     },
     {
@@ -949,10 +965,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
                 }
 
-                // @ts-ignore
-                else if (button.id === '2main') showTab('mainTab');
-                // @ts-ignore
-                else if (button.id === '2graphs') showTab('graphsTab');
                 // @ts-ignore
                 else if (button.id === 'prestige') {
                     isekai();
