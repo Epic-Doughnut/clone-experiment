@@ -365,6 +365,10 @@ const audioFiles = [
     './audio/song4.wav',
     './audio/song5.wav',
     './audio/song6.wav',
+    './audio/song7.wav',
+    './audio/song8.wav',
+    './audio/song9.wav',
+    './audio/song10.wav',
 
 ];
 
