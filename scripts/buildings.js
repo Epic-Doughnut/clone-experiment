@@ -18,9 +18,9 @@ const { capitalizeFirst } = require('./capitalizeFirst');
 
 
 /**
- * 
- * @param {Object} building 
- * @returns 
+ * Create a string representation of the effect of a building
+ * @param {Object} building The building object
+ * @returns The string representation of the effect of the building
  */
 function generateEffectString(building) {
     let effectParts = [];
@@ -42,11 +42,21 @@ function generateEffectString(building) {
     return effectParts.join(', ');
 }
 
+/**
+ * Generate a string representation of the cost of the building
+ * @param {Object} cost The building cost configuration
+ * @returns A string representation of the cost of the building separated by new lines
+ */
 function generateBuildingTooltipCost(cost) {
     return Object.entries(cost).map(([material, amount]) => `${amount.toFixed(2)} ${material}`).join('\n');
 }
 
-
+/**
+ * Create a button for a building
+ * @param {string} buildingKey The name of the building
+ * @param {Object} buildings Main buildings object
+ * @returns The building button
+ */
 function createBuildingButton(buildingKey, buildings) {
     try {
         const building = buildings[buildingKey];
@@ -58,22 +68,12 @@ function createBuildingButton(buildingKey, buildings) {
             .map(([material, amount]) => `${material}: ${amount}`)
             .join(', ');
 
-        // const halfCostRequirement = Object.entries(building.cost)
-        //     .map(([material, amount]) => `getMaterial('${material},resources') >= ${Math.floor(amount / 2)}`)
-        //     .join(' && ');
-
-        // let requirementString = `return ${halfCostRequirement}`;
-
-        // Check if the building has an effect on clones max
-        // if (building.effects && building.effects['clones']) {
-        //     requirementString += ` && passedStage('clones')`;
-        // }
-        const requirementFunction = createRequirementFunction(building.cost, buildingKey);
+        const requirementFunction = createRequirementFunction(building.cost);
         console.log('create building button:', building, JSON.parse(JSON.stringify(building.emoji)));
         const button = {
             'class': 'tooltip ' + buildingKey,
             'tab': 'production',
-            'text': `${JSON.parse(JSON.stringify(building.emoji))} ${capitalizeFirst(buildingKey)}`,
+            'text': `${JSON.parse(JSON.stringify(building.emoji))} ${capitalizeFirst(buildingKey)} (${building.count})`,
             'tooltipDesc': buildings[buildingKey].tooltipDesc || "A mysterious building with untold benefits.",
             'tooltipCost': costs,
             'requirement': () => requirementFunction(),
@@ -87,7 +87,12 @@ function createBuildingButton(buildingKey, buildings) {
     }
 }
 
-function createRequirementFunction(costs, buildingKey) {
+/**
+ * Create a function that checks if a building should be visible
+ * @param {Object} costs The costs of the building
+ * @returns A function that checks if a building should be visible
+ */
+function createRequirementFunction(costs) {
     return function () {
         const costCondition = Object.entries(costs)
             .every(([material, amount]) => {
@@ -95,27 +100,17 @@ function createRequirementFunction(costs, buildingKey) {
                 // console.log(`Checking ${material}: Need ${Math.floor(amount / 2)}, Have ${getMaterial(material, resources)}, Result: ${hasEnoughResource}`);
                 return hasEnoughResource;
             });
-        // console.log(`PassedStage for ${buildingKey}: ${passedStage('clones')}`);
-        // console.log(`Cost condition for ${buildingKey}: ${costCondition}`);
 
         return passedStage('clones') && costCondition;
     };
 }
 
 
-
-
-
-
-
-
-// console.log(buttons);
-
-function getBuildingCost(buildingName) {
-    return buildings[buildingName].cost;
-}
-
-
+/**
+ * Buys a building if possible
+ * @param {string} buildingName The name of the building
+ * @returns 
+ */
 function buyBuilding(buildingName) {
     console.log("Buying building " + buildingName);
     const building = buildings[buildingName];
@@ -154,6 +149,12 @@ function buyBuilding(buildingName) {
     // addToBuildingList(buildingName, building.emoji);
     updateBuildingList();
 }
+
+/**
+ * Buys the maximum number of buildings that can be purchased
+ * @param {string} buildingName The name of the building
+ * @returns The number of buildings that were purchased
+ */
 function buyMaxBuildings(buildingName) {
     let i = 0;
     let building = buildings[buildingName];
@@ -165,20 +166,6 @@ function buyMaxBuildings(buildingName) {
     }
     return i;
 }
-
-// function doubleStorageEffectsIfPassed() {
-//     if (passedStage("doubleStorage1")) {
-//         for (let buildingKey in buildings) {
-//             let building = buildings[buildingKey];
-
-//             if (building.effects) {
-//                 for (let material in building.effects) {
-//                     building.effects[material].max *= 2;
-//                 }
-//             }
-//         }
-//     }
-// }
 
 
 module.exports = {
