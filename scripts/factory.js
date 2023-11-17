@@ -1,3 +1,4 @@
+const { getSfxVolume } = require('./audio');
 const { getMaterial } = require('./getMaterial');
 const { craftedResources } = require('./json/craftedResources');
 const { resources } = require('./json/resources');
@@ -225,6 +226,12 @@ function upgradeBulk() {
     manufactureBulk += 2;
     bulkUpgradeCost += 10;
 
+
+    const factoryAudio = new Audio('./audio/factorybulk.wav');
+    factoryAudio.volume = getSfxVolume();
+    factoryAudio.play();
+
+
     const upButton = document.getElementById('upgradeBulkButton');
     upButton.setAttribute('tooltipCost', `${manufactureBulk} → ${manufactureBulk + 2}: ${bulkUpgradeCost.toFixed(0)} silver`);
 }
@@ -246,18 +253,6 @@ function attemptManufacture() {
     });
 }
 
-// Call this function whenever you want to start the manufacturing process
-// for example, after creating the factory divs initially or after adding a new one
-// startManufacturingProcess();
-// function determineNewFactoryCost() {
-//     var cost = 50;
-//     for (const [key, val] of Object.entries(activeFactoriesProducing)) {
-//         if (val > 0)
-//             cost *= Math.pow(1.2, val);
-//     }
-//     return cost;
-// }
-// var newFactorySilverCost = determineNewFactoryCost();
 var newFactorySilverCost = 50;
 function buyFactory() {
     const buyFactoryButton = document.getElementById('buyFactoryButton');
@@ -268,6 +263,11 @@ function buyFactory() {
     // Has enough silver to afford factory
     require('./resources').increaseMaterial('silver', -newFactorySilverCost);
     createFactoryDiv();
+
+
+    const factoryAudio = new Audio('./audio/factorybuild.wav');
+    factoryAudio.volume = getSfxVolume();
+    factoryAudio.play();
 
     newFactorySilverCost *= 1.2;
     buyFactoryButton.setAttribute('tooltipCost', `${newFactorySilverCost.toFixed(2)} silver`);

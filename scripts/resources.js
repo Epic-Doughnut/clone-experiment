@@ -326,19 +326,18 @@ function craftResourceQuantity(resourceKey, quantity) {
 
     if (!canCraft(resourceKey)) return; // Takes care of quantity < 1
     let cost = craftedResources[resourceKey].cost;
-    // let craftBonus = calcCraftBonus(resourceKey);
-    // for (let i = 0; i < quantity; ++i) {
-    //     craftOne(resourceKey, cost, craftBonus);
-    // }
-    for (let i = 0; i < Math.floor(quantity); ++i) { // Only craft whole number, so 1.4 only runs once
-        console.log('crafting', quantity, resourceKey, cost);
-        craftOne(resourceKey, cost, calcCraftBonus(resourceKey));
-    }
-    // for (let mat in cost) {
-    //     increaseMaterial(mat, -cost[mat] * quantity);
-    // }
-    // increaseMaterial(resourceKey, quantity);
+    quantity = Math.floor(quantity); // Make sure the quantity is a whole number
 
+    for (const [mat, val] of Object.entries(cost)) {
+        increaseMaterial(mat, -val * quantity);
+    }
+    increaseMaterial(resourceKey, calcCraftBonus(resourceKey) * quantity);
+    // for (let i = 0; i < Math.floor(quantity); ++i) { // Only craft whole number, so 1.4 only runs once
+    //     console.log('crafting', quantity, resourceKey, cost);
+    //     craftOne(resourceKey, cost, calcCraftBonus(resourceKey));
+    // }
+
+    // document.querySelector("#" + resourceKey + "Value").textContent = craftedResources[resourceKey].value.toFixed(2);
     if (!craftedResources[resourceKey].craftedOnce) craftedResources[resourceKey].craftedOnce = true;
 
     updateDisplayValue(resourceKey);

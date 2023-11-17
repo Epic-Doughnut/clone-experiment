@@ -26,10 +26,7 @@ function generateEffectString(building) {
     let effectParts = [];
 
     for (let [resource, value] of Object.entries(building.effects)) {
-        // for (let [key, value] of Object.entries(effect)) {
         effectParts.push(`+${value} max ${resource}`);
-        // Add more conditions here if you introduce new types of effects
-        // }
     }
 
     for (let [resource, boost] of Object.entries(building.boost)) {
@@ -61,7 +58,6 @@ function createBuildingButton(buildingKey, buildings) {
     try {
         const building = buildings[buildingKey];
 
-        // building.cost = building.basecost;
         building.cost = building.basecost;
 
         const costs = Object.entries(building.cost)
@@ -118,18 +114,17 @@ function buyBuilding(buildingName) {
 
 
     if (!canBuyBuilding(buildingName)) return;
+
     // Actually build the building
     building.count++;
 
     // Subtract the cost
     for (const resource in building.cost) {
-        // console.log("Reducing ", resource, "by", building.cost[resource]);
-        // console.log(increaseMaterial);
         increaseMaterial(resource, -building.cost[resource]);
     }
     // Add the effects
     for (const [resource, amount] of Object.entries(building.effects)) {
-        console.log('bought building effects', resource, amount);
+        // console.log('bought building effects', resource, amount);
         increaseMax(resource, amount);
         // Update max clones after updating the count
         if (resource === 'clones') {

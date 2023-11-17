@@ -128,9 +128,10 @@ function saveGame() {
     }
 
     const htmlString = require('./main').getMessage().innerHTML;
-
-    save.message = extractTextFromHTML(htmlString); // [message, span]
-
+    const messageTooltip = require('./main').getMessageTooltip();
+    const messageArray = extractTextFromHTML(htmlString); // [message, span]
+    messageArray.push(messageTooltip);
+    save.message = messageArray;
 
     for (const [key, val] of Object.entries(prestige)) {
         save.prestige[key] = { cost: val.cost, level: val.level };
@@ -292,8 +293,8 @@ function loadGame() {
     }
     // Change the message to the latest one
     if (typeof savegame.message !== 'undefined') {
-        // [full message, span]
-        require('./main').changeMessage(savegame.message[0], savegame.message[1]);
+        // [full message, span, tooltip]
+        require('./changeMessage').changeMessage(savegame.message[0], savegame.message[1], savegame.message[2] ? savegame.message[2] : null);
 
     }
 
@@ -350,3 +351,5 @@ module.exports = {
     saveGame,
     loadGame
 };
+
+window.saveGame = saveGame;
