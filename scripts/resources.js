@@ -244,11 +244,11 @@ function updateEmojiDisplay() {
         let emoji = resources[resource].emoji || '𓀟';  // get the emoji corresponding to the job from the resources map
         // console.log(job, emoji);
         if (emoji) {
-            emojiStr += emoji.repeat(count);  // repeat the emoji based on the count
+            emojiStr += `<span class='tooltip' tooltipdesc='${resource}'>${emoji.repeat(count)}</span>`;  // repeat the emoji based on the count
         }
     }
 
-    emojiDisplay.textContent = emojiStr;  // update the emojiDisplay div with the generated emoji string
+    emojiDisplay.innerHTML = emojiStr;  // update the emojiDisplay div with the generated emoji string
 
     function adjustFontSize() {
         let fontSize = 48;  // Starting font size

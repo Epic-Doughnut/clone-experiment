@@ -29,7 +29,7 @@ const { updateTooltip, hideTooltip } = require('./updateTooltip');
 const { canCraft } = require('./canCraft');
 const { calculateWinChance, combat, switchStance } = require('./combat');
 const { showTab, getCurrentTab } = require('./showTab');
-const { getSfxVolume, getMusicVolume, setMusicVolume, setSfxVolume } = require('./audio');
+const { getSfxVolume, getMusicVolume, setMusicVolume, setSfxVolume, playSound } = require('./audio');
 const { generateRandomBuilding } = require('./generateRandomBuilding');
 const { changeMessage, messageElement } = require('./changeMessage');
 const { generateButtons } = require('./generateButtons');
@@ -389,7 +389,7 @@ let milliseconds_per_frame = 50;
 let last_time = null;
 let total_time = 0;
 let accumulated_lag = 0;
-
+const fidelity = 10;
 
 function loop(current_time) {
     if (last_time === null) last_time = current_time;
@@ -403,12 +403,10 @@ function loop(current_time) {
 
     // Catch up all the missed ticks
     let normalRate = milliseconds_per_frame;
+
     // simulate with less fidelity to make up time
-    // while (accumulated_lag >= 100 * milliseconds_per_frame) {
-    //     milliseconds_per_frame *= 100;
-    // }
-    if (accumulated_lag >= 10 * milliseconds_per_frame) {
-        milliseconds_per_frame = accumulated_lag / 10;
+    if (accumulated_lag >= fidelity * milliseconds_per_frame) {
+        milliseconds_per_frame = accumulated_lag / fidelity;
     }
     while (accumulated_lag >= milliseconds_per_frame) {
 
@@ -423,13 +421,11 @@ function loop(current_time) {
 
 let time_since_last_save = 0;
 let time_since_manufature = 0;
+const save_rate = 10000;
+const manufacture_rate = 1000;
 function update(delta_time, total_time) {
 
-    // @ts-ignore
-    // @ts-ignore
     for (const [key, val] of Object.entries(resources)) {
-        // console.log("updating " + key);
-
         increaseMaterial(key, calcIncrease(key, delta_time));
     }
 
@@ -440,13 +436,13 @@ function update(delta_time, total_time) {
     time_since_last_save += delta_time;
     time_since_manufature += delta_time;
     total_time += delta_time;
-    if (time_since_last_save >= 10000) {
+    if (time_since_last_save >= save_rate) {
         saveGame();
         time_since_last_save = 0;
     }
 
     // Manufacture every second
-    if (passedStage('factoryTab') && time_since_manufature >= 1000) {
+    if (passedStage('factoryTab') && time_since_manufature >= manufacture_rate) {
         attemptManufacture();
         time_since_manufature = 0;
     }
@@ -528,9 +524,7 @@ function updateUI(resourceName) {
 
 
 function toggleOptions() {
-    const optionAudio = new Audio('./audio/options.wav');
-    optionAudio.volume = getSfxVolume();
-    optionAudio.play();
+    playSound('./audio/options.wav', true);
 
     const optionsMenu = document.getElementById('optionsMenu');
     optionsMenu.style.display = optionsMenu.style.display === 'none' ? 'block' : 'none';
@@ -540,8 +534,6 @@ function toggleOptions() {
 let currentlyDeleting = false;
 
 // After all has been loaded
-// @ts-ignore
-// @ts-ignore
 document.addEventListener('DOMContentLoaded', (event) => {
     generatePonderButtons(ponders);
     // appendCraftedResourceButtons();
@@ -566,6 +558,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // for (let i = 0; i < 30; ++i)
     //     console.log(generateRandomBuilding());
 
+    /**
+     * Get a resource key from an ID.
+     * @param {string} id The id of a resource e.g. gatherGame
+     * @returns Resource key e.g. game
+     */
     function getRKeyFromID(id) {
         for (const [r, val] of Object.entries(resources)) {
             // console.log(resources[r].id, id);
@@ -573,6 +570,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
         return 'error ' + id;
     }
+    /**
+     * Get a crafted resource key from an ID.
+     * @param {string} id The id of a resource e.g. craftHandle
+     * @returns Resource key e.g. handle
+     */
     function getCRKeyFromID(id) {
         for (const [r, val] of Object.entries(craftedResources)) {
             console.log(r, val, id);
@@ -581,7 +583,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         return 'error ' + id;
     }
 
-
+    // General document click handler
     document.addEventListener("click", (event) => {
         // Start the music playback
         // We need to wait for a click https://developer.chrome.com/blog/autoplay/
@@ -607,9 +609,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 const x = event.pageX;
                 const y = event.pageY;
 
-                let buildingAudio = new Audio('./audio/building.wav');
-                buildingAudio.volume = getSfxVolume();
-                buildingAudio.play();
+                playSound('./audio/building.wav', true);
 
                 const buildingString = capitalizeFirst(building).split('_').join(' ');
                 if (event.shiftKey) {
@@ -649,9 +649,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                         // @ts-ignore
                         button.display = 'none';
 
-                        let ponderAudio = new Audio('./audio/ponder.wav');
-                        ponderAudio.volume = getSfxVolume();
-                        ponderAudio.play();
+                        playSound('./audio/ponder.wav', true);
 
 
                         // console.log("Unlocking " + unlockAttr);
@@ -670,13 +668,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
                 // @ts-ignore
                 else if (button.id.slice(0, 5) === 'craft') {
-                    let craftAudio = new Audio('./audio/craft.wav');
-                    craftAudio.volume = getSfxVolume();
-                    craftAudio.play();
+                    playSound('./audio/craft.wav', true);
 
                     // @ts-ignore
                     let cr = getCRKeyFromID(button.id);
-                    console.log('clicked cr: ', cr);
+
+
                     if (canCraft(cr)) triggerFloatUpText(event.pageX, event.pageY, `+${cr}`, 'aqua');
                     if (event.shiftKey) craftAllResources(cr);
                     else craftResource(cr);
@@ -750,6 +747,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
     });
 
+    /**
+     * Make factory buttons of buy new factory and buy bulk upgrade.
+     */
     function makeFactoryButtons() {
         const factoryButtons = document.querySelector('#factoryButtons');
 
@@ -761,6 +761,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         buyFactoryButton.setAttribute('tooltipCost', '50 silver');
         factoryButtons.appendChild(buyFactoryButton);
 
+        // Buy new factory button
         buyFactoryButton.addEventListener("click", () => {
 
             console.log('buying factory');
@@ -775,6 +776,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         upgradeBulkButton.setAttribute('tooltipCost', '2 → 4: 30 silver');
         factoryButtons.appendChild(upgradeBulkButton);
 
+        // Upgrade bulk button
         upgradeBulkButton.addEventListener("click", () => {
             console.log('upgrading bulk');
             upgradeBulk();
@@ -788,12 +790,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
     document.getElementById('optionsButton').addEventListener('click', toggleOptions);
 
 
+    // Adjust music volume
     document.getElementById('musicVolume').addEventListener('input', function () {
         // @ts-ignore
         setMusicVolume(this.value);
         currentAudio.volume = getMusicVolume();
     });
 
+    // Adjust sfx volume
     document.getElementById('sfxVolume').addEventListener('input', function () {
         // @ts-ignore
         setSfxVolume(this.value);
@@ -801,17 +805,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 
 
-
+    // Start the main gameplay loop
     requestAnimationFrame(loop);
 
-    // Sample usage:
+    // Update the tooltip when hovering over a button
     document.querySelectorAll('.tooltip').forEach(button => {
-        // console.log(button);
-        // Extract the data from your building or any other data - source
-        // const content = "Your tooltip content here";
 
-        // @ts-ignore
-        // @ts-ignore
+        // Update the tooltip on mouse enter
         button.addEventListener('mouseenter', function (e) {
             updateTooltip(button);
             currentHoverButton = button;
@@ -819,28 +819,37 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 
         // TODO: move this event listener
+        // Update on onclick for purchases
         button.addEventListener('onclick', function () {
             updateTooltip(button);
         });
 
+        // Hide on mouse leave
         button.addEventListener('mouseleave', function () { hideTooltip(); currentHoverButton = null; });
     });
 
     // Update the jobs counter
     updateTotal();
+    // Update the bounce animation for alone
     updateBounceAnimation();
-
-
-
 });
 
 
-
+/**
+ * Get the next fibonacci number
+ * @param {number} n A fibonacci number
+ * @returns The fibonacci number after n
+ */
 function nextFibonacci(n) {
     let a = n * (1 + Math.sqrt(5)) / 2.0;
     return Math.round(a);
 }
 
+/**
+ * Get the previous fibonacci number
+ * @param {number} n A fibonacci number
+ * @returns The fibonacci number before n
+ */
 function prevFibonacci(n) {
     let a = n / ((1 + Math.sqrt(5)) / 2.0);
     return Math.round(a);
@@ -850,8 +859,14 @@ const overlay = document.getElementById('overlay');
 const overlayText = document.getElementById('overlay-text');
 const overlayButton = document.getElementById('overlay-button');
 const overlayBackButton = document.getElementById('overlay-back-button'); // Get the "Go Back" button
+/**
+ * The isekai function, called upon clicking the "Isekai" button
+ * 
+ * Also handles resetting all resources, crafted resources, ponders, perks, buildings, and overall progress.
+ */
 function isekai() {
 
+    // Handle the isekai itself
     overlayButton.addEventListener('click', () => {
         const husksDue = getMaterial('clones');
 
@@ -865,13 +880,9 @@ function isekai() {
         resetStages();
 
 
-        const isekaiConfirmAudio = new Audio('./audio/isekaiconfirm.wav');
-        isekaiConfirmAudio.volume = getSfxVolume();
-        isekaiConfirmAudio.play();
+        playSound('./audio/isekaiconfirm.wav', true);
 
-        // Set max of all resources to 100
-        // @ts-ignore
-        // @ts-ignore
+        // Set max of all resources to 100 (tiny boost)
         for (let [r, val] of Object.entries(resources)) {
             val.max = 100;
         }
@@ -883,7 +894,6 @@ function isekai() {
         // Close the overlay
         overlay.style.display = 'none';
 
-        // location.reload();
         let lastBuilding = null;
         const newBuildingsCount = 5;
         for (let i = 0; i < newBuildingsCount; i++) {
@@ -970,19 +980,10 @@ function isekai() {
             });
             buttonContainer.appendChild(button);
 
-
-            // console.log(button);
-            // Extract the data from your building or any other data - source
-            // const content = "Your tooltip content here";
-
-            // @ts-ignore
-            // @ts-ignore
             button.addEventListener('mouseenter', function (e) {
                 updateTooltip(button);
                 currentHoverButton = button;
             });
-
-
 
             button.addEventListener('mouseleave', function () { hideTooltip(); currentHoverButton = null; });
 

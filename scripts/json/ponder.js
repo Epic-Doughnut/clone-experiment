@@ -1,13 +1,15 @@
-let ponders = {
-    'ponder1': {
-        id: 'ponderPonder1',
-        isPondered: false,
-        cost: { 'ponder': 10 },
-        text: "Think Harder",
-        tooltipDesc: "5% boost to pondering",
-        requirement: () => true,
+const { capitalizeFirst } = require("../capitalizeFirst");
 
-    },
+let ponders = {
+    // 'ponder1': {
+    //     id: 'ponderPonder1',
+    //     isPondered: false,
+    //     cost: { 'ponder': 10 },
+    //     text: "Think Harder",
+    //     tooltipDesc: "5% boost to pondering",
+    //     requirement: () => true,
+
+    // },
     'jobs-tab': {
         id: 'ponderJobs-tab',
         isPondered: false,
@@ -59,14 +61,30 @@ let ponders = {
         tooltipDesc: "Let your clones start thinking for themselves."
 
     },
-    'fasterResourceGain': {
-        id: 'ponderFasterResourceGain',
-        isPondered: false,
-        cost: { 'ponder': 120 },
-        requirement: () => true,
-        text: "Productivity I",
-        tooltipDesc: "Just work harder. 5% bonus to resource gain"
-    },
+    // 'fasterResourceGain': {
+    //     id: 'ponderFasterResourceGain',
+    //     isPondered: false,
+    //     cost: { 'ponder': 40 },
+    //     requirement: () => true,
+    //     text: "Productivity I",
+    //     tooltipDesc: "Just work harder. 5% bonus to resource gain"
+    // },
+    // 'fasterResourceGain2': {
+    //     id: 'ponderFasterResourceGain2',
+    //     isPondered: false,
+    //     cost: { 'ponder': 120 },
+    //     requirement: () => true,
+    //     text: "Productivity II",
+    //     tooltipDesc: "Just work harder. 5% bonus to resource gain"
+    // },
+    // 'fasterResourceGain3': {
+    //     id: 'ponderFasterResourceGain3',
+    //     isPondered: false,
+    //     cost: { 'ponder': 300 },
+    //     requirement: () => true,
+    //     text: "Productivity III",
+    //     tooltipDesc: "Just work harder. 5% bonus to resource gain"
+    // },
     'metalWorking': {
         id: 'ponderMetalWorking',
         isPondered: false,
@@ -165,22 +183,22 @@ let ponders = {
         tooltipDesc: "Ascend to the next level of economy",
         cost: { 'ponder': 500, 'gold': 10, 'wood': 1000, 'wheat': 1000, 'rocks': 1000 }
     },
-    'ponder2': {
-        id: 'ponderPonder2',
-        requirement: () => true,
-        isPondered: false,
-        text: "Think even harder",
-        tooltipDesc: "5% boost to pondering",
-        cost: { 'ponder': 300 }
-    },
-    'ponder3': {
-        id: 'ponderPonder3',
-        requirement: () => true,
-        isPondered: false,
-        text: "Think hardest",
-        tooltipDesc: "5% boost to pondering",
-        cost: { 'ponder': 600 }
-    },
+    // 'ponder2': {
+    //     id: 'ponderPonder2',
+    //     requirement: () => true,
+    //     isPondered: false,
+    //     text: "Think even harder",
+    //     tooltipDesc: "5% boost to pondering",
+    //     cost: { 'ponder': 300 }
+    // },
+    // 'ponder3': {
+    //     id: 'ponderPonder3',
+    //     requirement: () => true,
+    //     isPondered: false,
+    //     text: "Think hardest",
+    //     tooltipDesc: "5% boost to pondering",
+    //     cost: { 'ponder': 600 }
+    // },
     'biggerShelter': {
         id: 'ponderBiggerShelter',
         requirement: () => true,
@@ -228,6 +246,61 @@ function resetPonders() {
         val.isPondered = false;
     }
 }
+function toRoman(num) {
+    const romanNumerals = [
+        { value: 1000, numeral: 'M' },
+        { value: 900, numeral: 'CM' },
+        { value: 500, numeral: 'D' },
+        { value: 400, numeral: 'CD' },
+        { value: 100, numeral: 'C' },
+        { value: 90, numeral: 'XC' },
+        { value: 50, numeral: 'L' },
+        { value: 40, numeral: 'XL' },
+        { value: 10, numeral: 'X' },
+        { value: 9, numeral: 'IX' },
+        { value: 5, numeral: 'V' },
+        { value: 4, numeral: 'IV' },
+        { value: 1, numeral: 'I' }
+    ];
+
+    let result = '';
+    for (const numeral of romanNumerals) {
+        while (num >= numeral.value) {
+            result += numeral.numeral;
+            num -= numeral.value;
+        }
+    }
+    return result;
+}
+function addPonders(count) {
+    for (let i = 1; i <= count; i++) {
+        const id = `fasterResourceGain${i}`;
+        ponders[id] = {
+            id: `ponder${capitalizeFirst(id)}`,
+            isPondered: false,
+            cost: { 'ponder': 40 * Math.pow(3, i - 1) },
+            requirement: () => true,
+            text: `Productivity ${toRoman(i)}`,
+            tooltipDesc: "Just work harder. 5% bonus to resource gain"
+        };
+    }
+}
+
+function addPondersToPonders(count) {
+    for (let i = 1; i <= count; i++) {
+        ponders[`ponder${i}`] = {
+            id: `ponderPonder${i}`,
+            isPondered: false,
+            cost: { 'ponder': 10 * Math.pow(5, i - 1) },
+            text: `Think Harder ${toRoman(i)}`,
+            tooltipDesc: `5% boost to pondering`,
+            requirement: () => true,
+        };
+    }
+}
+
+addPonders(100);
+addPondersToPonders(100);
 
 module.exports = {
     ponders: ponders,

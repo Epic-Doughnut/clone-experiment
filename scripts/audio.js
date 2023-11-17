@@ -17,9 +17,17 @@ function getSfxVolume() {
     return sfxVolume;
 }
 
+function playSound(filename, isSfx) {
+    const audio = new Audio(filename);
+    audio.volume = isSfx ? getSfxVolume() : getMusicVolume();
+    audio.play();
+
+}
+
 module.exports = {
     setMusicVolume,
     getMusicVolume,
     setSfxVolume,
-    getSfxVolume
+    getSfxVolume,
+    playSound
 };

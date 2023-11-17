@@ -9,6 +9,7 @@ const { getFactoryProduction } = require("./factory");
 const { hasPrestige, getLevelOfPrestige } = require("./json/prestige");
 const { getMaterial } = require("./getMaterial");
 const { hasTool } = require("./tools");
+const { ponders } = require("./json/ponder");
 
 // Clones work at 1/4 the speed by default
 var cloneMult = 0.25;
@@ -131,13 +132,28 @@ function calcIncrease(resourceName, delta_time) {
             total *= increase;
         }
     }
-    if (resourceName === 'ponder') {
-        if (isPondered('ponder1')) total *= 1.05;
-        if (isPondered('ponder2')) total *= 1.05;
-        if (isPondered('ponder3')) total *= 1.05;
+
+    // Apply ponder bonuses
+    function applyPonderBonuses(total) {
+        for (const [ponderId, ponder] of Object.entries(ponders)) {
+            if (isPondered(ponderId)) {
+
+                if (ponderId.startsWith('ponderFasterResourceGain')) {
+                    total *= 1.05; // Apply the bonus for this specific ponder
+                }
+
+                if (ponderId.startsWith('ponderPonder')) {
+                    if (resourceName === 'ponder') total *= 1.05;
+                }
+            }
+        }
+        return total;
     }
 
-    if (isPondered('fasterResourceGain')) total *= 1.05;
+    // Usage: Apply ponders to the 'total' value
+    total = applyPonderBonuses(total);
+    // if (isPondered('fasterResourceGain')) total *= 1.05;
+
     if (hasPrestige('cloneBoost')) total *= 1.05 * getLevelOfPrestige('cloneBoost');
 
     // Check tools
