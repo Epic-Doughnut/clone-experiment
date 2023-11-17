@@ -1,5 +1,6 @@
 const { buildings } = require('./json/buildings');
 const { updateTooltip, hideTooltip } = require('./updateTooltip');
+// @ts-ignore
 const { fitCharToCell } = require('./fitCharToCell');
 
 const buildingList = document.getElementById('buildingList');
@@ -64,12 +65,14 @@ function updateBuildingList() {
 
     // Event delegation for tooltips
     buildingList.addEventListener('mouseenter', (event) => {
+        // @ts-ignore
         if (event.target.classList.contains('tooltip')) {
             updateTooltip(event.target);
         }
     }, true);
 
     buildingList.addEventListener('mouseleave', (event) => {
+        // @ts-ignore
         if (event.target.classList.contains('tooltip')) {
             hideTooltip();
         }

@@ -525,7 +525,7 @@ function resetBuildings() {
         updateBuildingButtonCount(key, 0);
 
         // Update the cost of the building
-        recalculateBuildingCost(key, buildings, hasPerk);
+        recalculateBuildingCost(key);
 
     }
     // Update max clones after updating the count
@@ -538,6 +538,8 @@ function isPopBuilding(buildingName) {
         case 'hut':
         case 'house':
         case 'teepee':
+        case 'hospital':
+        case 'barracks':
             return true;
             break;
         default:

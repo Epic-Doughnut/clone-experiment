@@ -36,7 +36,7 @@ function generateEffectString(building) {
 
     }
 
-    return effectParts.join(', ');
+    return effectParts.join('<br>');
 }
 
 /**
@@ -58,7 +58,8 @@ function createBuildingButton(buildingKey, buildings) {
     try {
         const building = buildings[buildingKey];
 
-        building.cost = building.basecost;
+        // Deep copy basecost to create cost
+        building['cost'] = JSON.parse(JSON.stringify(building.basecost));
 
         const costs = Object.entries(building.cost)
             .map(([material, amount]) => `${material}: ${amount}`)
@@ -138,7 +139,7 @@ function buyBuilding(buildingName) {
     updateBuildingButtonCount(buildingName, building.count, JSON.parse(JSON.stringify(building.emoji)));
 
     // Update the cost of the building
-    recalculateBuildingCost(buildingName, buildings, hasPerk);
+    recalculateBuildingCost(buildingName);
 
 
     // addToBuildingList(buildingName, building.emoji);

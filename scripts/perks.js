@@ -26,7 +26,7 @@ function addPerk(perkName) {
         case 'Architect':
             const buildings = require('./json/buildings').buildings;
             for (let b of Object.keys(buildings)) {
-                require('./recalculateBuildingCost').recalculateBuildingCost(b, buildings, hasPerk);
+                require('./recalculateBuildingCost').recalculateBuildingCost(b);
 
             }
             break;

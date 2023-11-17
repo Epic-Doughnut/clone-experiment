@@ -64,7 +64,7 @@ function calcSecondsRemaining(resourceName, needed) {
 
     // How much per second
     const increase = calcIncrease(resourceName, 1000);
-    if (increase == 0) return Infinity;
+    if (increase == 0) return -1; // Won't display
 
     // Difference over time
     const timeRemaining = Math.ceil(needed - getMaterial(resourceName)) / increase;

@@ -266,7 +266,7 @@ function loadGame() {
                     updateBuildingButtonCount(b, buildings[b].count, buildings[b].emoji);
 
                     // Calculate the costs of all the buildings
-                    recalculateBuildingCost(b, buildings, hasPerk);
+                    recalculateBuildingCost(b);
                 }
 
             }
@@ -352,4 +352,5 @@ module.exports = {
     loadGame
 };
 
+// @ts-ignore
 window.saveGame = saveGame;
