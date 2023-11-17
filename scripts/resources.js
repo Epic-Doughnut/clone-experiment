@@ -1,9 +1,7 @@
 
-// DEPENDS ON: tools.js, jobs.js
 const { resources } = require("./json/resources");
 const { craftedResources } = require('./json/craftedResources');
-// @ts-ignore
-const { ponders } = require("./json/ponder");
+
 const { buttons } = require("./json/buttons");
 const { skills } = require('./json/skills');
 
@@ -15,10 +13,9 @@ const { capitalizeFirst } = require('./capitalizeFirst');
 const { getMaterial } = require('./getMaterial');
 
 const { isPondered } = require('./ponder');
-const { getCraftedResource } = require('./getCraftedResource');
 const { calcIncrease } = require("./calcIncrease");
 const { updateSidebar, abbreviateNumber } = require("./sidebar");
-const { passedStage, getAllStages } = require("./stages"); // Used for eval functions
+const { passedStage } = require("./stages"); // Used for eval functions
 const { updateDisplayValue } = require("./sidebar");
 const { updateSkills } = require("./skills");
 // console.log(capitalizeFirst);
@@ -63,17 +60,15 @@ function isResourceAffectedByJob(job, resource) {
 
 
 function calcSecondsRemaining(resourceName, needed) {
-    if (needed <= resources[resourceName]) return 0;
+    if (needed <= getMaterial(resourceName)) return 0;
 
     // How much per second
     const increase = calcIncrease(resourceName, 1000);
-    if (increase == 0) return -1;
-    // console.log('ping');
-    // Difference over time
-    const timeRemaining = Math.ceil(needed - resources[resourceName].value) / increase;
+    if (increase == 0) return Infinity;
 
-    // console.log('calc milli', resourceName, needed, timeRemaining);
-    // if (timeRemaining == Infinity || timeRemaining == -Infinity) return -1;
+    // Difference over time
+    const timeRemaining = Math.ceil(needed - getMaterial(resourceName)) / increase;
+
     return timeRemaining;
 }
 
@@ -120,11 +115,6 @@ function increaseMaterial(material, num) {
             resources[material].value += num;
         } else { // Already at max
             resources[material].value = getMax(material);
-            // @ts-ignore
-            if (isPondered('autocraft') && document.querySelector("#autoCraftCheckbox").checked && autoCraftTable[material]) {
-                craftAllResources(autoCraftTable[material]);
-            }
-
         }
         updateDisplayValue(material);
         // reassignJobsBasedOnResources();
@@ -145,15 +135,6 @@ function increaseMaterial(material, num) {
     }
 
     // crafted materials have no max, a la Kittens Game
-
-
-
-    // updateSidebar();
-
-
-
-    // resources[material].value += num;
-    // document.querySelector("#" + material + "Value").textContent = resources[material].value;
 
 }
 // Globally display for dev purposes

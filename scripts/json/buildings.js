@@ -369,8 +369,7 @@ const buildings = {
         },
         "effects": {},
         "boost": {
-            "herbs": 1.2,
-            'ore': 1.1
+            all: 1.05
         },
         "count": 0,
         "ratio": 1.25,

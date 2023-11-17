@@ -6,10 +6,20 @@ const { resources } = require("./json/resources");
 const possibleResources = Object.keys(resources).filter(key => key !== 'husks');
 const possibleCraftedResources = Object.keys(craftedResources);
 
+/**
+ * Calculate a random number between min and max
+ * @param {number} min Lower bound of the random number
+ * @param {number} max Upper bound of the random number
+ * @returns A random number between min and max
+ */
 function getRandomNumber(min, max) {
   return Math.random() * (max - min) + min;
 }
 
+/**
+ * Generate a random emoji in the egyptian heiroglyphic set (0x1311b-0x1313e & 0x131e3-0x1321F)
+ * @returns A random emoji in the egyptian heiroglyphic set
+ */
 function getRandomEmoji() {
   // Define the Unicode ranges for random emojis
   const ranges = [
@@ -91,7 +101,9 @@ const buildingNames = [
   'Bazaar',
 ];
 
-// Function to generate a random building name by combining an adjective and a building name
+/**
+ * Function to generate a random building name by combining an adjective and a building name
+ */
 function generateBuildingName() {
   const randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)];
   const randomBuildingName = buildingNames[Math.floor(Math.random() * buildingNames.length)];
@@ -142,7 +154,10 @@ const conjunctions = [
   'yet',
 ];
 
-// Function to generate a random building description
+/**
+ * Generate a random description of a building
+ * @returns A string containing a description of a building
+ */
 function generateBuildingDescription() {
   const randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)];
   const randomAdjective2 = adjectives[Math.floor(Math.random() * adjectives.length)];
@@ -182,6 +197,10 @@ function generateBuildingDescription() {
   return description;
 }
 
+/**
+ * Generate a random building
+ * @returns A building object containing a name, description, effects, boosts, and cost
+ */
 function generateRandomBuilding() {
   // Randomly select a name, description, and cost for the building
   const randomName = generateBuildingName();
@@ -210,7 +229,9 @@ function generateRandomBuilding() {
   const numEffects = getRandomNumber(0, 3);
   for (let i = 0; i < numEffects; i++) {
     const randomResource = possibleResources[Math.floor(Math.random() * possibleResources.length)];
-    const randomEffectValue = Math.floor(getRandomNumber(30, 200)); // Adjust the range as needed
+    let randomEffectValue = Math.floor(getRandomNumber(30, 200)); // Adjust the range as needed
+    if (randomResource === 'clones') randomEffectValue = Math.floor(getRandomNumber(1, 3));
+    else if (randomResource === 'husks') randomEffectValue = Math.floor(getRandomNumber(1, 10));
     randomEffects[randomResource] = randomEffectValue;
   }
 
@@ -232,8 +253,8 @@ function generateRandomBuilding() {
     effects: randomEffects,
     boost: randomBoosts,
     count: 0,
-    ratio: getRandomNumber(1.3, 1.6), // You can adjust this as needed
-    emoji: getRandomEmoji(), // You can use any emoji or icon
+    ratio: getRandomNumber(1.3, 1.6),
+    emoji: getRandomEmoji(),
   };
 
   return randomBuilding;
