@@ -289,6 +289,17 @@ const buildings = {
         tooltipDesc: "Fish are friends. And food.",
         emoji: '𓌤'
     },
+    'irrigation': {
+        basecost: {
+            freshwater: 20
+        },
+        effects: {},
+        boost: { wheat: 1.05 },
+        count: 0,
+        ratio: 1.2,
+        tooltipDesc: "Wetten your wheat with water.",
+        emoji: '𓈗'
+    },
     "vineyard": {
         "basecost": {
             "wood": 20,
@@ -414,7 +425,7 @@ const buildings = {
         emoji: '𓄛'
     },
     'traps': {
-        basecost: { nails: 10, sticks: 20, herbs: 20 },
+        basecost: { nails: 10, sticks: 20, herbs: 20, vines: 15 },
         effects: {},
         boost: { 'game': 1.1 },
         count: 0,
@@ -423,7 +434,7 @@ const buildings = {
         emoji: '𓄦'
     },
     'rock_role': {
-        basecost: { slabs: 20, freshwater: 30 },
+        basecost: { slabs: 20, freshwater: 30, vines: 15 },
         effects: {},
         boost: { 'rocks': 1.2 },
         count: 0,
@@ -469,7 +480,6 @@ const buildings = {
         "basecost": {
             "wood": 70,
             "paper": 25,
-            "glass": 5,
             "ponder": 25
         },
         "effects": { "ponder": 50 },

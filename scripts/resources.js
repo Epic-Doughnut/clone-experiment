@@ -98,7 +98,7 @@ function increaseMax(material, num) {
 // Generic increase
 function increaseMaterial(material, num) {
     // Ensure we actually need to do anything
-    if (num == 0) return;
+    if (num == 0 || Number.isNaN(num)) return;
     material = material.toLowerCase();
     // console.log('increase material', material, num);
     // if (Math.abs(num) > 5) console.log('changing', material, 'by', num);

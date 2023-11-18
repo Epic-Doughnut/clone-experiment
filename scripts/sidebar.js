@@ -138,33 +138,33 @@ function abbreviateNumber(num) {
  */
 function updateSidebar() {
     const allMaterials = require('./factory').allMaterials;
-    Array.from(allMaterials).forEach(r => { if (resources[r]) updateDisplayValue(r); });
+    Array.from(allMaterials).forEach(r => { updateDisplayValue(r); });
 
     // @ts-ignore
-    for (const [index, resourceName] of Object.entries(allMaterials)) {
-        if (resources[resourceName]) continue;
-        const parentElement = document.getElementById('resource-' + resourceName);
-        if (!parentElement) { console.warn('no parent element found for', resourceName); return; }
+    // for (const [index, resourceName] of Object.entries(allMaterials)) {
+    //     if (resources[resourceName]) continue;
+    //     const parentElement = document.getElementById('resource-' + resourceName);
+    //     if (!parentElement) { console.warn('no parent element found for', resourceName); return; }
 
-        if (shouldHide(resourceName)) {
-            parentElement.style.display = 'none';
-        } else {
-            parentElement.style.display = '';
-        }
-        const displayElem = document.getElementById(resourceName + 'Value');
-        if (displayElem) {
-            // console.log(abbreviateNumber(resourceData));
-            var color = '#fff';
-            const amount = getMaterial(resourceName);
-            const max = getMax(resourceName);
-            // 
-            if (amount === max) color = '#fcc';
-            // 
-            else if (amount / max > .6) color = '#eeb';
+    //     if (shouldHide(resourceName)) {
+    //         parentElement.style.display = 'none';
+    //     } else {
+    //         parentElement.style.display = '';
+    //     }
+    //     const displayElem = document.getElementById(resourceName + 'Value');
+    //     if (displayElem) {
+    //         // console.log(abbreviateNumber(resourceData));
+    //         var color = '#fff';
+    //         const amount = getMaterial(resourceName);
+    //         const max = getMax(resourceName);
+    //         // 
+    //         if (amount === max) color = '#fcc';
+    //         // 
+    //         else if (amount / max > .6) color = '#eeb';
 
-            displayElem.innerHTML = `<span style="color:${color}">${abbreviateNumber(amount)} / ${abbreviateNumber(max)} </span>`;
-        }
-    }
+    //         displayElem.innerHTML = `<span style="color:${color}">${abbreviateNumber(amount)} / ${abbreviateNumber(max)} </span>`;
+    //     }
+    // }
 
 }
 
@@ -276,7 +276,10 @@ function updateDisplayValue(material) {
             element.textContent = `${abbreviateNumber(getMaterial(material))} / ${abbreviateNumber(getMax(material))}`;
 
             if (elementIncrease) {
-                elementIncrease.textContent = calcIncrease(material, 1000).toFixed(1);
+                const inc = calcIncrease(material, 1000);
+                // console.log(inc, elementIncrease);
+                if (inc === 0 || Number.isNaN(inc)) elementIncrease.parentElement.innerHTML = '<span id="' + material + 'IncreaseRate"></span>';
+                else elementIncrease.parentElement.innerHTML = `(<span id="${material}IncreaseRate">${calcIncrease(material, 1000).toFixed(1)}</span>/s)`;
             }
             // console.log(material, shouldHide(material), getMaterial(material));
             if (shouldHide(material)) {

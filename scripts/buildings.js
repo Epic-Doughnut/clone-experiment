@@ -12,6 +12,7 @@ const { canBuyBuilding } = require('./canBuyBuilding');
 const { isPondered } = require('./ponder');
 const { updateBuildingList } = require('./updateBuildingList');
 const { capitalizeFirst } = require('./capitalizeFirst');
+const { ponders } = require('./json/ponder');
 
 /* BUILDINGS */
 
@@ -31,8 +32,21 @@ function generateEffectString(building) {
 
     for (let [resource, boost] of Object.entries(building.boost)) {
         let percentageBoost = Math.round((boost - 1) * 100);
-        if (isPondered('effectiveBuildings')) percentageBoost *= 1.01;
-        effectParts.push(`+${percentageBoost}% ${resource} production`);
+        // if (isPondered('effectiveBuildings')) percentageBoost *= 1.01;
+        // Apply ponder bonuses
+
+        for (const [ponderId, ponder] of Object.entries(ponders)) {
+            if (isPondered(ponderId)) {
+
+                if (ponderId.startsWith('effectiveBuildings')) {
+                    percentageBoost *= 1.03; // Apply the bonus for this specific ponder
+                }
+
+            }
+        }
+
+
+        effectParts.push(`+${percentageBoost.toFixed(2)}% ${resource} production`);
 
     }
 

@@ -8,10 +8,10 @@ const { getMaterial } = require('./getMaterial');
 const { isPondered } = require("./ponder");
 const { getMax } = require('./helper');
 const { triggerFloatUpText } = require('./triggerFloatUpText');
+const { playSound } = require('./audio');
 
 /* JOBS FUNCTIONALITY */
 
-const jobAudio = new Audio('./audio/job.wav');
 
 const jobCounts = {};
 for (let skill in skills) {
@@ -52,7 +52,7 @@ Object.keys(skills).forEach(skill => {
 document.querySelectorAll('.btn-increment').forEach(btn => {
     btn.addEventListener('click', function (event) {
         const jobType = this.closest('.job-button').getAttribute('data-job');
-        jobAudio.play();
+        playSound('./audio/job.wav');
         if (getMaterial('clones', resources) > getTotalJobs()) {
             const x = event.pageX; // X coordinate of the click
             const y = event.pageY; // Y coordinate of the click

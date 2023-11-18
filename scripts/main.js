@@ -13,7 +13,7 @@ const { makeVisible } = require('./makeVisible');
 const { updateButtonVisibility } = require('./updateButtonVisibility');
 const { getCraftedResource } = require('./getCraftedResource');
 const { getMaterial } = require('./getMaterial');
-const { buyFactory, attemptManufacture, upgradeBulk } = require('./factory');
+const { buyFactory, attemptManufacture, upgradeBulk, allMaterials } = require('./factory');
 const { isPondered, generatePonderButtons } = require("./ponder");
 const { hasTool, addTool } = require('./tools');
 const { getAteFish, setAteFish } = require('./ateFish');
@@ -34,6 +34,7 @@ const { generateRandomBuilding } = require('./generateRandomBuilding');
 const { changeMessage, messageElement } = require('./changeMessage');
 const { generateButtons } = require('./generateButtons');
 const { toggleResource } = require('./gathering');
+const { GameSimulator } = require('./GameSimulator');
 
 
 
@@ -123,7 +124,7 @@ const visibilityRules = [
         action: () => recalcMaxClones()
     },
     {
-        condition: () => getMaterial('clones') >= 40,
+        condition: () => getMaterial('clones') >= 30, // 30 is where rates start to slow down
         action: () => makeVisible('prestige')
     },
     {
@@ -425,7 +426,7 @@ const save_rate = 10000;
 const manufacture_rate = 1000;
 function update(delta_time, total_time) {
 
-    for (const [key, val] of Object.entries(resources)) {
+    for (const [i, key] of Object.entries(allMaterials)) {
         increaseMaterial(key, calcIncrease(key, delta_time));
     }
 
@@ -832,6 +833,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
     updateTotal();
     // Update the bounce animation for alone
     updateBounceAnimation();
+
+
+
+    const simulator = new GameSimulator();
+    simulator.runSimulation(10_000); // Run the simulation for 3 hours
+
 });
 
 
@@ -1009,7 +1016,8 @@ module.exports = {
     currentHoverButton,
     deleteGame,
     isekai,
-    getMessageTooltip
+    getMessageTooltip,
+    update
 };
 function deleteGame() {
     localStorage.removeItem('save'); currentlyDeleting = true; location.reload();

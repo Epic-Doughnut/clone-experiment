@@ -89,6 +89,9 @@ function applyToolBoost(total, resourceName) {
  */
 function calcIncrease(resourceName, delta_time) {
     var total = 0;
+
+    // if (resourceName === 'bread' && isPondered('eatBread')) return parseFloat((-1 * delta_time / 1000).toFixed(3));
+
     const buildings = require("./json/buildings").buildings;
     // clones increase by 1 per second as long as there's space
     // if (resource === 'clones' && passedStage('clone')) {
@@ -128,7 +131,15 @@ function calcIncrease(resourceName, delta_time) {
         if (boostData) {
 
             var increase = Math.pow(boostData, buildings[building].count);
-            if (isPondered('effectiveBuildings')) increase *= 1.03;
+            for (const [ponderId, ponder] of Object.entries(ponders)) {
+                if (isPondered(ponderId)) {
+
+                    if (ponderId.startsWith('effectiveBuildings')) {
+                        increase *= 1.03; // Apply the bonus for this specific ponder
+                    }
+
+                }
+            }
             total *= increase;
         }
     }
@@ -138,17 +149,20 @@ function calcIncrease(resourceName, delta_time) {
         for (const [ponderId, ponder] of Object.entries(ponders)) {
             if (isPondered(ponderId)) {
 
-                if (ponderId.startsWith('ponderFasterResourceGain')) {
+                if (ponderId.startsWith('fasterResourceGain')) {
+                    // console.log('Faster Resource', ponderId);
                     total *= 1.05; // Apply the bonus for this specific ponder
                 }
 
-                if (ponderId.startsWith('ponderPonder')) {
+                if (ponderId.startsWith('fasterPonder')) {
                     if (resourceName === 'ponder') total *= 1.05;
                 }
             }
         }
         return total;
     }
+
+    if (isPondered('eatBread') && getMaterial('bread') > 0) total *= 1.1;
 
     // Usage: Apply ponders to the 'total' value
     total = applyPonderBonuses(total);

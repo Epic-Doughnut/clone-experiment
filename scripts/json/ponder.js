@@ -127,14 +127,14 @@ let ponders = {
         cost: { 'ponder': 140, 'clones': 20 },
     },
 
-    'effectiveBuildings': {
-        id: 'ponderEffectiveBuildings',
-        requirement: () => true,
-        isPondered: false,
-        text: "Buildings I",
-        tooltipDesc: "Increase building effects by 3%",
-        cost: { 'ponder': 180 },
-    },
+    // 'effectiveBuildings': {
+    //     id: 'ponderEffectiveBuildings',
+    //     requirement: () => true,
+    //     isPondered: false,
+    //     text: "Buildings I",
+    //     tooltipDesc: "Increase building effects by 3%",
+    //     cost: { 'ponder': 180 },
+    // },
     'agriculture': {
         id: 'ponderAgriculture',
         requirement: () => true,
@@ -239,6 +239,14 @@ let ponders = {
         tooltipDesc: "Shelters can house 1 more clone each",
         cost: { 'ponder': 1500, 'sticks': 3000, 'fish': 1000 }
     },
+    'eatBread': {
+        id: 'ponderEatBread',
+        requirement: () => true,
+        isPondered: false,
+        text: "Eat Bread",
+        tooltipDesc: "Eating some bread will help you work faster",
+        cost: { 'ponder': 400, 'bread': 30 }
+    }
 };
 
 function resetPonders() {
@@ -276,7 +284,7 @@ function addPonders(count) {
     for (let i = 1; i <= count; i++) {
         const id = `fasterResourceGain${i}`;
         ponders[id] = {
-            id: `ponder${capitalizeFirst(id)}`,
+            id: `ponderFasterResourceGain${i}`,
             isPondered: false,
             cost: { 'ponder': 40 * Math.pow(3, i - 1) },
             requirement: () => true,
@@ -284,12 +292,10 @@ function addPonders(count) {
             tooltipDesc: "Just work harder. 5% bonus to resource gain"
         };
     }
-}
 
-function addPondersToPonders(count) {
     for (let i = 1; i <= count; i++) {
-        ponders[`ponder${i}`] = {
-            id: `ponderPonder${i}`,
+        ponders[`fasterPonder${i}`] = {
+            id: `ponderFasterPonder${i}`,
             isPondered: false,
             cost: { 'ponder': 10 * Math.pow(5, i - 1) },
             text: `Think Harder ${toRoman(i)}`,
@@ -297,10 +303,20 @@ function addPondersToPonders(count) {
             requirement: () => true,
         };
     }
+
+    for (let i = 1; i <= count; i++) {
+        ponders[`effectiveBuildings${i}`] = {
+            id: `ponderEffectiveBuildings${i}`,
+            isPondered: false,
+            cost: { 'ponder': 30 * Math.pow(3, i - 1) },
+            text: `Buildings ${toRoman(i)}`,
+            tooltipDesc: "Increase building effects by 3%",
+            requirement: () => true,
+        };
+    }
 }
 
 addPonders(100);
-addPondersToPonders(100);
 
 module.exports = {
     ponders: ponders,

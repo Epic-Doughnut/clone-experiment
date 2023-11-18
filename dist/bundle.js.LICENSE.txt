@@ -1,0 +1,7 @@
+/*!('vines' in this.unlockedResources) &&
+!('rocks' in this.unlockedResources) && 
+!('fish' in this.unlockedResources) &&  
+!('ore' in this.unlockedResources) &&   
+!('clones' in this.unlockedResources) &&
+!('sand' in this.unlockedResources) &&  
+!('clay' in this.unlockedResources) &&  */
