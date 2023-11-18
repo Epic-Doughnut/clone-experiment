@@ -70,6 +70,6 @@ function showTab(tabName) {
 
     console.log(prevTab, '>', tabName);
 
-    updateSidebar();
+    // updateSidebar();
 }
 exports.showTab = showTab;
