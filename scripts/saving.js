@@ -98,11 +98,13 @@ function saveGame() {
         save.unlocks[u] = isPondered(u);
     }
 
+    let lastNewBuilding = null;
     for (let b in buildings) {
         save.buildings[b] = buildings[b].count;
         if (buildings[b].hasOwnProperty('name')) {
             // save new building data 
             save.newBuildings[b] = buildings[b];
+            lastNewBuilding = buildings[b];
         }
     }
 
@@ -123,12 +125,20 @@ function saveGame() {
         return [textContent, spanText];
     }
 
+    function getMessageTooltip() {
+        // Get most recent building
+        // return messageElement.querySelector("#alone").getAttribute('tooltipDesc');
+        const needs = 'You feel a strange, constructive urge to acquire ' + Object.keys(lastNewBuilding.cost).join(', ');
+        console.log('message tooltip:', needs);
+        return needs;
+    }
+
     for (const [key, val] of Object.entries(activeFactoriesProducing)) {
         save.factories[key] = val;
     }
 
     const htmlString = require('./main').getMessage().innerHTML;
-    const messageTooltip = require('./main').getMessageTooltip();
+    const messageTooltip = getMessageTooltip();
     const messageArray = extractTextFromHTML(htmlString); // [message, span]
     messageArray.push(messageTooltip);
     save.message = messageArray;

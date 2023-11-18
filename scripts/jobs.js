@@ -89,7 +89,7 @@ document.querySelectorAll('.btn-decrement').forEach(btn => {
         const jobType = this.closest('.job-button').getAttribute('data-job');
         const x = event.pageX; // X coordinate of the click
         const y = event.pageY; // Y coordinate of the click
-        jobAudio.play();
+        playSound('./audio/job.wav');
         if (event.shiftKey) {
             let numWorkers = jobCounts[jobType];
             jobCounts[jobType] = 0;

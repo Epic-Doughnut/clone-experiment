@@ -379,9 +379,7 @@ function navigateTo(url) {
 function getMessage() {
     return messageElement;
 }
-function getMessageTooltip() {
-    return messageElement.querySelector("#alone").getAttribute('tooltipDesc');
-}
+
 
 /* GAME LOOP */
 
@@ -836,8 +834,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 
 
-    const simulator = new GameSimulator();
-    simulator.runSimulation(10_000); // Run the simulation for 3 hours
+    // const simulator = new GameSimulator();
+    // simulator.runSimulation(10_000); // Run the simulation for 3 hours
 
 });
 
@@ -875,7 +873,7 @@ function isekai() {
 
     // Handle the isekai itself
     overlayButton.addEventListener('click', () => {
-        const husksDue = getMaterial('clones');
+        const husksDue = getMaterial('clones') + getMaterial('husks');
 
         // Reset functions to be executed when "Continue" is clicked
         resetResources();
@@ -908,7 +906,7 @@ function isekai() {
             buildings[randomBuilding.name.split(' ').join('_')] = randomBuilding;
             lastBuilding = randomBuilding;
         }
-        changeMessage('You are in another world.', 'another', `You feel a need to acquire ${lastBuilding.cost}`);
+        changeMessage('You are in another world.', 'another', `You feel a need to acquire ${Object.values(lastBuilding.cost).join(',')}`);
         initializeResourceTags(false);
     });
 
@@ -1016,7 +1014,6 @@ module.exports = {
     currentHoverButton,
     deleteGame,
     isekai,
-    getMessageTooltip,
     update
 };
 function deleteGame() {
