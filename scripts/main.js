@@ -5,7 +5,7 @@ const { buttons } = require("./json/buttons");
 const { resources, resetResources } = require('./json/resources');
 
 const { saveGame, loadGame } = require("./saving");
-const { appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource, calcIncrease, updateResourceIncreaseRates, increaseMax } = require('./resources');
+const { appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource, calcIncrease, updateResourceIncreaseRates, increaseMax, setMaterial } = require('./resources');
 const { buyMaxBuildings, buyBuilding, } = require('./buildings');
 const { selectAbility, resetPerks } = require('./perks');
 const { clearSidebar, getMax } = require('./helper');
@@ -865,6 +865,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
     updateBounceAnimation();
 
 
+    // Set clones to max to be nice
+    setMaterial('clones', getMax('clones'));
 
     // const simulator = new GameSimulator();
     // simulator.runSimulation(10_000); // Run the simulation for 3 hours

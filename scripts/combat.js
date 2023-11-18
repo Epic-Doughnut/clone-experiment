@@ -359,7 +359,9 @@ function switchStance(newStance) {
 // @ts-ignore
 window.switchStance = switchStance;
 
-
+/**
+ * Refresh all the values of the combat UI, including chance to win, loots, and enemy might
+ */
 function refreshValues() {
     // console.log(getCurrLoot());
     if (Object.keys(getCurrLoot()).length < 1) generateLoot();

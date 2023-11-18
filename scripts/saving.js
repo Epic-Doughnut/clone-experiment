@@ -369,7 +369,7 @@ function loadGame() {
     if (typeof savegame.factories !== 'undefined')
         for (const [key, val] of Object.entries(savegame.factories))
             if (val > 0)
-                for (let i = 0; i < val; ++i)
+                for (let i = 1; i < val; ++i)
                     loadFactory(key);
 
 

@@ -96,6 +96,16 @@ function increaseMax(material, num) {
 
 }
 
+/**
+ * 
+ * @param {string} material 
+ * @param {number} num 
+ */
+function setMaterial(material, num) {
+    resources[material].value = num;
+    updateDisplayValue(material);
+    updateTotal();
+}
 // Generic increase
 function increaseMaterial(material, num) {
     // Ensure we actually need to do anything
@@ -367,6 +377,7 @@ module.exports = {
     appendCraftedResourceButtons,
     calcIncrease,
     updateResourceIncreaseRates,
-    craftResourceQuantity
+    craftResourceQuantity,
+    setMaterial
 
 };
