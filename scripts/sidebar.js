@@ -278,7 +278,7 @@ function updateDisplayValue(material) {
             if (elementIncrease) {
                 const inc = calcIncrease(material, 1000);
                 // console.log(inc, elementIncrease);
-                if (inc === 0 || Number.isNaN(inc)) elementIncrease.parentElement.innerHTML = '<span id="' + material + 'IncreaseRate"></span>';
+                if (inc === 0 || Number.isNaN(inc)) elementIncrease.parentElement.innerHTML = `<span id="${material}IncreaseRate"></span>`;
                 else elementIncrease.parentElement.innerHTML = `(<span id="${material}IncreaseRate">${calcIncrease(material, 1000).toFixed(1)}</span>/s)`;
             }
             // console.log(material, shouldHide(material), getMaterial(material));

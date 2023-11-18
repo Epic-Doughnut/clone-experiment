@@ -1,11 +1,11 @@
-const { getMaterial } = require('../getMaterial');
 
 // Mocking the modules
 jest.mock('../getCraftedResource', () => ({
     getCraftedResource: jest.fn()
 }));
 
-jest.mock('../json/craftedResources', () => ({}));
+const { getMaterial } = require('../getMaterial');
+const { getCraftedResource } = require('../getCraftedResource');
 
 describe('getMaterial', () => {
     let resourcesMock;
@@ -28,8 +28,12 @@ describe('getMaterial', () => {
     });
 
     it('should delegate to getCraftedResource for materials not in resources', () => {
+        // @ts-ignore
+        getCraftedResource.mockImplementation((mat) => 0);
+
         getMaterial('unknownMaterial', resourcesMock);
-        expect(require('../getCraftedResource').getCraftedResource).toHaveBeenCalledWith('unknownMaterial', undefined);
+
+        expect(getCraftedResource).toHaveBeenCalledWith('unknownMaterial', null);
     });
 
     it('should return the correct value for a crafted resource', () => {

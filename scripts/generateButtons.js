@@ -129,7 +129,7 @@ function generateButtons() {
         if (building) {
             // console.log(building, key);
             // btn.tooltipCost = generateBuildingTooltipCost(buildings[building].cost);
-            recalculateBuildingCost(key, buildings, hasPerk);
+            recalculateBuildingCost(key);
         }
         // Hide the buttons we shouldn't see yet
         // console.log(btn);

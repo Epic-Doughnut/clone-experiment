@@ -18,6 +18,7 @@ const { updateSidebar, abbreviateNumber } = require("./sidebar");
 const { passedStage } = require("./stages"); // Used for eval functions
 const { updateDisplayValue } = require("./sidebar");
 const { updateSkills } = require("./skills");
+const { recalcMaxClones } = require("./recalcMaxClones");
 // console.log(capitalizeFirst);
 
 /**
@@ -105,7 +106,7 @@ function increaseMaterial(material, num) {
 
     // This check ensures that the material key exists in the resources map.
     if (material in resources) {
-
+        // if (material === 'clones') recalcMaxClones();
         if (getMaterial(material) < getMax(material) && num > 0) { // Adding resources
             if (isPondered('fasterResourceGain')) num *= 1.05;
             resources[material].value += num;
@@ -310,7 +311,9 @@ function craftResourceQuantity(resourceKey, quantity) {
     quantity = Math.floor(quantity); // Make sure the quantity is a whole number
 
     for (const [mat, val] of Object.entries(cost)) {
+        console.log('crafting quantity:', mat, val);
         increaseMaterial(mat, -val * quantity);
+        updateDisplayValue(mat);
     }
     increaseMaterial(resourceKey, calcCraftBonus(resourceKey) * quantity);
     // for (let i = 0; i < Math.floor(quantity); ++i) { // Only craft whole number, so 1.4 only runs once

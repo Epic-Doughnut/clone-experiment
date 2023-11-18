@@ -3,11 +3,9 @@
 // Mock the DOM functionalities
 const jsdom = require('jsdom');
 const { makeVisible } = require('../makeVisible');
-const { passedStage, getAllStages } = require('../stages');
+const { passedStage, getAllStages, resetStages, setStage } = require('../stages');
 const { JSDOM } = jsdom;
 
-// Initial stages for testing
-const stages = [];
 
 describe('DOM-related functions', () => {
 
@@ -31,6 +29,7 @@ describe('DOM-related functions', () => {
             const stage1Elements = document.querySelectorAll("p.stage1");
             stage1Elements.forEach(element => {
                 expect(element.classList.contains('visible')).toBe(true);
+                // @ts-ignore
                 expect(element.style.display).toBe('');
             });
         });
@@ -40,7 +39,7 @@ describe('DOM-related functions', () => {
 
     describe('passedStage', () => {
         it('should return true if a stage has passed', () => {
-            stages.push('stage1');
+            setStage('stage1');
             expect(passedStage('stage1')).toBe(true);
         });
 
@@ -51,9 +50,14 @@ describe('DOM-related functions', () => {
 
     describe('getAllStages', () => {
         it('should return all the stages', () => {
-            stages.push('stage1', 'stage2');
-            expect(getAllStages()).toEqual(['stage1', 'stage2']);
+            setStage('stage1');
+            expect(getAllStages()).toContain('stage1');
+            setStage('stage2');
+            expect(getAllStages()).toContain('stage2');
         });
     });
 
+    afterEach(() => {
+        resetStages();
+    });
 });

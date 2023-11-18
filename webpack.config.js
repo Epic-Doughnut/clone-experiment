@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
     entry: './scripts/main.js', // Your main JS file
     output: {
-        filename: 'bundle.js', // The bundled JS file
+        filename: '[name]_bundle.js', // The bundled JS file
         path: path.resolve(__dirname, 'dist') // Where it will be saved
     },
     module: {

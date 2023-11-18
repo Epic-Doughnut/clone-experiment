@@ -275,10 +275,10 @@ function getNextBattleMight(playerWonPreviousBattle) {
     // Check if the player won the previous battle
     if (playerWonPreviousBattle) {
         // Increase the difficulty for the next battle
-        enemyMight += 50; // You can adjust the increment as needed
+        enemyMight *= 1.3; // You can adjust the increment as needed
     } else {
         // Decrease the difficulty for the next battle
-        enemyMight -= 50; // You can adjust the decrement as needed
+        enemyMight /= 1.1; // You can adjust the decrement as needed
     }
 
     // Ensure the baseMight doesn't go below a minimum value

@@ -27,7 +27,8 @@ const { recalculateBuildingCost } = require('./recalculateBuildingCost');
 const { updateBuildingButtonCount } = require('./updateBuildingButtonCount');
 const { updateBuildingList } = require('./buildings');
 const { populateSkillsTable } = require('./skills');
-
+const { getAnalytics, logEvent } = require('@firebase/analytics');
+const { generateUniqueID } = require('./playerUid');
 // import jobCounts;
 /* SAVING */
 // var save = {
@@ -83,13 +84,14 @@ function saveGame() {
         }
 
         save.resources[item].value = getMaterial(item, resources);
-        save.resources[item].max = resources[item].max;
+        save.resources[item].max = getMax(item);
     }
 
     save.tools = getAllTools();
     save.stages = getAllStages();
     save.jobs = jobCounts;
-    save.perks = getAllPerks();
+    try { save.perks = [new Set(getAllPerks())]; }
+    catch (e) { save.perks = []; console.error('saving perks error', e); }
 
     // @ts-ignore
     save.connections = Array.from(getConnections().entries());
@@ -159,15 +161,59 @@ function saveGame() {
     // console.log(JSON.stringify(save));
 
     localStorage.setItem("save", JSON.stringify(save));
+    logEvent(getAnalytics(), 'save', save);
     return save;
 }
 
 
+function loadBuildings(savegame) {
+
+    if (typeof savegame.newBuildings !== 'undefined') {
+        for (let b in savegame.newBuildings) {
+            buildings[b] = savegame.newBuildings[b];
+        }
+    }
+
+    if (typeof savegame.buildings !== 'undefined') {
+        for (let b in savegame.buildings) {
+            // console.log(b, savegame.buildings[b]);
+            try {
+                buildings[b].count = savegame.buildings[b];
+                // Update button text
+                if (buildings[b].count > 0) {
+                    updateBuildingButtonCount(b, buildings[b].count, buildings[b].emoji);
+
+                    // Calculate the costs of all the buildings
+                    recalculateBuildingCost(b);
+                }
+
+            }
+            catch (error) {
+                console.warn('error with building', b, error);
+            }
+        }
+        updateSidebar();
+    }
+}
 
 function loadGame() {
     console.log("Loading Game");
+
+    // Get User ID
+    if (!localStorage.getItem('player_uid')) {
+        const newUid = generateUniqueID(); // Replace with your UID generation logic
+        localStorage.setItem('player_uid', newUid);
+    }
+    const playerUid = localStorage.getItem('player_uid');
+
+
+
+
     var savegame = JSON.parse(localStorage.getItem("save"));
     console.log(savegame);
+
+    logEvent(getAnalytics(), 'load', { savegame: savegame, playerUid: playerUid });
+
     if (savegame === null) {
         // NEW GAME
         return;
@@ -248,6 +294,7 @@ function loadGame() {
         for (let [i, perk] of Object.entries(savegame.perks)) {
             addPerk(perk);
             require('./selectCorrectPerkButton').selectCorrectPerkButton(perk);
+            if (parseFloat(i) > 100) break;
         }
     }
 
@@ -260,32 +307,7 @@ function loadGame() {
         }
     }
 
-    if (typeof savegame.newBuildings !== 'undefined') {
-        for (let b in savegame.newBuildings) {
-            buildings[b] = savegame.newBuildings[b];
-        }
-    }
-
-    if (typeof savegame.buildings !== 'undefined') {
-        for (let b in savegame.buildings) {
-            // console.log(b, savegame.buildings[b]);
-            try {
-                buildings[b].count = savegame.buildings[b];
-                // Update button text
-                if (buildings[b].count > 0) {
-                    updateBuildingButtonCount(b, buildings[b].count, buildings[b].emoji);
-
-                    // Calculate the costs of all the buildings
-                    recalculateBuildingCost(b);
-                }
-
-            }
-            catch (error) {
-                console.warn('error with building', b, error);
-            }
-        }
-        updateSidebar();
-    }
+    loadBuildings(savegame);
 
 
     // After ponders and buildings we can recalculate max clones

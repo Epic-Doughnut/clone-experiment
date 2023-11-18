@@ -1,7 +1,7 @@
 const { drawAllConnections } = require('./jobs');
 const { updateSidebar } = require('./sidebar');
 const { refreshValues, combat, pauseAnimation, battleResult, simulateBattle } = require('./combat');
-const { getSfxVolume } = require('./audio');
+const { getSfxVolume, playSound } = require('./audio');
 
 function getCurrentTab() {
     let tab = '';
@@ -23,14 +23,14 @@ function showTab(tabName) {
 
     if (tabName === prevTab) return;
 
-    let tabAudio = new Audio('./audio/tab.wav');
-    tabAudio.volume = getSfxVolume();
-    tabAudio.play();
+    playSound('./audio/tab.wav');
 
 
     let prevTabElement = document.getElementById(prevTab);
-    prevTabElement.classList.remove('active');
-    prevTabElement.style.opacity = '0';
+    if (prevTabElement) {
+        prevTabElement.classList.remove('active');
+        prevTabElement.style.opacity = '0';
+    }
     // Get all tab buttons and remove the active class
     let tabs = document.querySelectorAll(".tab-button");
     for (let tab of tabs) {

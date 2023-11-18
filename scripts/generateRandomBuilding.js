@@ -226,7 +226,7 @@ function generateRandomBuilding() {
 
   // Generate random effects
   const randomEffects = {};
-  const numEffects = getRandomNumber(0, 3);
+  const numEffects = getRandomNumber(0, 1);
   for (let i = 0; i < numEffects; i++) {
     const randomResource = possibleResources[Math.floor(Math.random() * possibleResources.length)];
     let randomEffectValue = Math.floor(getRandomNumber(30, 200)); // Adjust the range as needed
@@ -237,7 +237,7 @@ function generateRandomBuilding() {
 
   // Generate random boosts
   const randomBoosts = {};
-  const numBoosts = getRandomNumber(numEffects === 0 ? 1 : 0, 3); // Ensure the building does *something*
+  const numBoosts = getRandomNumber(numEffects === 0 ? 1 : 0, 1); // Ensure the building does *something*
   for (let i = 0; i < numBoosts; i++) {
     const randomResource = possibleResources[Math.floor(Math.random() * possibleResources.length)];
     const randomBoostValue = getRandomNumber(1.01, 1.2); // Adjust the range as needed

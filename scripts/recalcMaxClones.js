@@ -1,7 +1,6 @@
 
 const { hasPrestige, getLevelOfPrestige } = require("./json/prestige");
 const { isPondered } = require("./ponder");
-const { setMax } = require("./resources");
 const { passedStage } = require("./stages");
 const { updateBounceAnimation } = require("./updateBounceAnimation");
 
@@ -28,7 +27,7 @@ function recalcMaxClones() {
     if (hasPrestige('maxClones')) maxClones += 1 * getLevelOfPrestige('maxClones');
     // console.log(maxClones);
     // return maxClones;
-    setMax('clones', maxClones);
+    require("./resources").setMax('clones', maxClones);
     updateBounceAnimation();
 }
 

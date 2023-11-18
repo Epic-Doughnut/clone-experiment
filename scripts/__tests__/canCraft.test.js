@@ -1,33 +1,37 @@
-// canCraft.test.js
-const { canCraft } = require('../canCraft');
-const craftedResources = {
-    wood: { cost: { sticks: 5 } },
-    // Add more resources as needed
-};
-
+// @ts-nocheck
+// Mocking the modules
 jest.mock('../getMaterial', () => ({
-    getMaterial: jest.fn(),
+    getMaterial: jest.fn()
 }));
 jest.mock('../json/craftedResources', () => ({
-    craftedResources: craftedResources,
+    craftedResources: {
+        wood: { cost: { sticks: 5 } },
+        rope: { cost: { vines: 3 } }
+    }
 }));
 
+const { canCraft } = require('../canCraft');
+const { getMaterial } = require('../getMaterial');
+const { craftedResources } = require('../json/craftedResources');
+
 describe('canCraft', () => {
+    beforeEach(() => {
+        // Clear mock implementation before each test
+        getMaterial.mockClear();
+    });
+
     it('returns true when all materials are available', () => {
-        // @ts-ignore
-        require('../getMaterial').getMaterial.mockImplementation((mat) => 10);
-        expect(canCraft('wood')).toBeTruthy();
+        getMaterial.mockImplementation((mat) => 10); // Mock implementation
+
+        expect(canCraft('rope')).toBeTruthy();
+        expect(getMaterial).toHaveBeenCalledWith('vines');
     });
 
     it('returns false when not all materials are available', () => {
-        // @ts-ignore
-        require('../getMaterial').getMaterial.mockImplementation((mat) => {
-            return mat === 'sticks' ? 4 : 10;
-        });
-        expect(canCraft('wood')).toBeFalsy();
-    });
-});
+        getMaterial.mockImplementation((mat) => 0); // Mock implementation
 
-afterEach(() => {
-    jest.resetModules();
+        expect(canCraft('rope')).toBeFalsy();
+        expect(getMaterial).toHaveBeenCalledWith('vines');
+    });
+
 });

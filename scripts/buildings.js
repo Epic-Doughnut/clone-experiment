@@ -13,6 +13,8 @@ const { isPondered } = require('./ponder');
 const { updateBuildingList } = require('./updateBuildingList');
 const { capitalizeFirst } = require('./capitalizeFirst');
 const { ponders } = require('./json/ponder');
+const { logEvent, getAnalytics } = require('@firebase/analytics');
+const { getPlayerUid } = require('./playerUid');
 
 /* BUILDINGS */
 
@@ -158,6 +160,11 @@ function buyBuilding(buildingName) {
 
     // addToBuildingList(buildingName, building.emoji);
     updateBuildingList();
+
+    logEvent(getAnalytics(), 'building_purchase', {
+        building_name: buildingName,
+        user_id: getPlayerUid() // Replace with the user's ID or a unique identifier
+    });
 }
 
 /**
@@ -174,6 +181,11 @@ function buyMaxBuildings(buildingName) {
         buyBuilding(buildingName);
         ++i;
     }
+    logEvent(getAnalytics(), 'building_purchase_max', {
+        building_name: buildingName,
+        user_id: getPlayerUid(),
+        count: i
+    });
     return i;
 }
 

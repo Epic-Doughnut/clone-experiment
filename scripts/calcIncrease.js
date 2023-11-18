@@ -98,14 +98,14 @@ function calcIncrease(resourceName, delta_time) {
     //     total = 1;
     //     return total;
     // }
-    if (!resources.hasOwnProperty(resourceName)) {
-        if (craftedResources.hasOwnProperty(resourceName)) {
-            // check our factories
-            total = getFactoryProduction(resourceName);
-            if (total > 0) return total; // Don't apply skills to factories
-        }
-        else return total; // if not a resource or a crafted resource, return 0
-    }
+    // if (!resources.hasOwnProperty(resourceName)) {
+    //     if (craftedResources.hasOwnProperty(resourceName)) {
+    //         // check our factories
+    //         total = getFactoryProduction(resourceName);
+    //         if (total > 0) return total; // Don't apply skills to factories
+    //     }
+    //     else return total; // if not a resource or a crafted resource, return 0
+    // }
 
     if (resourceName === 'clones' && isPondered('autoClone')) total = 1;
 
@@ -175,6 +175,10 @@ function calcIncrease(resourceName, delta_time) {
 
     // Need at least 10 husks to boost mathematically (ln(1) = 0)
     if (getMaterial('husks') > 10) total *= 1 + Math.log(getMaterial('husks') / 10);
+
+    // Diminishing returns
+    total = Math.sqrt(total);
+
     // Convert from seconds to milliseconds
     return parseFloat((total * delta_time / 1000).toFixed(3));
 }

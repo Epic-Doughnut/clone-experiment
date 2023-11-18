@@ -8,7 +8,7 @@ const { saveGame, loadGame } = require("./saving");
 const { appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource, calcIncrease, updateResourceIncreaseRates, increaseMax } = require('./resources');
 const { buyMaxBuildings, buyBuilding, } = require('./buildings');
 const { selectAbility, resetPerks } = require('./perks');
-const { clearSidebar } = require('./helper');
+const { clearSidebar, getMax } = require('./helper');
 const { makeVisible } = require('./makeVisible');
 const { updateButtonVisibility } = require('./updateButtonVisibility');
 const { getCraftedResource } = require('./getCraftedResource');
@@ -35,6 +35,8 @@ const { changeMessage, messageElement } = require('./changeMessage');
 const { generateButtons } = require('./generateButtons');
 const { toggleResource } = require('./gathering');
 const { GameSimulator } = require('./GameSimulator');
+const { initializeApp } = require('@firebase/app');
+const { getAnalytics } = require('@firebase/analytics');
 
 
 
@@ -420,8 +422,8 @@ function loop(current_time) {
 
 let time_since_last_save = 0;
 let time_since_manufature = 0;
-const save_rate = 10000;
-const manufacture_rate = 1000;
+const save_rate = 10_000;
+const manufacture_rate = 1_000;
 function update(delta_time, total_time) {
 
     for (const [i, key] of Object.entries(allMaterials)) {
@@ -442,8 +444,9 @@ function update(delta_time, total_time) {
 
     // Manufacture every second
     if (passedStage('factoryTab') && time_since_manufature >= manufacture_rate) {
-        attemptManufacture();
+        console.log('manufacturing attempt', time_since_manufature, manufacture_rate);
         time_since_manufature = 0;
+        attemptManufacture();
     }
 
 }
@@ -532,16 +535,46 @@ function toggleOptions() {
 
 let currentlyDeleting = false;
 
+// Import the functions you need from the SDKs you need
+// import { initializeApp } from "firebase/app";
+// import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+
 // After all has been loaded
 document.addEventListener('DOMContentLoaded', (event) => {
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+        apiKey: "AIzaSyCotsZUfpU3dBSARhviv3oKtlnEyv7e_gk",
+        authDomain: "clone-experiment.firebaseapp.com",
+        projectId: "clone-experiment",
+        storageBucket: "clone-experiment.appspot.com",
+        messagingSenderId: "1028768441674",
+        appId: "1:1028768441674:web:2bf0906e5a94f5b2400db3",
+        measurementId: "G-M45BJLXJFR"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+
+
+
+
+
     generatePonderButtons(ponders);
     // appendCraftedResourceButtons();
+
+    loadGame(); // Get all new new buildings and add them with buttons
     generateButtons(); // Call this once on page load or game initialization
     makeFactoryButtons();
 
     initializeResourceTags();
 
-    loadGame();
+    loadGame(); // Actually load the game
 
     clearSidebar();
     initializeResourceTags(isPondered('organization')); // check if we need groups
@@ -730,12 +763,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
             let text = '+1 Clone';
 
             // Hardcoded instead to avoid increase affected by productivity bonuses
-            if (resources['clones'].value < resources['clones'].max) { resources['clones'].value += 1; }
+            if (getMaterial('clones') < getMax('clones')) { resources['clones'].value += 1; }
             else text = 'Max Clones';
 
-            const cloneAudio = new Audio(text === '+1 Clone' ? './audio/clone.wav' : './audio/failclone.wav');
-            cloneAudio.volume = getSfxVolume();
-            cloneAudio.play();
+            playSound(text === '+1 Clone' ? './audio/clone.wav' : './audio/failclone.wav');
+
 
             const x = event.pageX; // X coordinate of the click
             const y = event.pageY; // Y coordinate of the click

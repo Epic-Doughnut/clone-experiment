@@ -1,4 +1,5 @@
-const { getSfxVolume } = require('./audio');
+const { getSfxVolume, playSound } = require('./audio');
+const { canCraft } = require('./canCraft');
 const { getMaterial } = require('./getMaterial');
 const { craftedResources } = require('./json/craftedResources');
 const { resources } = require('./json/resources');
@@ -184,19 +185,27 @@ function loadFactory(crafting) {
     console.log("loading a factory for ", crafting);
     let div = createFactoryDiv();
     if (crafting) {
-        div.querySelector('select').value = crafting;
+        try {
 
-        // @ts-ignore
-        document.querySelector(`#resource-${crafting}`).style.color = 'thistle';
-        div.querySelector('.factoryCost').innerHTML = '';
-        div.querySelector('.factoryCost').innerHTML += `${require('./resources').generateTooltipCost(craftedResources[crafting].cost)}`;
+            div.querySelector('select').value = crafting;
+
+            // @ts-ignore
+            document.querySelector(`#resource-${crafting}`).style.color = 'thistle';
+            div.querySelector('.factoryCost').innerHTML = '';
+            div.querySelector('.factoryCost').innerHTML += `${require('./resources').generateTooltipCost(craftedResources[crafting].cost)}`;
+        } catch (error) {
+            console.warn(error);
+        }
     }
 
     const buyFactoryButton = document.getElementById('buyFactoryButton');
 
+    if (buyFactoryButton) {
+
+        buyFactoryButton.setAttribute('tooltipCost', `${newFactorySilverCost.toFixed(0)} silver`);
+        updateFactoryResourceTracking('none', crafting);
+    }
     newFactorySilverCost *= 1.2;
-    buyFactoryButton.setAttribute('tooltipCost', `${newFactorySilverCost.toFixed(0)} silver`);
-    updateFactoryResourceTracking('none', crafting);
 }
 
 
@@ -209,11 +218,12 @@ let manufactureBonus = 1;
  * @param {string} goalResource What we'll be crafting
  */
 function manufacture(resources, goalResource) {
+    console.trace();
     // Calculate how many we can afford
     let arr = [];
     resources.forEach(resource => arr.push(getMaterial(resource) / craftedResources[goalResource].cost[resource]));
     let num = Math.min(manufactureBulk, ...arr);
-    // console.log(num, manufactureBulk, ...arr);
+    console.log(num, manufactureBulk, ...arr);
     num *= manufactureBonus;
     // The factories get to be half price of normal crafting bc efficiency
     require('./resources').craftResourceQuantity(goalResource, num);
@@ -227,9 +237,7 @@ function upgradeBulk() {
     bulkUpgradeCost += 10;
 
 
-    const factoryAudio = new Audio('./audio/factorybulk.wav');
-    factoryAudio.volume = getSfxVolume();
-    factoryAudio.play();
+    playSound('./audio/factorybulk.wav');
 
 
     const upButton = document.getElementById('upgradeBulkButton');
@@ -246,7 +254,7 @@ function attemptManufacture() {
         const goalResource = rightSelect.value;
         const resources = switchedManufacturedMap[goalResource];
         // console.log("checking factory", goalResource);
-        if (resources && goalResource) {
+        if (resources && goalResource && canCraft(goalResource)) {
             manufacture(resources, goalResource);
         }
 
@@ -265,12 +273,10 @@ function buyFactory() {
     createFactoryDiv();
 
 
-    const factoryAudio = new Audio('./audio/factorybuild.wav');
-    factoryAudio.volume = getSfxVolume();
-    factoryAudio.play();
+    playSound('./audio/factorybuild.wav');
 
     newFactorySilverCost *= 1.2;
-    buyFactoryButton.setAttribute('tooltipCost', `${newFactorySilverCost.toFixed(2)} silver`);
+    buyFactoryButton.setAttribute('tooltipCost', `${newFactorySilverCost.toFixed(0)} silver`);
 }
 
 module.exports = {
