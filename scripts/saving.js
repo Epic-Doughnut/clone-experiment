@@ -22,7 +22,7 @@ const { getAllStages } = require('./stages');
 const { activeFactoriesProducing, loadFactory } = require('./factory');
 const { recalcMaxClones } = require('./recalcMaxClones');
 const { updateSidebar } = require('./sidebar');
-const { prestige } = require('./json/prestige');
+const { prestige, setPrestigeCost, setPrestigeLevel } = require('./json/prestige');
 const { recalculateBuildingCost } = require('./recalculateBuildingCost');
 const { updateBuildingButtonCount } = require('./updateBuildingButtonCount');
 const { updateBuildingList } = require('./buildings');
@@ -218,7 +218,11 @@ function loadGame() {
             require('./setMaterial').setMaterial(i, savegame.resources[i].value);
             require('./setMax').setMax(i, savegame.resources[i].max);
             console.log("Updating resources for " + i + " to " + savegame.resources[i].value, savegame.resources[i].max);
-            if (resources[i].value != 0) require('./sidebar').updateDisplayValue(i);
+            try {
+                if (resources[i].value != 0) require('./sidebar').updateDisplayValue(i);
+            } catch (error) {
+
+            }
         }
     }
 
@@ -236,7 +240,12 @@ function loadGame() {
             craftedResources[key].value = savegame.craftedResources[key].value;
             if (Number.isNaN(craftedResources[key].value)) craftedResources[key].value = 0;
             craftedResources[key].craftedOnce = savegame.craftedResources[key].craftedOnce;
-            require('./sidebar').updateDisplayValue(key);
+            try {
+                require('./sidebar').updateDisplayValue(key);
+
+            } catch (error) {
+
+            }
         }
     }
 
@@ -296,13 +305,13 @@ function loadGame() {
     if (typeof savegame.prestige !== 'undefined') {
         for (const [key, val] of Object.entries(savegame.prestige)) {
 
-            prestige[key].cost = val['cost'];
-            prestige[key].level = val['level'];
+            setPrestigeCost(key, val['cost']);
+            setPrestigeLevel(key, val['level']);
         }
     }
 
     loadBuildings(savegame);
-
+    // TODO: Update buildings costs
 
     // After ponders and buildings we can recalculate max clones
     recalcMaxClones();

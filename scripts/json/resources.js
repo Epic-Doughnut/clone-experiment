@@ -6,7 +6,7 @@ const resources = {
         "id": "makeClone",
         "value": 0,
         "isVisible": false,
-        max: 0
+        basemax: 0
     },
 
     "sticks": {
@@ -17,7 +17,7 @@ const resources = {
         "defaultText": "𓆱 Gather Sticks",
         "value": 0,
         emoji: '𓀝',
-        max: 50
+        basemax: 50
     },
     "vines": {
         "id": "gatherVines",
@@ -28,7 +28,7 @@ const resources = {
         "tools": [{ "tool": "Axe", "val": 1.5 }],
         "value": 0,
         emoji: '𓀪',
-        max: 50
+        basemax: 50
     },
     "rocks": {
         "id": "gatherRocks",
@@ -38,7 +38,7 @@ const resources = {
         "defaultText": "𓊖 Gather Rocks",
         "value": 0,
         emoji: '𓀩',
-        max: 30
+        basemax: 30
     },
     "fish": {
         "id": "gatherFish",
@@ -49,7 +49,7 @@ const resources = {
         "value": 0,
         emoji: '𓁃',
         "tools": [{ "tool": "Spear", "val": 1 }, { "tool": "Fishing Rod", "val": 2 }],
-        max: 10
+        basemax: 10
     },
     "wood": {
         "id": "gatherWood",
@@ -60,7 +60,7 @@ const resources = {
         emoji: '𓀨',
         "tools": [{ "tool": "Axe", "val": 1.5 }, { "tool": "Chainsaw", "val": 3 }],
         "value": 0,
-        max: 40
+        basemax: 40
     },
     "ponder": {
         "id": "gatherPonder",
@@ -70,7 +70,7 @@ const resources = {
         "defaultText": "𓀁 Ponder",
         emoji: '𓀁',
         "value": 0,
-        max: 20
+        basemax: 20
     },
     "ore": {
         "value": 0,
@@ -80,7 +80,7 @@ const resources = {
         "activeText": "𓉸𓁄 Mining Ore",
         "defaultText": "𓉸 Mine Ore",
         emoji: '𓁄',
-        max: 20
+        basemax: 20
     },
     "sand": {
         "value": 0,
@@ -90,7 +90,7 @@ const resources = {
         "activeText": "𓀩 Scooping Sand",
         "defaultText": "𓀩 Scoop Sand",
         emoji: '𓀩',
-        max: 20
+        basemax: 20
     },
     "wheat": {
         "value": 0,
@@ -100,7 +100,7 @@ const resources = {
         "activeText": "𓀩 Harvesting Wheat",
         "defaultText": "𓀩 Harvest Wheat",
         emoji: '𓀝',
-        max: 20
+        basemax: 20
     },
     'freshwater': {
         'value': 0,
@@ -110,7 +110,7 @@ const resources = {
         'activeText': 'water',
         'defaultText': 'water',
         emoji: '𓀩',
-        'max': 50
+        'basemax': 50
     },
     'hides': {
         'value': 0,
@@ -120,7 +120,7 @@ const resources = {
         'activeText': 'water',
         'defaultText': 'water',
         emoji: '𓀎',
-        'max': 50
+        'basemax': 50
 
     },
     'clay': {
@@ -131,7 +131,7 @@ const resources = {
         'activeText': 'water',
         'defaultText': 'water',
         emoji: '𓀩',
-        'max': 50
+        'basemax': 50
     },
     'herbs': {
         'value': 0,
@@ -141,7 +141,7 @@ const resources = {
         'activeText': 'water',
         'defaultText': 'water',
         emoji: '𓀩',
-        'max': 50
+        'basemax': 50
     },
     'game': {
         'value': 0,
@@ -151,7 +151,7 @@ const resources = {
         'activeText': '𓃚𓀎 Hunting',
         'defaultText': '𓀎 Hunt',
         emoji: '𓀎',
-        'max': 50
+        'basemax': 50
     },
     'husks': {
         value: 0,
@@ -161,7 +161,7 @@ const resources = {
         activeText: '',
         defaultText: "",
         emoji: 'X',
-        'max': 1000
+        'basemax': 1000
     },
     'violence': {
         value: 0,
@@ -171,10 +171,9 @@ const resources = {
         activeText: '',
         defaultText: '',
         emoji: '',
-        max: 100
+        basemax: 100
     }
 };
-exports.resources = resources;
 function isResource(resource) {
     // return resources[resource] !== null;
     return resource in resources;
@@ -196,10 +195,15 @@ function resetResources() {
         val.value = 0;
     }
 }
+
+function getBaseMax(resource) {
+    return resources[resource].basemax;
+}
 module.exports = {
-    resources: resources,
+    resources,
     isResource,
     getResourceConfigById,
-    resetResources
+    resetResources,
+    getBaseMax
 };
 

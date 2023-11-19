@@ -84,6 +84,7 @@ exports.resourcesContainer = resourcesContainer;
 
 function increaseMax(material, num) {
     // console.log("increase max ", material, num);
+    // console.trace();
     resources[material].max += num;
     updateSidebar();
     updateTotal();

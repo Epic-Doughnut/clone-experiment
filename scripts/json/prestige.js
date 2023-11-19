@@ -74,8 +74,18 @@ function hasPrestige(pres) {
 function getLevelOfPrestige(pres) {
     return prestige[pres].level;
 }
+
+function setPrestigeLevel(pres, level) {
+    prestige[pres].level = level;
+}
+
+function setPrestigeCost(pres, cost) {
+    prestige[pres].cost = cost;
+}
 module.exports = {
     prestige,
     hasPrestige,
-    getLevelOfPrestige
+    getLevelOfPrestige,
+    setPrestigeCost,
+    setPrestigeLevel
 };

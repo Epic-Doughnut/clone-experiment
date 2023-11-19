@@ -57,10 +57,7 @@ function showTab(tabName) {
 
     if (tabName === 'combatTab') {
         refreshValues();
-        // if (getInCombat()) {
-        //     // If returning to the combatTab and combat was in progress, resume combat
-        //     combat();
-        // }
+
         // When returning to the combatTab, resolve the battle if it hasn't been resolved yet
         if (battleResult === null) {
             simulateBattle();

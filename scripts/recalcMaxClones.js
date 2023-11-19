@@ -5,7 +5,7 @@ const { passedStage } = require("./stages");
 const { updateBounceAnimation } = require("./updateBounceAnimation");
 
 function recalcMaxClones() {
-    let maxClones = 0;
+    let maxClones = require("./json/resources").getBaseMax('clones');
     if (passedStage('clone')) maxClones += 1;
 
     const buildings = require("./json/buildings").buildings;
@@ -27,7 +27,7 @@ function recalcMaxClones() {
     if (hasPrestige('maxClones')) maxClones += 1 * getLevelOfPrestige('maxClones');
     // console.log(maxClones);
     // return maxClones;
-    require("./resources").setMax('clones', maxClones);
+    require("./setMax").setMax('clones', maxClones);
     updateBounceAnimation();
 }
 

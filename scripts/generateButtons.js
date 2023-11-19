@@ -7,6 +7,35 @@ const { hasPerk } = require('./perks');
 const { recalculateBuildingCost } = require('./recalculateBuildingCost');
 const { showTab } = require('./showTab');
 
+function createStyledColumns(parent) {
+    const columns = [];
+    for (let i = 0; i < 3; i++) {
+        const col = document.createElement('div');
+        col.style.width = '33.33%';
+        col.style.display = 'inline-block';
+        col.classList.add('visible');
+        parent.prepend(col);
+        columns.push(col);
+    }
+    return columns;
+}
+
+function createButtonElement(btn, key) {
+    const buttonElement = document.createElement('button');
+
+    buttonElement.id = key;
+    buttonElement.className = btn.class;
+    buttonElement.textContent = btn.text.split('_').join(' ');
+
+    // buttonElement.style.textAlign = 'center';
+    if (btn.tooltipDesc) buttonElement.setAttribute('data-tooltip-desc', btn.tooltipDesc);
+    if (btn.tooltipEffect) buttonElement.setAttribute('data-tooltip-effect', btn.tooltipEffect);
+    buttonElement.setAttribute('unlock', btn.unlock);
+    // console.log(btn);
+    buttonElement.setAttribute('data_building', btn.data_building);
+    return buttonElement;
+}
+
 /* BUTTONS GENERATE */
 function generateButtons() {
 
@@ -19,42 +48,19 @@ function generateButtons() {
         // console.log("Made button for " + buildingKey);
     }
 
-    const createColumns = (parent) => {
-        const col1 = document.createElement('div');
-        const col2 = document.createElement('div');
-        const col3 = document.createElement('div');
 
-        col1.style.width = '33.33%';
-        col2.style.width = '33.33%';
-        col3.style.width = '33.33%';
-
-        col1.style.display = 'inline-block';
-        col2.style.display = 'inline-block';
-        col3.style.display = 'inline-block';
-
-        col1.classList.add('visible');
-        col2.classList.add('visible');
-        col3.classList.add('visible');
-
-        // parent.style.display = 'flex;'  // Set parent to be a flex container
-        parent.prepend(col3);
-        parent.prepend(col2);
-        parent.prepend(col1);
-
-        return [col1, col2, col3];
-    };
 
     const tabsContainer = document.getElementById('tabs');
     const productionContainer = document.getElementById('productionTab');
     // @ts-ignore
     const experimentContainer = document.getElementById('experimentTab').querySelector('.button-columns');
     const ponderContainer = document.getElementById('ponderTab');
-    // const jobContainer = document.getElementById('jobsTab');
+
     // You can add more containers for different tabs as needed
     // const productionColumns = createColumns(productionContainer);
-    const experimentColumns = createColumns(experimentContainer);
-    const ponderColumns = createColumns(ponderContainer);
-    // const jobColumns = createColumns(jobContainer);
+    const experimentColumns = createStyledColumns(experimentContainer);
+    const ponderColumns = createStyledColumns(ponderContainer);
+
     // Similarly, create columns for other tabs as needed
     let productionColumnIndex = 1;
     let experimentColumnIndex = 0;
@@ -68,18 +74,8 @@ function generateButtons() {
     // Add counters for other tabs as needed
     for (let key in buttons) {
         const btn = buttons[key];
-        const buttonElement = document.createElement('button');
+        const buttonElement = createButtonElement(btn, key);
 
-        buttonElement.id = key;
-        buttonElement.className = btn.class;
-        buttonElement.textContent = btn.text.split('_').join(' ');
-
-        // buttonElement.style.textAlign = 'center';
-        if (btn.tooltipDesc) buttonElement.setAttribute('data-tooltip-desc', btn.tooltipDesc);
-        if (btn.tooltipEffect) buttonElement.setAttribute('data-tooltip-effect', btn.tooltipEffect);
-        buttonElement.setAttribute('unlock', btn.unlock);
-        // console.log(btn);
-        buttonElement.setAttribute('data_building', btn.data_building);
         // if this resource isn't unlocked, hide it
         // if (!btn.isVisible) buttonElement.classList.add('hidden');
         // Check if the button corresponds to a crafted resource using the ID

@@ -37,6 +37,7 @@ const { toggleResource } = require('./gathering');
 const { GameSimulator } = require('./GameSimulator');
 const { initializeApp } = require('@firebase/app');
 const { getAnalytics } = require('@firebase/analytics');
+const { setMaterial } = require('./setMaterial');
 
 
 
