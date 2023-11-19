@@ -1,4 +1,3 @@
-// State of each resource
 
 // TODO: ADD REQUIREMENTS FOR EACH TO MAKE THEM VISIBLE
 // or just display them when you get your first one?
@@ -175,6 +174,7 @@ const resources = {
         max: 100
     }
 };
+exports.resources = resources;
 function isResource(resource) {
     // return resources[resource] !== null;
     return resource in resources;
@@ -202,3 +202,4 @@ module.exports = {
     getResourceConfigById,
     resetResources
 };
+

@@ -5,7 +5,7 @@ const { buttons } = require("./json/buttons");
 const { resources, resetResources } = require('./json/resources');
 
 const { saveGame, loadGame } = require("./saving");
-const { appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource, calcIncrease, updateResourceIncreaseRates, increaseMax, setMaterial } = require('./resources');
+const { appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource, calcIncrease, updateResourceIncreaseRates, increaseMax } = require('./resources');
 const { buyMaxBuildings, buyBuilding, } = require('./buildings');
 const { selectAbility, resetPerks } = require('./perks');
 const { clearSidebar, getMax } = require('./helper');

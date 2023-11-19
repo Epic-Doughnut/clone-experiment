@@ -29,14 +29,8 @@ const { updateBuildingList } = require('./buildings');
 const { populateSkillsTable } = require('./skills');
 const { getAnalytics, logEvent } = require('@firebase/analytics');
 const { generateUniqueID } = require('./playerUid');
-// import jobCounts;
-/* SAVING */
-// var save = {
-//     resources: resources,
-//     craftedResources: craftedResources,
-//     skills: skills,
-//     playerTools: playerTools
-// }
+
+
 
 function saveGame() {
     let save = {
@@ -221,8 +215,8 @@ function loadGame() {
     if (typeof savegame.resources !== "undefined") {
         for (let i in savegame.resources) {
             if (i.valueOf() === "undefined" || i === null || resources[i] === null) continue;
-            resources[i].value = savegame.resources[i].value;
-            resources[i].max = savegame.resources[i].max;
+            require('./setMaterial').setMaterial(i, savegame.resources[i].value);
+            require('./setMax').setMax(i, savegame.resources[i].max);
             console.log("Updating resources for " + i + " to " + savegame.resources[i].value, savegame.resources[i].max);
             if (resources[i].value != 0) require('./sidebar').updateDisplayValue(i);
         }

@@ -82,12 +82,6 @@ const resourcesContainer = document.getElementById('resources');
 exports.resourcesContainer = resourcesContainer;
 
 
-function setMax(material, num) {
-    resources[material].max = num;
-    updateSidebar();
-    updateTotal();
-}
-
 function increaseMax(material, num) {
     // console.log("increase max ", material, num);
     resources[material].max += num;
@@ -96,16 +90,6 @@ function increaseMax(material, num) {
 
 }
 
-/**
- * 
- * @param {string} material 
- * @param {number} num 
- */
-function setMaterial(material, num) {
-    resources[material].value = num;
-    updateDisplayValue(material);
-    updateTotal();
-}
 // Generic increase
 function increaseMaterial(material, num) {
     // Ensure we actually need to do anything
@@ -367,7 +351,6 @@ function craftResource(resourceKey) {
 
 module.exports = {
     increaseMaterial,
-    setMax,
     increaseMax,
     craftAllResources,
     craftResource,
@@ -378,6 +361,5 @@ module.exports = {
     calcIncrease,
     updateResourceIncreaseRates,
     craftResourceQuantity,
-    setMaterial
 
 };
