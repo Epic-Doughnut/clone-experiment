@@ -215,8 +215,13 @@ function loadGame() {
     if (typeof savegame.resources !== "undefined") {
         for (let i in savegame.resources) {
             if (i.valueOf() === "undefined" || i === null || resources[i] === null) continue;
-            require('./setMaterial').setMaterial(i, savegame.resources[i].value);
-            require('./setMax').setMax(i, savegame.resources[i].max);
+            try {
+                require('./setMaterial').setMaterial(i, savegame.resources[i].value);
+                require('./setMax').setMax(i, savegame.resources[i].max);
+            }
+            catch (error) {
+                console.warn('error with loading resource', i, error);
+            }
             console.log("Updating resources for " + i + " to " + savegame.resources[i].value, savegame.resources[i].max);
             try {
                 if (resources[i].value != 0) require('./sidebar').updateDisplayValue(i);
