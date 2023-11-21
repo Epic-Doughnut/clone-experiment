@@ -29,6 +29,12 @@
     /* Adjust the gap between items as needed */
 }
 
+#ponderTab.active {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+}
+
 .tab-button {
     width: 120px;
     padding-right: 20px;

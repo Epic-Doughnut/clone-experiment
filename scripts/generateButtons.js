@@ -64,12 +64,7 @@ function generateButtons() {
     // Similarly, create columns for other tabs as needed
     let productionColumnIndex = 1;
     let experimentColumnIndex = 0;
-    let ponderColumnIndex = 0;
-    // @ts-ignore
-    // @ts-ignore
-    // @ts-ignore
-    // @ts-ignore
-    let jobColumnIndex = 0;
+    let ponderColumnIndex = 1;
 
     // Add counters for other tabs as needed
     for (let key in buttons) {
@@ -110,9 +105,12 @@ function generateButtons() {
             // @ts-ignore
             tabsContainer.appendChild(buttonElement);
         } else if (btn.tab === 'ponder') {
-            ponderColumns[ponderColumnIndex].appendChild(buttonElement);
+            buttonElement.style.gridColumn = ponderColumnIndex.toString();
             ponderColumnIndex = (ponderColumnIndex + 1) % 3;
+            ponderContainer.appendChild(buttonElement);
         } else if (btn.tab === 'job') {
+            // Do nothing but catch the jobs
+
             // jobColumns[jobColumnIndex].appendChild(buttonElement);
             // jobColumnIndex = (jobColumnIndex + 1) % 3;
         }
