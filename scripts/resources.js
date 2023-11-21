@@ -68,7 +68,7 @@ function calcSecondsRemaining(resourceName, needed) {
     if (increase == 0) return -1; // Won't display
 
     // Difference over time
-    const timeRemaining = Math.ceil(needed - getMaterial(resourceName)) / increase;
+    const timeRemaining = (needed - getMaterial(resourceName)) / increase;
 
     return timeRemaining;
 }

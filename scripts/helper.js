@@ -1,6 +1,9 @@
 const { hasPrestige, getLevelOfPrestige } = require('./json/prestige');
 const { resources, isResource } = require('./json/resources');
 const { skills } = require('./json/skills');
+const { isPondered } = require('./ponder');
+const { passedStage } = require('./stages');
+const { updateBounceAnimation } = require('./updateBounceAnimation');
 
 
 
@@ -39,13 +42,31 @@ function getAffectedResources(skill) {
  */
 function getMax(material) {
     if (isResource(material)) {
-        let baseMax = resources[material].max; // Static base max value
+        let baseMax = resources[material].basemax; // Static base max value
         let max = baseMax;
 
         if (hasPrestige('storageSpace') && material !== 'clones') {
             max = baseMax * (1.05 * getLevelOfPrestige('storageSpace'));
-        } else if (material === 'clones' && hasPrestige('maxClones')) {
-            max = baseMax + getLevelOfPrestige('maxClones');
+        } else if (material === 'clones') {
+            if (passedStage('clone')) max += 1;
+
+            const buildings = require("./json/buildings").buildings;
+            // console.log(passedStage('clone'), maxClones);
+            for (const [key, building] of Object.entries(buildings)) {
+
+                // console.log(key, building, building.effects);
+                if (building.effects && building.effects['clones'])
+                    max += building.effects['clones'] * building.count;
+            }
+
+            // Ponder bonuses
+            if (isPondered('biggerShelter')) max += 1 * buildings['shelter'].count;
+            if (isPondered('biggerHut')) max += 1 * buildings['hut'].count;
+            if (isPondered('biggerHouse')) max += 2 * buildings['house'].count;
+            if (isPondered('biggerTeepee')) max += 4 * buildings['teepee'].count;
+            if (isPondered('evenBiggerShelter')) max += 1 * buildings['shelter'].count;
+
+            if (hasPrestige('maxClones')) max += 1 * getLevelOfPrestige('maxClones');
         }
 
         return max;
