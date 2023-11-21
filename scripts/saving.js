@@ -124,7 +124,9 @@ function saveGame() {
     function getMessageTooltip() {
         // Get most recent building
         // return messageElement.querySelector("#alone").getAttribute('tooltipDesc');
-        const needs = 'You feel a strange, constructive urge to acquire ' + Object.keys(lastNewBuilding.cost).join(', ');
+        let needs = "You feel peckish for some seafood.";
+        if (lastNewBuilding && lastNewBuilding.cost)
+            needs = 'You feel a strange, constructive urge to acquire ' + Object.keys(lastNewBuilding.cost).join(', ');
         console.log('message tooltip:', needs);
         return needs;
     }
