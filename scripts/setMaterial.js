@@ -8,6 +8,8 @@ const { resources } = require("./json/resources");
  * @param {number} num
  */
 function setMaterial(material, num) {
+    // Check if material exists
+    if (resources[material] === undefined) return;
     resources[material].value = num;
     updateDisplayValue(material);
     updateTotal();
