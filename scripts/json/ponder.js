@@ -289,7 +289,7 @@ function addPonders(count) {
             cost: { 'ponder': 40 * Math.pow(3, i - 1) },
             requirement: () => true,
             text: `Productivity ${toRoman(i)}`,
-            tooltipDesc: "Just work harder. 5% bonus to resource gain"
+            tooltipDesc: "Just work harder. Bonus to resource gain"
         };
     }
 
@@ -299,7 +299,7 @@ function addPonders(count) {
             isPondered: false,
             cost: { 'ponder': 10 * Math.pow(5, i - 1) },
             text: `Think Harder ${toRoman(i)}`,
-            tooltipDesc: `5% boost to pondering`,
+            tooltipDesc: `Small boost to pondering speed`,
             requirement: () => true,
         };
     }
@@ -310,7 +310,7 @@ function addPonders(count) {
             isPondered: false,
             cost: { 'ponder': 30 * Math.pow(3, i - 1) },
             text: `Buildings ${toRoman(i)}`,
-            tooltipDesc: "Increase building effects by 3%",
+            tooltipDesc: "Increase building effects by a small amount",
             requirement: () => true,
         };
     }

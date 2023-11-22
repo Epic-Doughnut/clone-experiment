@@ -24,7 +24,10 @@ html {
     display: flex;
 }
 
-
+hr {
+    display: block;
+    width: 95%;
+}
 
 #eatFish {
     background-image: linear-gradient(#267A30, #222);
@@ -42,6 +45,7 @@ html {
 
 #emojiGatherDisplay {
     font-size: 48px;
+    pointer-events: all;
 }
 
 #emojiDisplay {
@@ -53,6 +57,7 @@ html {
     /* max-width: 600px; */
     width: 800px;
     height: 120px;
+    pointer-events: all;
 }
 
 #buildingList {
@@ -77,22 +82,40 @@ html {
 }
 
 @keyframes floatAndFade {
+
+    /* 0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+        transform: translateY(-5px);
+    }
+
+    20%,
+    40%,
+    60%,
+    80% {
+        transform: translateY(10px);
+    } */
+
     0% {
         opacity: 1;
-        transform: translateY(0);
     }
 
     100% {
         opacity: 0;
-        transform: translateY(-50px);
-        /* Adjust the value as needed */
     }
 }
 
 .float-up-fade-out {
     pointer-events: none;
     position: absolute;
-    animation: floatAndFade 2s ease-out forwards;
+    animation: floatAndFade 2s linear forwards;
     background-color: #212121;
     border-radius: 3px;
 }

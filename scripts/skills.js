@@ -70,6 +70,8 @@ function populateSkillsTable() {
         for (let skill in skills) {
             let tr = document.createElement('tr');
             tr.id = 'tr-' + skill;
+            // tr.classList.add('tooltip');
+            // tr.setAttribute('tooltipDesc', 'eval(skills[skill].exp)');
             let tdProgress = document.createElement('td');
             tdProgress.style.position = 'relative';
 
@@ -87,7 +89,7 @@ function populateSkillsTable() {
             let skillText = document.createElement('span');
 
             // 
-            skillText.textContent = '[level ' + skills[skill].level + ']   ' + skill;
+            skillText.textContent = `[level ${skills[skill].level} (${skills[skill].exp}%)]   ${skill}`;
             skillText.setAttribute('id', 'level-' + skill);
             skillText.style.position = 'absolute';
             skillText.style.left = '10px';
@@ -123,7 +125,7 @@ function populateSkillsTable() {
                 // @ts-ignore
                 progressBar.style.width = skills[skill].exp + '%';
                 let skillName = document.querySelector("#level-" + skill);
-                skillName.textContent = '[level ' + skills[skill].level + ']   ' + skill;
+                skillName.textContent = `[level ${skills[skill].level}] (${Math.floor(skills[skill].exp).toFixed(0)}%)   ${skill}`;
             }
         }
     }

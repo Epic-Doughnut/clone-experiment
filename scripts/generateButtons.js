@@ -94,7 +94,7 @@ function generateButtons() {
             //style='grid-column:${col}; grid-row:${row};
             buttonElement.style.gridColumn = productionColumnIndex.toString();
             // buttonElement.style.gridRow = '0';
-            productionColumnIndex = (productionColumnIndex + 1) % 3;
+            productionColumnIndex = (productionColumnIndex + 1) % 4;
             productionContainer.appendChild(buttonElement);
             // productionColumns[productionColumnIndex].appendChild(buttonElement);
             // productionColumnIndex = (productionColumnIndex + 1) % 3;

@@ -140,6 +140,8 @@ function createFactoryDiv() {
 
         const newProduced = rightSelect.value;
 
+        playSound('./audio/factoryoption.wav');
+
         // Update resource tracking
         updateFactoryResourceTracking(currentProduced, newProduced);
 

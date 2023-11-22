@@ -48,7 +48,7 @@ const buttons = {
         tab: 'production',
         text: '𓌏 Chop Wood',
         tooltipDesc: 'An axe hurts way less than using your hands.',
-        tooltipCost: '',
+        tooltipCost: 'Free',
         requirement: () => hasTool('Axe') || passedStage('wood'),
         hide: () => false
     },

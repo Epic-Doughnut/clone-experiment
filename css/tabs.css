@@ -23,7 +23,7 @@
 
 #productionTab.active {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     /* Adjust the number of columns as needed */
     grid-gap: 10px;
     /* Adjust the gap between items as needed */
@@ -53,7 +53,7 @@
     display: none;
     padding: 20px;
     border: 1px solid #444;
-    width: 70%;
+    width: 85%;
     transition: 0.1s;
 }
 

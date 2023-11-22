@@ -44,7 +44,12 @@ function getMax(material) {
     if (isResource(material)) {
         let baseMax = resources[material].basemax; // Static base max value
         let max = baseMax;
+        for (const [key, building] of Object.entries(require('./json/buildings').buildings)) {
 
+            // console.log(key, building, building.effects);
+            if (building.effects && building.effects[material])
+                max += building.effects[material] * building.count;
+        }
         if (hasPrestige('storageSpace') && material !== 'clones') {
             max = baseMax * (1.05 * getLevelOfPrestige('storageSpace'));
         } else if (material === 'clones') {
@@ -52,12 +57,7 @@ function getMax(material) {
 
             const buildings = require("./json/buildings").buildings;
             // console.log(passedStage('clone'), maxClones);
-            for (const [key, building] of Object.entries(buildings)) {
 
-                // console.log(key, building, building.effects);
-                if (building.effects && building.effects['clones'])
-                    max += building.effects['clones'] * building.count;
-            }
 
             // Ponder bonuses
             if (isPondered('biggerShelter')) max += 1 * buildings['shelter'].count;

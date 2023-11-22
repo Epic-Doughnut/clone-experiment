@@ -29,3 +29,11 @@ function recalculateBuildingCost(buildingKey) {
 
 }
 exports.recalculateBuildingCost = recalculateBuildingCost;
+
+function recalculateAllBuildingCosts() {
+    const buildings = require('./json/buildings').buildings;
+    for (let buildingKey of Object.keys(buildings)) {
+        recalculateBuildingCost(buildingKey);
+    }
+}
+exports.recalculateAllBuildingCosts = recalculateAllBuildingCosts;

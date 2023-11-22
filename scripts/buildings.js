@@ -15,6 +15,7 @@ const { capitalizeFirst } = require('./capitalizeFirst');
 const { ponders } = require('./json/ponder');
 const { logEvent, getAnalytics } = require('@firebase/analytics');
 const { getPlayerUid } = require('./playerUid');
+const { triggerFloatUpText } = require('./triggerFloatUpText');
 
 /* BUILDINGS */
 
@@ -150,7 +151,11 @@ function buyBuilding(buildingName) {
         }
     }
 
-
+    for (const [key, val] of Object.entries(building.boost)) {
+        // Get the rate of change for this resource
+        const rect = document.getElementById(`${key}IncreaseRate`).getBoundingClientRect();
+        triggerFloatUpText(rect.right, rect.bottom, `+speed`, 'aqua');
+    }
     // Update button text
     updateBuildingButtonCount(buildingName, building.count, JSON.parse(JSON.stringify(building.emoji)));
 

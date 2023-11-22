@@ -19,6 +19,7 @@ const { passedStage } = require("./stages"); // Used for eval functions
 const { updateDisplayValue } = require("./sidebar");
 const { updateSkills } = require("./skills");
 const { recalcMaxClones } = require("./recalcMaxClones");
+const { triggerFloatUpText } = require("./triggerFloatUpText");
 // console.log(capitalizeFirst);
 
 /**
@@ -86,6 +87,11 @@ function increaseMax(material, num) {
     // console.log("increase max ", material, num);
     // console.trace();
     resources[material].max += num;
+    const element = document.getElementById(`${material}Value`);
+    const rect = element.getBoundingClientRect();
+    // document.getElementById(`${material}Value`).classList.add('float-up-fade-out');
+    triggerFloatUpText(rect.right, rect.bottom, '+max', 'green'); //
+
     updateSidebar();
     updateTotal();
 

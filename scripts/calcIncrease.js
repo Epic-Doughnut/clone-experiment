@@ -58,6 +58,7 @@ function applySkillBoost(total, resourceName) {
             total *= mult;
         }
     }
+    // console.log('skills', resourceName, total);
     return total;
 }
 
@@ -78,6 +79,25 @@ function applyToolBoost(total, resourceName) {
     if (toolName && getMaterial(toolName) > 10) {
         total *= 1 + Math.log10(getMaterial(toolName) / 10);
     }
+    // console.log(resourceName, toolName, total);
+    return total;
+}
+
+// Apply ponder bonuses
+function applyPonderBonuses(total, resourceName) {
+    for (const [ponderId, ponder] of Object.entries(ponders)) {
+        if (isPondered(ponderId)) {
+
+            if (ponderId.startsWith('fasterResourceGain')) {
+                // console.log('Faster Resource', ponderId);
+                total *= 1.05; // Apply the bonus for this specific ponder
+            }
+
+            if (ponderId.startsWith('fasterPonder')) {
+                if (resourceName === 'ponder') total *= 1.05;
+            }
+        }
+    }
     return total;
 }
 
@@ -93,19 +113,6 @@ function calcIncrease(resourceName, delta_time) {
     // if (resourceName === 'bread' && isPondered('eatBread')) return parseFloat((-1 * delta_time / 1000).toFixed(3));
 
     const buildings = require("./json/buildings").buildings;
-    // clones increase by 1 per second as long as there's space
-    // if (resource === 'clones' && passedStage('clone')) {
-    //     total = 1;
-    //     return total;
-    // }
-    // if (!resources.hasOwnProperty(resourceName)) {
-    //     if (craftedResources.hasOwnProperty(resourceName)) {
-    //         // check our factories
-    //         total = getFactoryProduction(resourceName);
-    //         if (total > 0) return total; // Don't apply skills to factories
-    //     }
-    //     else return total; // if not a resource or a crafted resource, return 0
-    // }
 
     if (resourceName === 'clones' && isPondered('autoClone')) total = 1;
 
@@ -117,6 +124,7 @@ function calcIncrease(resourceName, delta_time) {
     // Check jobs
     let leaderMult = hasPerk('Leader') ? cloneMult * 1.5 : cloneMult;
     total += leaderMult * getWorkers(resourceName) || 0;
+    if (hasPrestige('cloneBoost')) total *= 1.05 * getWorkers(resourceName) * getLevelOfPrestige('cloneBoost');
 
 
     // Apply perks production boost
@@ -144,41 +152,25 @@ function calcIncrease(resourceName, delta_time) {
         }
     }
 
-    // Apply ponder bonuses
-    function applyPonderBonuses(total) {
-        for (const [ponderId, ponder] of Object.entries(ponders)) {
-            if (isPondered(ponderId)) {
 
-                if (ponderId.startsWith('fasterResourceGain')) {
-                    // console.log('Faster Resource', ponderId);
-                    total *= 1.05; // Apply the bonus for this specific ponder
-                }
-
-                if (ponderId.startsWith('fasterPonder')) {
-                    if (resourceName === 'ponder') total *= 1.05;
-                }
-            }
-        }
-        return total;
-    }
-
+    // console.log('building boosts', resourceName, total);
     if (isPondered('eatBread') && getMaterial('bread') > 0) total *= 1.1;
 
     // Usage: Apply ponders to the 'total' value
-    total = applyPonderBonuses(total);
+    total = applyPonderBonuses(total, resourceName);
     // if (isPondered('fasterResourceGain')) total *= 1.05;
+    // console.log('ponder boosts', resourceName, total);
 
-    if (hasPrestige('cloneBoost')) total *= 1.05 * getLevelOfPrestige('cloneBoost');
 
     // Check tools
     total = applyToolBoost(total, resourceName);
-
+    // console.log('tool boosts', resourceName, total);
     // Need at least 10 husks to boost mathematically (ln(1) = 0)
     if (getMaterial('husks') > 10) total *= 1 + Math.log(getMaterial('husks') / 10);
 
     // Diminishing returns
     total = Math.sqrt(total);
-
+    // console.log('sqrt', resourceName, total);
     // Convert from seconds to milliseconds
     return parseFloat((total * delta_time / 1000).toFixed(3));
 }

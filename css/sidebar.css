@@ -67,6 +67,9 @@ p.resource {
 
 .resourceValue {
     flex: 1;
+    /* border-left: 1px solid #bbb;
+    border-right: 1px solid #bbb;
+    border-bottom-width: 3px; */
     /* Distribute width equally among children */
     /* text-align: center; */
     /* Center-align the text */

@@ -181,8 +181,7 @@ function createResourceTag(resourceName, groupName) {
 
     const resourceRateSpan = document.createElement('span');
     resourceRateSpan.className = 'resourceRate';
-    resourceRateSpan.innerHTML = `(+
-            <span id="${resourceName}IncreaseRate">0</span>/s)`;
+    resourceRateSpan.innerHTML = `<span id="${resourceName}IncreaseRate"></span>)`;
 
     resourceElement.appendChild(resourceNameSpan);
     resourceElement.appendChild(resourceValueSpan);
@@ -194,30 +193,30 @@ function createResourceTag(resourceName, groupName) {
     // Update the ordering
 
     // Function to change the order of a resource
-    function changeResourceOrder(resourceId, newOrder) {
-        const resource = document.getElementById(resourceId);
-        if (resource) {
-            resource.style.order = newOrder;
-        }
-    }
+    // function changeResourceOrder(resourceId, newOrder) {
+    //     const resource = document.getElementById(resourceId);
+    //     if (resource) {
+    //         resource.style.order = newOrder;
+    //     }
+    // }
 
 
-    changeResourceOrder("resource-clones", 1);
-    changeResourceOrder("resource-sticks", 2); // Move "Sticks" to order 2
-    changeResourceOrder("resource-vines", 3); // Move "Vines" to order 3
-    changeResourceOrder("resource-rocks", 4);
-    changeResourceOrder("resource-fish", 5);
-    changeResourceOrder("resource-freshwater", 6);
-    changeResourceOrder("resource-wood", 7);
-    changeResourceOrder("resource-ore", 8);
-    changeResourceOrder("resource-sand", 9);
-    changeResourceOrder("resource-clay", 10);
-    changeResourceOrder("resource-wheat", 11);
-    changeResourceOrder("resource-hides", 12);
-    changeResourceOrder("resource-game", 13);
-    changeResourceOrder("resource-herbs", 14);
-    changeResourceOrder("resource-berries", 15);
-    changeResourceOrder("resource-ponder", 50);
+    // changeResourceOrder("resource-clones", 1);
+    // changeResourceOrder("resource-sticks", 2); // Move "Sticks" to order 2
+    // changeResourceOrder("resource-vines", 3); // Move "Vines" to order 3
+    // changeResourceOrder("resource-rocks", 4);
+    // changeResourceOrder("resource-fish", 5);
+    // changeResourceOrder("resource-freshwater", 6);
+    // changeResourceOrder("resource-wood", 7);
+    // changeResourceOrder("resource-ore", 8);
+    // changeResourceOrder("resource-sand", 9);
+    // changeResourceOrder("resource-clay", 10);
+    // changeResourceOrder("resource-wheat", 11);
+    // changeResourceOrder("resource-hides", 12);
+    // changeResourceOrder("resource-game", 13);
+    // changeResourceOrder("resource-herbs", 14);
+    // changeResourceOrder("resource-berries", 15);
+    // changeResourceOrder("resource-ponder", 50);
 
     return resourceElement;
 }
@@ -252,7 +251,7 @@ function updateDisplayValue(material) {
                 const inc = calcIncrease(material, 1000);
                 // console.log(inc, elementIncrease);
                 if (inc === 0 || Number.isNaN(inc)) elementIncrease.parentElement.innerHTML = `<span id="${material}IncreaseRate"></span>`;
-                else elementIncrease.parentElement.innerHTML = `(<span id="${material}IncreaseRate">${calcIncrease(material, 1000).toFixed(1)}</span>/s)`;
+                else elementIncrease.parentElement.innerHTML = `${inc >= 0 ? '+' : '-'}<span id="${material}IncreaseRate">${inc.toFixed(2)}</span>/s`;
             }
             // console.log(material, shouldHide(material), getMaterial(material));
             if (shouldHide(material)) {

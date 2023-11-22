@@ -38,6 +38,7 @@ const { GameSimulator } = require('./GameSimulator');
 const { initializeApp } = require('@firebase/app');
 const { getAnalytics } = require('@firebase/analytics');
 const { setMaterial } = require('./setMaterial');
+const { recalculateAllBuildingCosts } = require('./recalculateBuildingCost');
 
 
 
@@ -285,6 +286,10 @@ document.addEventListener('keydown', function (event) {
         case 'Escape':
             toggleOptions();
             break;
+        case ' ': // Space key
+            if (event.target === document.body) event.preventDefault(); // Don't scroll down
+            if (passedStage('clone')) increaseCloneByOne(event);
+            break;
         default:
             break;
     }
@@ -413,7 +418,7 @@ function loop(current_time) {
     while (accumulated_lag >= milliseconds_per_frame) {
 
         accumulated_lag -= milliseconds_per_frame;
-        update(milliseconds_per_frame, total_time);
+        update(milliseconds_per_frame);
     }
 
     milliseconds_per_frame = normalRate;
@@ -425,13 +430,14 @@ let time_since_last_save = 0;
 let time_since_manufature = 0;
 const save_rate = 10_000;
 const manufacture_rate = 1_000;
-function update(delta_time, total_time) {
+function update(delta_time) {
 
-    for (const [i, key] of Object.entries(allMaterials)) {
+    // Go through unique resources
+    for (const key of [... new Set(Object.values(allMaterials))]) {
         increaseMaterial(key, calcIncrease(key, delta_time));
     }
 
-    updateResourceIncreaseRates();
+    // updateResourceIncreaseRates();
     render();
 
     // Save the game every 10 seconds
@@ -627,11 +633,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
             // one of our buttons was clicked
             const button = event.target;
-            // console.log('clicked', button);
-
-            // Update tooltips 
-            // if (button.classList.contains('tooltip')) updateTooltip(button);
-            // updateTooltip(button);
 
             // BUILDING BUTTONS
             // @ts-ignore
@@ -639,8 +640,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
                 // @ts-ignore
                 var building = button.getAttribute('data_building');
-                const x = event.pageX;
-                const y = event.pageY;
+                const x = event.clientX;
+                const y = event.clientY;
 
                 playSound('./audio/building.wav', true);
 
@@ -688,6 +689,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
                         // console.log("Unlocking " + unlockAttr);
                         // Refresh the page when buying organized storage to generate the groups
                         if (unlockAttr === 'organization') location.reload();
+
+                        if (unlockAttr.startsWith('ponderEffectiveBuildings')) recalculateAllBuildingCosts();
                     }
                 }
 
@@ -707,14 +710,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     let cr = getCRKeyFromID(button.id);
 
 
-                    if (canCraft(cr)) triggerFloatUpText(event.pageX, event.pageY, `+${cr}`, 'aqua');
+                    if (canCraft(cr)) triggerFloatUpText(event.clientX, event.clientY, `+${cr}`, 'aqua');
                     if (event.shiftKey) craftAllResources(cr);
                     else craftResource(cr);
 
                 }
 
                 // @ts-ignore
-                else if (button.id === 'saveButton') saveGame();
+                else if (button.id === 'saveButton') { playSound('./audio/options.wav'); saveGame(); }
 
                 // @ts-ignore
                 else if (button.id === 'eatFish') eatFish();
@@ -760,22 +763,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
         // @ts-ignore
         if (event.target.matches("#alone")) {
-            // increaseMaterial('clones', 1);
-            let text = '+1 Clone';
-
-            // Hardcoded instead to avoid increase affected by productivity bonuses
-            if (getMaterial('clones') < getMax('clones')) { resources['clones'].value += 1; }
-            else text = 'Max Clones';
-
-            playSound(text === '+1 Clone' ? './audio/clone.wav' : './audio/failclone.wav');
-
-
-            const x = event.pageX; // X coordinate of the click
-            const y = event.pageY; // Y coordinate of the click
-            const color = text === '+1 Clone' ? 'green' : 'red';
-            triggerFloatUpText(x, y, text, color);
-            updateTotal();
-            updateDisplayValue('clones');
+            increaseCloneByOne(event);
         }
     });
 
@@ -874,6 +862,25 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 });
 
+
+function increaseCloneByOne(event) {
+    // increaseMaterial('clones', 1);
+    let text = '+1 Clone';
+
+    // Hardcoded instead to avoid increase affected by productivity bonuses
+    if (getMaterial('clones') < getMax('clones')) { resources['clones'].value += 1; }
+    else text = 'Max Clones';
+
+    playSound(text === '+1 Clone' ? './audio/clone.wav' : './audio/failclone.wav');
+
+
+    const x = event.pageX || 10; // X coordinate of the mouse
+    const y = event.pageY || 120; // Y coordinate of the mouse
+    const color = text === '+1 Clone' ? 'green' : 'red';
+    triggerFloatUpText(x, y, text, color);
+    updateTotal();
+    updateDisplayValue('clones');
+}
 
 /**
  * Get the next fibonacci number
