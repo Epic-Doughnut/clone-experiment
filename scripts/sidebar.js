@@ -1,10 +1,9 @@
+// @ts-nocheck
 const { calcIncrease } = require("./calcIncrease");
 const { capitalizeFirst } = require('./capitalizeFirst');
 const { getMaterial } = require("./getMaterial");
 const { getMax } = require("./helper");
 const { resources } = require("./json/resources");
-// @ts-ignore
-const { isPondered } = require('./ponder');
 
 
 
@@ -189,35 +188,6 @@ function createResourceTag(resourceName, groupName) {
 
     groupContainer.appendChild(resourceElement);
 
-
-    // Update the ordering
-
-    // Function to change the order of a resource
-    // function changeResourceOrder(resourceId, newOrder) {
-    //     const resource = document.getElementById(resourceId);
-    //     if (resource) {
-    //         resource.style.order = newOrder;
-    //     }
-    // }
-
-
-    // changeResourceOrder("resource-clones", 1);
-    // changeResourceOrder("resource-sticks", 2); // Move "Sticks" to order 2
-    // changeResourceOrder("resource-vines", 3); // Move "Vines" to order 3
-    // changeResourceOrder("resource-rocks", 4);
-    // changeResourceOrder("resource-fish", 5);
-    // changeResourceOrder("resource-freshwater", 6);
-    // changeResourceOrder("resource-wood", 7);
-    // changeResourceOrder("resource-ore", 8);
-    // changeResourceOrder("resource-sand", 9);
-    // changeResourceOrder("resource-clay", 10);
-    // changeResourceOrder("resource-wheat", 11);
-    // changeResourceOrder("resource-hides", 12);
-    // changeResourceOrder("resource-game", 13);
-    // changeResourceOrder("resource-herbs", 14);
-    // changeResourceOrder("resource-berries", 15);
-    // changeResourceOrder("resource-ponder", 50);
-
     return resourceElement;
 }
 
@@ -238,20 +208,18 @@ module.exports = {
 function updateDisplayValue(material) {
     const element = resourcesContainer.querySelector(`#${material}Value`);
     const elementIncrease = resourcesContainer.querySelector(`#${material}IncreaseRate`);
-    // const craftedButton = document.querySelector(`button#craft${capitalizeFirst(material)}`);
-    // try { if (!element) createResourceTag(material); }
-    // catch (error) { }
-    // console.log(material, element, craftedButton);
+
     if (element) {
         try {
             const count = getMaterial(material);
             const max = getMax(material);
-            // let max = (getMax(material) && getMax(material) < Infinity) ? getMax(material).toFixed(1) : '∞';
             element.textContent = `${abbreviateNumber(count)} / ${abbreviateNumber(max)}`;
+
             element.style.color = 'white';
             if (count / max > .6) element.style.color = '#ffc';
             if (count / max > .8) element.style.color = '#fec';
             if (count / max > .95) element.style.color = '#fcc';
+
             if (elementIncrease) {
                 const inc = calcIncrease(material, 1000);
                 // console.log(inc, elementIncrease);
@@ -260,30 +228,22 @@ function updateDisplayValue(material) {
             }
             // console.log(material, shouldHide(material), getMaterial(material));
             if (shouldHide(material)) {
-                // @ts-ignore
                 element.parentElement.style.display = 'none';
             } else {
-                // @ts-ignore
                 element.parentElement.style.display = '';
             }
         } catch (error) {
             console.error(element, material, error);
         }
 
-        if (resources[material]) {
-            if (resources[material].isGetting) {
-                const sidebarText = document.querySelector("#resources").querySelector('#resource-' + material);
-                // @ts-ignore
-                if (sidebarText) sidebarText.style.fontWeight = 'bold';
+        // Bold resource when we're gathering it
+        if (resources[material] && resources[material].isGetting) {
+            const sidebarText = document.querySelector("#resources").querySelector('#resource-' + material);
 
-            }
+            if (sidebarText) sidebarText.style.fontWeight = 'bold';
 
         }
+
+
     }
-    // if (craftedButton) {
-    //     const countSpan = craftedButton.querySelector(`#${material}Value`);
-    //     // console.log('crafted button was found', countSpan, material, getCraftedResource(material));
-    //     if (countSpan) countSpan.textContent = getCraftedResource(material).toFixed(0);
-    //     else console.warn(`Resource button found but no count span for: ${material}`);
-    // }
 }
