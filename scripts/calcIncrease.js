@@ -105,10 +105,12 @@ function applyPonderBonuses(total, resourceName) {
  * Calculate the amount a resource should increase by in a given time period
  * @param {string} resourceName The resource to calculate
  * @param {number} delta_time How much time has elapsed
- * @returns The amount that resource should increase by
- */
+ * @returns {number} The amount that resource should increase by
+*/
 function calcIncrease(resourceName, delta_time) {
     var total = 0;
+    // console.log('calcIncrease', resourceName, delta_time);
+    if (isPondered('eatBread') && getMaterial('bread') > 0 && resourceName === 'bread') return parseFloat((-1 * delta_time / 1000).toFixed(3));
 
     // if (resourceName === 'bread' && isPondered('eatBread')) return parseFloat((-1 * delta_time / 1000).toFixed(3));
 
@@ -154,8 +156,7 @@ function calcIncrease(resourceName, delta_time) {
 
 
     // console.log('building boosts', resourceName, total);
-    if (isPondered('eatBread') && getMaterial('bread') > 0) total *= 1.1;
-
+    if (isPondered('eatBread') && getMaterial('bread') > 0 && resourceName !== 'bread') total *= 1.1;
     // Usage: Apply ponders to the 'total' value
     total = applyPonderBonuses(total, resourceName);
     // if (isPondered('fasterResourceGain')) total *= 1.05;

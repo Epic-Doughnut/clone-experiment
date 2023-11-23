@@ -60,35 +60,37 @@ function showTooltip(target, desc, effect, cost) {
         return amount;
     }
 
-    try {
-        // console.log('cost of tooltip:', cost);
-        if (cost.toString().includes('span')) {
-            // content += `<span style="color:#F4D03F">${cost}</span><br>`;
-            // console.log('running procmat for ', cost);
-            content += processMaterials(cost, resources);
-        }
-        else {
-            var str = '';
-            for (const [material, amount] of Object.entries(cost)) {
-                // const material = req;
-                const hasEnough = getMaterial(material, resources) >= amount; /* Your logic to check if there's enough of the material *//* Your logic to check if there's enough of the material */;
-                var colorClass = hasEnough ? 'enough' : 'not-enough';
-                if (getMax(material) < amount) colorClass = 'exceeds-max';
-                str += `<span class="tooltip-${material} ${colorClass}">${amount.toFixed(0)} ${material}</span>`;
-
-                let secondsRemaining = 0;
-                if (resources[material]) secondsRemaining = calcSecondsRemaining(material, amount);
-                // console.log(secondsRemaining);
-                if (secondsRemaining > 0 && colorClass != 'exceeds-max') { str += `<span class="time-remaining">(${(secondsRemaining).toFixed(0)} seconds)</span>`; }
-                str += `<br>`;
+    if (cost) {
+        try {
+            // console.log('cost of tooltip:', cost);
+            if (cost.toString().includes('span')) {
+                // content += `<span style="color:#F4D03F">${cost}</span><br>`;
+                // console.log('running procmat for ', cost);
+                content += processMaterials(cost, resources);
             }
-            content += str;
+            else {
+                var str = '';
+                for (const [material, amount] of Object.entries(cost)) {
+                    // const material = req;
+                    const hasEnough = getMaterial(material, resources) >= amount; /* Your logic to check if there's enough of the material *//* Your logic to check if there's enough of the material */;
+                    var colorClass = hasEnough ? 'enough' : 'not-enough';
+                    if (getMax(material) < amount) colorClass = 'exceeds-max';
+                    str += `<span class="tooltip-${material} ${colorClass}">${amount.toFixed(0)} ${material}</span>`;
+
+                    let secondsRemaining = 0;
+                    if (resources[material]) secondsRemaining = calcSecondsRemaining(material, amount);
+                    // console.log(secondsRemaining);
+                    if (secondsRemaining > 0 && colorClass != 'exceeds-max') { str += `<span class="time-remaining">(${(secondsRemaining).toFixed(0)} seconds)</span>`; }
+                    str += `<br>`;
+                }
+                content += str;
 
 
+            }
+        } catch (error) {
+            if (cost !== undefined && cost !== 'undefined') content += cost;
+            // console.error("Couldn't make normal cost for button: ", target, cost, error);
         }
-    } catch (error) {
-        if (cost !== undefined && cost !== 'undefined') content += cost;
-        // console.error("Couldn't make normal cost for button: ", target, cost, error);
     }
     // console.log(target, content);
     // @ts-ignore
