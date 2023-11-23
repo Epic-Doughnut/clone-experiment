@@ -313,6 +313,9 @@ canvas.height = window.innerHeight;
 //     });
 // });
 
+/**
+ * @deprecated 
+ */
 function drawAllConnections() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     try {
@@ -332,6 +335,15 @@ function drawAllConnections() {
     catch (error) { console.warn('drawAllConnections', error); }
 }
 
+/**
+ * @deprecated 
+ * @param {*} context 
+ * @param {*} fromX 
+ * @param {*} fromY 
+ * @param {*} toX 
+ * @param {*} toY 
+ * @param {*} radius 
+ */
 function drawArrowhead(context, fromX, fromY, toX, toY, radius) {
     let x_center = toX;
     let y_center = toY;
@@ -365,6 +377,12 @@ function drawArrowhead(context, fromX, fromY, toX, toY, radius) {
     context.fill();
 }
 
+/**
+ * @deprecated 
+ * @param {*} startElement 
+ * @param {*} endX 
+ * @param {*} endY 
+ */
 function drawLine(startElement, endX, endY) {
     let rect = startElement.getBoundingClientRect();
     // let offset = Math.random() * 100 + 100
