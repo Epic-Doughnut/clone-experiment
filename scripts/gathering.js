@@ -1,6 +1,7 @@
 const { resources } = require('./json/resources');
 const { capitalizeFirst } = require('./capitalizeFirst');
 const { getSfxVolume } = require('./audio');
+const { updateDisplayValue } = require('./sidebar');
 
 /* GATHERING MATERIALS*/
 const sidebarParent = document.querySelector("#resources");
@@ -17,7 +18,7 @@ function stopAllGathering() {
         const sidebarText = sidebarParent.querySelector('#resource-' + key);
         // @ts-ignore
         if (sidebarText) sidebarText.style.fontWeight = 'normal';
-
+        updateDisplayValue(key);
     }
 }
 const emojiGatherDiv = document.querySelector('#emojiGatherDisplay');

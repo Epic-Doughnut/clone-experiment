@@ -153,7 +153,9 @@ function buyBuilding(buildingName) {
 
     for (const [key, val] of Object.entries(building.boost)) {
         // Get the rate of change for this resource
-        const rect = document.getElementById(`${key}IncreaseRate`).getBoundingClientRect();
+        const rateElement = document.getElementById(`${key}IncreaseRate`);
+        if (!rateElement) continue;
+        const rect = rateElement.getBoundingClientRect();
         triggerFloatUpText(rect.right, rect.bottom, `+speed`, 'aqua');
     }
     // Update button text

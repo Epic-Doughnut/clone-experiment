@@ -942,7 +942,6 @@ function isekai() {
         overlay.style.display = 'none';
 
         let lastBuilding = null;
-        const newBuildingsCount = 5;
         for (let i = 0; i < newBuildingsCount; i++) {
             const randomBuilding = generateRandomBuilding();
             buildings[randomBuilding.name.split(' ').join('_')] = randomBuilding;
@@ -952,6 +951,7 @@ function isekai() {
         initializeResourceTags(false);
     });
 
+    const newBuildingsCount = 4;
     overlayBackButton.addEventListener('click', () => {
         // Just close the overlay without executing reset functions
         overlay.style.display = 'none';
@@ -967,7 +967,7 @@ function isekai() {
     if (oldHuskValue) huskValue = oldHuskValue;
     else huskValue = document.createElement('p');
     huskValue.id = 'husksIsekaiValue';
-    huskValue.innerHTML = `Husks:  ${getMaterial('husks')} <br> You will get ${getMaterial('clones')} Husks post-isekai.<br>You will receive 5 randomly generated new buildings, unique to this new world.`;
+    huskValue.innerHTML = `Husks:  ${getMaterial('husks')} <br> You will get ${getMaterial('clones')} Husks post-isekai.<br>You will receive ${newBuildingsCount} randomly generated new buildings, unique to this new world.`;
 
     huskValue.style.opacity = '0';
     overlay.prepend(huskValue);

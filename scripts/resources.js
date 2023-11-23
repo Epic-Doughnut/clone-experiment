@@ -236,17 +236,30 @@ function generateTooltipCost(requirements) {
 const emojiDisplay = document.getElementById('emojiDisplay');
 function updateEmojiDisplay() {
     let emojiStr = "";
-
+    function getColorComponent() {
+        return (Math.floor(Math.random() * 55 + 200));
+    }
     // Loop through the jobCounts map to get each job and its count
-    for (let resource in resources) {
-        // let resource = resources[getAffectedResources(job)[0]];
-        let count = getWorkers(resource);
-        // console.log(resource, count);
-        if (count === undefined || count == 0) continue;
-        let emoji = resources[resource].emoji || '𓀟';  // get the emoji corresponding to the job from the resources map
-        // console.log(job, emoji);
-        if (emoji) {
-            emojiStr += `<span class='tooltip' tooltipdesc='${resource}'>${emoji.repeat(count)}</span>`;  // repeat the emoji based on the count
+    for (const [skillKey, skill] of Object.entries(skills)) {
+
+        const red = getColorComponent();
+        const blue = getColorComponent();
+        const green = getColorComponent();
+        const skillColor = `rgb(${red}, ${green}, ${blue})`;
+        // console.log(skillKey, skillColor);
+        for (const resource of Object.values(skill.affectedResources)) {
+            // console.log(resource);
+            // for (let resource in resources) {
+            // let resource = resources[getAffectedResources(job)[0]];
+            const count = getWorkers(resource);
+            // console.log(resource, count);
+            if (count === undefined || count == 0) continue;
+            const emoji = resources[resource].emoji || '𓀟';  // get the emoji corresponding to the job from the resources map
+            // console.log(job, emoji);
+            if (emoji) {
+                emojiStr += `<span class='tooltip' style='color:${skillColor};'tooltipdesc='${resource}' tooltipcost=''>${emoji.repeat(count)}</span>`;  // repeat the emoji based on the count
+                // Color in range 0xccc - 0xfff
+            }
         }
     }
 
@@ -258,14 +271,14 @@ function updateEmojiDisplay() {
         emojiDisplay.style.fontSize = `${fontSize}px`;
 
         while ((emojiDisplay.offsetWidth > 600) && fontSize > 30) {
-            // 10 is a minimum font-size threshold to prevent an infinite loop
+            // 30 is a minimum font-size threshold to prevent an infinite loop
             fontSize -= 1; // decrease the font size
             emojiDisplay.style.fontSize = `${fontSize}px`;
         }
     }
 
     // Call this function whenever the content of #emojiDisplay changes
-    adjustFontSize();
+    // adjustFontSize();
 
 }
 

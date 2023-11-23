@@ -244,9 +244,14 @@ function updateDisplayValue(material) {
     // console.log(material, element, craftedButton);
     if (element) {
         try {
+            const count = getMaterial(material);
+            const max = getMax(material);
             // let max = (getMax(material) && getMax(material) < Infinity) ? getMax(material).toFixed(1) : '∞';
-            element.textContent = `${abbreviateNumber(getMaterial(material))} / ${abbreviateNumber(getMax(material))}`;
-
+            element.textContent = `${abbreviateNumber(count)} / ${abbreviateNumber(max)}`;
+            element.style.color = 'white';
+            if (count / max > .6) element.style.color = '#ffc';
+            if (count / max > .8) element.style.color = '#fec';
+            if (count / max > .95) element.style.color = '#fcc';
             if (elementIncrease) {
                 const inc = calcIncrease(material, 1000);
                 // console.log(inc, elementIncrease);
