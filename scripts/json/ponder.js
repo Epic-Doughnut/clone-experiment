@@ -227,7 +227,7 @@ let ponders = {
         id: 'ponderBiggerTeepee',
         requirement: () => true,
         isPondered: false,
-        text: "Double diameter Teepees",
+        text: "Double Tepees",
         tooltipDesc: "Teepees can house 4 more clones each",
         cost: { 'ponder': 1250, 'wood': 3000, 'hides': 1500 }
     },

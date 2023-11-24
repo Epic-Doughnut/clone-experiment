@@ -16,6 +16,7 @@ const { ponders } = require('./json/ponder');
 const { logEvent, getAnalytics } = require('@firebase/analytics');
 const { getPlayerUid } = require('./playerUid');
 const { triggerFloatUpText } = require('./triggerFloatUpText');
+const { makeVisible } = require('./makeVisible');
 
 /* BUILDINGS */
 
@@ -133,6 +134,7 @@ function buyBuilding(buildingName) {
 
     if (!canBuyBuilding(buildingName)) return;
 
+    if (!passedStage('buildings')) makeVisible('buildings');
     // Actually build the building
     building.count++;
 

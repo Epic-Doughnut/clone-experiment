@@ -362,7 +362,10 @@ function hideOverlay() {
     overlayButton.style.opacity = '0';
 
     const overlay = document.getElementById('overlay');
-    overlay.style.display = 'none';
+    overlay.style.opacity = '0';
+    setInterval(() => {
+        overlay.style.display = 'none';
+    }, 1000);
 
     const isekaiButtons = document.getElementById('isekaiButtons');
     // isekaiButtons.childNodes.forEach(child => isekaiButtons.removeChild(child));
@@ -949,6 +952,7 @@ function isekai() {
         }
         changeMessage('You are in another world.', 'another', `You feel a need to acquire ${Object.values(lastBuilding.cost).join(',')}`);
         initializeResourceTags(false);
+        location.reload();
     });
 
     const newBuildingsCount = 4;

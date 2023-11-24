@@ -169,7 +169,8 @@ function loadBuildings(savegame) {
 
     if (typeof savegame.newBuildings !== 'undefined') {
         for (let b in savegame.newBuildings) {
-            buildings[b] = savegame.newBuildings[b];
+            try { buildings[b] = savegame.newBuildings[b]; }
+            catch (error) { console.warn('error with building', b, error); }
         }
     }
 

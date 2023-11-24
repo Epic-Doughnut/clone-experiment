@@ -35,7 +35,7 @@ const buildings = {
         tooltipDesc: "Every clone's dream. Minus the white picket fence.",
         emoji: '介'
     },
-    'teepee': {
+    'tepee': {
         basecost: { 'wood': 10, 'hides': 25, 'fish': 15 },
         effects: { 'clones': 2 },
         boost: {},
@@ -84,7 +84,7 @@ const buildings = {
         tooltipDesc: "Chuck a bunch of logs in a pile, what could happen?",
         emoji: '品'
     },
-    "drying_racks": {
+    "drying_rack": {
         "basecost": { "sticks": 30, "fish": 5 },
         "effects": { "fish": 20 },
         "boost": {},
@@ -209,7 +209,7 @@ const buildings = {
         tooltipDesc: "A nice grove of trees to find wood faster.",
         emoji: '𓆭𓆭'
     },
-    "fish_traps": {
+    "fish_trap": {
         "basecost": {
             "rope": 40
         },
@@ -547,7 +547,7 @@ function isPopBuilding(buildingName) {
         case 'shelter':
         case 'hut':
         case 'house':
-        case 'teepee':
+        case 'tepee':
         case 'hospital':
         case 'barracks':
             return true;
