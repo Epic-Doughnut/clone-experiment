@@ -321,6 +321,7 @@ function eatFish() {
         // @ts-ignore
         increaseMaterial('fish', -1);
         // Call this function to start the sequence
+        overlayText.textContent = "That fish didn't taste too good, hopefully you won't need to pilot any airplanes. Who's that standing there?";
         fadeToBlack();
         // Hide fish button
         setAteFish(true);
@@ -336,11 +337,7 @@ function eatFish() {
     }
 }
 
-
 function fadeToBlack() {
-    const overlay = document.getElementById('overlay');
-    const overlayText = document.getElementById('overlay-text');
-    const overlayButton = document.getElementById('overlay-button');
 
     // @ts-ignore
     overlay.style.display = 'flex';
@@ -370,7 +367,7 @@ function hideOverlay() {
     const isekaiButtons = document.getElementById('isekaiButtons');
     // isekaiButtons.childNodes.forEach(child => isekaiButtons.removeChild(child));
     isekaiButtons.innerHTML = '';
-    location.reload();
+    // location.reload();
 }
 
 function navigateTo(url) {
@@ -551,6 +548,7 @@ let currentlyDeleting = false;
 
 // After all has been loaded
 document.addEventListener('DOMContentLoaded', (event) => {
+
 
     // Your web app's Firebase configuration
     // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -811,6 +809,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 
     // Adjust music volume
+    document.getElementById('musicVolume').value = getMusicVolume();
     document.getElementById('musicVolume').addEventListener('input', function () {
         // @ts-ignore
         setMusicVolume(this.value);
@@ -818,6 +817,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     });
 
     // Adjust sfx volume
+    document.getElementById('sfxVolume').value = getSfxVolume();
     document.getElementById('sfxVolume').addEventListener('input', function () {
         // @ts-ignore
         setSfxVolume(this.value);
@@ -979,7 +979,7 @@ function isekai() {
 
     setTimeout(() => {
         // @ts-ignore
-        overlayBackButton.style.opacity = '1';
+        overlayBackButton.style.display = 'block';
     }, 5000);
 
     function createPrestigeButtons() {

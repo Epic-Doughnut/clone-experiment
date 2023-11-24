@@ -11,8 +11,8 @@ function recalculateBuildingCost(buildingKey) {
             building['cost'][material] = Math.round(building.basecost[material] * Math.pow(building.ratio, building.count));
 
             if (require('./perks').hasPerk('Architect')) building.cost[material] *= 0.75; // 25% reduction for architects
-            if (require('./json/prestige').hasPrestige('cheaperBuildings'))
-                building.cost[material] *= Math.pow(0.95, require('./json/prestige').getLevelOfPrestige('cheaperBuildings')); // 5% reduction
+            // if (require('./json/prestige').hasPrestige('cheaperBuildings'))
+            //     building.cost[material] *= Math.pow(0.95, require('./json/prestige').getLevelOfPrestige('cheaperBuildings')); // 5% reduction
         }
     }
 
@@ -23,7 +23,6 @@ function recalculateBuildingCost(buildingKey) {
         myButton.setAttribute('data-tooltip-cost', newText);
         const effectString = require('./buildings').generateEffectString(building);
         myButton.setAttribute('data-tooltip-effect', effectString);
-
     }
     else { throw "Button not found for " + buildingKey; }
 
@@ -31,6 +30,7 @@ function recalculateBuildingCost(buildingKey) {
 exports.recalculateBuildingCost = recalculateBuildingCost;
 
 function recalculateAllBuildingCosts() {
+    console.log('recalculateAllBuildingCosts');;
     const buildings = require('./json/buildings').buildings;
     for (let buildingKey of Object.keys(buildings)) {
         recalculateBuildingCost(buildingKey);

@@ -53,12 +53,12 @@ const prestige = {
         cost: 1,
         level: 0
     },
-    'cheaperBuildings': {
-        text: 'Rickety',
-        tooltipDesc: 'Building Cost (-5%)',
-        cost: 2,
-        level: 0
-    },
+    // 'cheaperBuildings': {
+    //     text: 'Rickety',
+    //     tooltipDesc: 'Building Cost (-5%)',
+    //     cost: 2,
+    //     level: 0
+    // },
     'storageSpace': {
         text: 'Stuffed',
         tooltipDesc: 'Storage Space (+5%)',

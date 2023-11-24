@@ -7,13 +7,18 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 1);
     /* Fully transparent black background */
-    display: none;
+    /* display: none; */
     flex-direction: column;
     justify-content: center;
     align-items: center;
     z-index: 9000;
     /* This ensures the overlay is above all other content */
     transition: 0.5s;
+}
+
+#logo {
+    width: 100px;
+    height: 100px;
 }
 
 #overlay-text {
@@ -24,13 +29,19 @@
     transition: opacity 1s;
 }
 
+#loadingText {
+    top: 40%;
+    color: white;
+    font-size: xx-large;
+}
+
 #overlay-button {
     color: white;
     background-color: transparent;
     border: 2px solid white;
     padding: 10px 20px;
     margin-top: 20px;
-    display: none;
+    /* display: none; */
     cursor: pointer;
 }
 
@@ -64,7 +75,8 @@
 }
 
 #overlay-back-button {
-    opacity: 0;
+    display: none;
+
 }
 
 #husksIsekaiValue {

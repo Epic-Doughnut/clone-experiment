@@ -54,8 +54,8 @@ document.querySelectorAll('.btn-increment').forEach(btn => {
         const jobType = this.closest('.job-button').getAttribute('data-job');
         playSound('./audio/job.wav');
         if (getMaterial('clones', resources) > getTotalJobs()) {
-            const x = event.pageX; // X coordinate of the click
-            const y = event.pageY; // Y coordinate of the click
+            const x = event.clientX; // X coordinate of the click
+            const y = event.clientY; // Y coordinate of the click
 
             if (event.shiftKey) {
                 let difference = getMaterial('clones', resources) - getTotalJobs();
@@ -87,8 +87,8 @@ document.querySelectorAll('.btn-decrement').forEach(btn => {
     btn.addEventListener('click', function (event) {
 
         const jobType = this.closest('.job-button').getAttribute('data-job');
-        const x = event.pageX; // X coordinate of the click
-        const y = event.pageY; // Y coordinate of the click
+        const x = event.clientX; // X coordinate of the click
+        const y = event.clientY; // Y coordinate of the click
         playSound('./audio/job.wav');
         if (event.shiftKey) {
             let numWorkers = jobCounts[jobType];

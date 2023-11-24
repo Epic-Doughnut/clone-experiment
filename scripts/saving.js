@@ -29,6 +29,7 @@ const { updateBuildingList } = require('./buildings');
 const { populateSkillsTable } = require('./skills');
 const { getAnalytics, logEvent } = require('@firebase/analytics');
 const { generateUniqueID } = require('./playerUid');
+const { getMusicVolume, getSfxVolume, setSfxVolume, setMusicVolume } = require('./audio');
 
 
 
@@ -49,7 +50,8 @@ function saveGame() {
         perks: [],
         factories: {},
         prestige: {},
-        newBuildings: {}
+        newBuildings: {},
+        audioVolume: {}
     };
 
     // Extract exp and level from skills and save to save.skills
@@ -86,6 +88,7 @@ function saveGame() {
     save.jobs = jobCounts;
     try { save.perks = [new Set(getAllPerks())]; }
     catch (e) { save.perks = []; console.error('saving perks error', e); }
+    save.audioVolume = { 'music': getMusicVolume(), 'sfx': getSfxVolume() };
 
     // @ts-ignore
     save.connections = Array.from(getConnections().entries());
@@ -312,8 +315,13 @@ function loadGame() {
     if (typeof savegame.prestige !== 'undefined') {
         for (const [key, val] of Object.entries(savegame.prestige)) {
 
-            setPrestigeCost(key, val['cost']);
-            setPrestigeLevel(key, val['level']);
+            try {
+                setPrestigeCost(key, val['cost']);
+                setPrestigeLevel(key, val['level']);
+            }
+            catch (error) {
+                console.warn('error with loading prestige', key, error);
+            }
         }
     }
 
@@ -383,6 +391,10 @@ function loadGame() {
                     loadFactory(key);
 
 
+    if (typeof savegame.audioVolume !== 'undefined') {
+        setMusicVolume(savegame.audioVolume['music']);
+        setSfxVolume(savegame.audioVolume['sfx']);
+    }
 
 }
 
