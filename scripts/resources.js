@@ -242,10 +242,39 @@ function updateEmojiDisplay() {
     // Loop through the jobCounts map to get each job and its count
     for (const [skillKey, skill] of Object.entries(skills)) {
 
-        const red = getColorComponent();
-        const blue = getColorComponent();
-        const green = getColorComponent();
-        const skillColor = `rgb(${red}, ${green}, ${blue})`;
+        let skillColor = "";
+        switch (skillKey) {
+            case 'gathering':
+                skillColor = 'rgb(227, 254, 210)';
+                break;
+            case 'masonry':
+                skillColor = '#ccc4c7';
+                break;
+            case 'carpentry':
+                skillColor = '#f0e7c9';
+                break;
+            case 'hunting':
+                skillColor = '#c9f0d4';
+                break;
+            case 'fishing':
+                skillColor = '#b5d6eb';
+                break;
+            case 'thinking':
+                skillColor = '#b5bceb';
+                break;
+            case 'farming':
+                skillColor = '#ede4c0';
+                break;
+            case 'combat':
+                skillColor = '#edc3c0';
+                break;
+            default:
+                const red = getColorComponent();
+                const blue = getColorComponent();
+                const green = getColorComponent();
+                skillColor = `rgb(${red}, ${green}, ${blue})`;
+                break;
+        }
         // console.log(skillKey, skillColor);
         for (const resource of Object.values(skill.affectedResources)) {
             // console.log(resource);

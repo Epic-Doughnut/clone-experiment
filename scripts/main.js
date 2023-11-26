@@ -39,6 +39,7 @@ const { initializeApp } = require('@firebase/app');
 const { getAnalytics } = require('@firebase/analytics');
 const { setMaterial } = require('./setMaterial');
 const { recalculateAllBuildingCosts } = require('./recalculateBuildingCost');
+const { startPetals, stopPetals, setPetals } = require('./petals');
 
 
 
@@ -339,8 +340,8 @@ function eatFish() {
 
 function fadeToBlack() {
 
-    // @ts-ignore
     overlay.style.display = 'flex';
+    overlay.style.opacity = '1';
 
     setTimeout(() => {
         // @ts-ignore
@@ -355,15 +356,14 @@ function fadeToBlack() {
 }
 
 function hideOverlay() {
-    const overlayText = document.getElementById('overlay-text');
+    // console.log('hiding overlay');
+    // console.trace();
     overlayText.style.opacity = '0';
 
-    const overlayButton = document.getElementById('overlay-button');
     overlayButton.style.opacity = '0';
 
-    const overlay = document.getElementById('overlay');
     overlay.style.opacity = '0';
-    setInterval(() => {
+    setTimeout(() => {
         overlay.style.display = 'none';
     }, 1000);
 
@@ -826,6 +826,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
         setSfxVolume(this.value);
     });
 
+    // Toggle petals
+    document.querySelector('input[name="petals"]').addEventListener('click', (event) => {
+        if (event.target.checked) setPetals(getMaterial('clones'));
+        else stopPetals();
+    });
+
 
 
     // Start the main gameplay loop
@@ -918,6 +924,7 @@ function isekai() {
 
     // Handle the isekai itself
     overlayButton.addEventListener('click', () => {
+        console.log('isekai button clicked');
         const husksDue = getMaterial('clones') + getMaterial('husks');
 
         // Reset functions to be executed when "Continue" is clicked
@@ -957,6 +964,7 @@ function isekai() {
 
     const newBuildingsCount = 4;
     overlayBackButton.addEventListener('click', () => {
+        console.log('back button clicked');
         // Just close the overlay without executing reset functions
         overlay.style.display = 'none';
     });

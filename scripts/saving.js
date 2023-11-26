@@ -30,6 +30,7 @@ const { populateSkillsTable } = require('./skills');
 const { getAnalytics, logEvent } = require('@firebase/analytics');
 const { generateUniqueID } = require('./playerUid');
 const { getMusicVolume, getSfxVolume, setSfxVolume, setMusicVolume } = require('./audio');
+const { setPetals } = require('./petals');
 
 
 
@@ -236,6 +237,8 @@ function loadGame() {
             }
         }
     }
+
+    setPetals(getMaterial('clones'));
 
     if (typeof savegame.skills !== 'undefined') {
         for (let i in savegame.skills) {

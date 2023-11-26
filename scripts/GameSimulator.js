@@ -210,6 +210,7 @@ class GameSimulator {
                     this.gameState.resources.clay = 0;
                 }
             }
+
         }
 
         if (this.gameState.resources.sticks >= 10 && !this.resourcesToGather.includes('vines')) {
