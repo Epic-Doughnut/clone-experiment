@@ -51,7 +51,7 @@ function getMax(material) {
                 max += building.effects[material] * building.count;
         }
         if (hasPrestige('storageSpace') && material !== 'clones') {
-            max = baseMax * (1.05 * getLevelOfPrestige('storageSpace'));
+            max += baseMax * (1.05 * getLevelOfPrestige('storageSpace'));
         } else if (material === 'clones') {
             if (passedStage('clone')) max += 1;
 
