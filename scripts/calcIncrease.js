@@ -126,7 +126,7 @@ function calcIncrease(resourceName, delta_time) {
     // Check jobs
     let leaderMult = hasPerk('Leader') ? cloneMult * 1.5 : cloneMult;
     total += leaderMult * getWorkers(resourceName) || 0;
-    if (hasPrestige('cloneBoost')) total *= 1.05 * getWorkers(resourceName) * getLevelOfPrestige('cloneBoost');
+    if (hasPrestige('cloneBoost') && getWorkers(resourceName) > 0) total *= 1.05 * getWorkers(resourceName) * getLevelOfPrestige('cloneBoost');
 
 
     // Apply perks production boost
