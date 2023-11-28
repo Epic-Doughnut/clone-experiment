@@ -59,12 +59,35 @@ function isConsuming(resource) {
     return resource in activeFactoriesConsuming;
 }
 
+function addProducing(resource) {
+    if (activeFactoriesProducing[resource]) activeFactoriesProducing[resource]++;
+    else activeFactoriesProducing[resource] = 1;
+}
+
+function addConsuming(resource, amount) {
+    if (activeFactoriesConsuming[resource]) activeFactoriesConsuming[resource] += amount;
+    else activeFactoriesConsuming[resource] = amount;
+}
+
+function removeConsuming(resource, amount) {
+    activeFactoriesConsuming[resource] -= amount;
+    if (activeFactoriesConsuming[resource] < 0) activeFactoriesConsuming[resource] = 0;
+}
+
+function removeProducing(resource) {
+    activeFactoriesProducing[resource]--;
+    if (activeFactoriesProducing[resource] < 0) activeFactoriesConsuming[resource] = 0;
+}
+
 // function getFactoryConsumption(resource) {
 //     return activeFactoriesConsuming[resource] * ;
 // }
 
 function getFactoryProduction(resource) {
-    return activeFactoriesProducing[resource] * manufactureBulk;
+    let ret = activeFactoriesProducing[resource];
+    if (Number.isNaN(ret) || ret === undefined) ret = 0;
+    // console.log('getFactoryProduction', resource, activeFactoriesProducing[resource], ret);
+    return ret;
 }
 
 
@@ -211,7 +234,7 @@ function loadFactory(crafting) {
 }
 
 
-let manufactureBulk = 2;
+// let manufactureBulk = 2;
 let bulkUpgradeCost = 30;
 let manufactureBonus = 1;
 /**
@@ -224,8 +247,8 @@ function manufacture(resources, goalResource) {
     // Calculate how many we can afford
     let arr = [];
     resources.forEach(resource => arr.push(getMaterial(resource) / craftedResources[goalResource].cost[resource]));
-    let num = Math.min(manufactureBulk, ...arr);
-    console.log(num, manufactureBulk, ...arr);
+    let num = Math.min(...arr);
+    console.log(num, ...arr);
     num *= manufactureBonus;
     // The factories get to be half price of normal crafting bc efficiency
     require('./resources').craftResourceQuantity(goalResource, num);
@@ -233,18 +256,18 @@ function manufacture(resources, goalResource) {
     // increaseMaterial(resource, -craftedResources[goalResource].cost);
 }
 
-function upgradeBulk() {
-    if (getMaterial('silver') < bulkUpgradeCost) return;
-    manufactureBulk += 2;
-    bulkUpgradeCost += 10;
+// function upgradeBulk() {
+//     if (getMaterial('silver') < bulkUpgradeCost) return;
+//     // manufactureBulk += 2;
+//     bulkUpgradeCost += 10;
 
 
-    playSound('./audio/factorybulk.wav');
+//     playSound('./audio/factorybulk.wav');
 
 
-    const upButton = document.getElementById('upgradeBulkButton');
-    upButton.setAttribute('tooltipCost', `${manufactureBulk} → ${manufactureBulk + 2}: ${bulkUpgradeCost.toFixed(0)} silver`);
-}
+//     const upButton = document.getElementById('upgradeBulkButton');
+//     upButton.setAttribute('tooltipCost', `${manufactureBulk} → ${manufactureBulk + 2}: ${bulkUpgradeCost.toFixed(0)} silver`);
+// }
 
 function attemptManufacture() {
     const factories = document.querySelectorAll('.factory');
@@ -285,9 +308,13 @@ module.exports = {
     createFactoryDiv,
     attemptManufacture,
     buyFactory,
-    upgradeBulk,
+    // upgradeBulk,
     allMaterials,
     getFactoryProduction,
     loadFactory,
-    activeFactoriesProducing
+    activeFactoriesProducing,
+    addProducing,
+    addConsuming,
+    removeConsuming,
+    removeProducing
 };

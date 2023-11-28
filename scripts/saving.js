@@ -224,7 +224,7 @@ function loadGame() {
             if (i.valueOf() === "undefined" || i === null || resources[i] === null) continue;
             try {
                 require('./setMaterial').setMaterial(i, savegame.resources[i].value);
-                require('./setMax').setMax(i, savegame.resources[i].max);
+                // require('./setMax').setMax(i, savegame.resources[i].max);
             }
             catch (error) {
                 console.warn('error with loading resource', i, error);
@@ -238,7 +238,7 @@ function loadGame() {
         }
     }
 
-    setPetals(getMaterial('clones'));
+    setPetals(10);
 
     if (typeof savegame.skills !== 'undefined') {
         for (let i in savegame.skills) {

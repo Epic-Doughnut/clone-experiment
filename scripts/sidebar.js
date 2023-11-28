@@ -1,8 +1,10 @@
 // @ts-nocheck
 const { calcIncrease } = require("./calcIncrease");
 const { capitalizeFirst } = require('./capitalizeFirst');
+const { getFactoryProduction } = require("./factory");
 const { getMaterial } = require("./getMaterial");
 const { getMax } = require("./helper");
+const { getCraftedResourceConfigById, craftedResources } = require("./json/craftedResources");
 const { resources } = require("./json/resources");
 
 
@@ -203,7 +205,7 @@ module.exports = {
 };
 /**
  * Updates the display value of one resource, a specific updateSidebar()
- * @param {string} material
+ * @param {string} material The name of the resource to update
  */
 function updateDisplayValue(material) {
     const element = resourcesContainer.querySelector(`#${material}Value`);
@@ -243,7 +245,14 @@ function updateDisplayValue(material) {
             if (sidebarText) sidebarText.style.fontWeight = 'bold';
 
         }
+    }
 
+    const craftedElement = document.querySelector(`#craft${capitalizeFirst(material)}Button`);
+    if (craftedElement) {
+        craftedElement.textContent = `${craftedResources[material].text || capitalizeFirst(material)}`;
 
+        let factoryCount = getFactoryProduction(material);
+        if (factoryCount === NaN || factoryCount === undefined) factoryCount = 0;
+        if (factoryCount > 0) craftedElement.textContent += `(${factoryCount})`;
     }
 }

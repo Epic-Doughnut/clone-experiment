@@ -48,7 +48,7 @@ const craftedResources = {
         requiredStage: "rocks",
         tooltipDesc: 'Stick some sheared sticks together',
         tooltipCost: 'Handles: 2',
-        class: 'rope'
+        class: 'rocks'
         // tool: 'Bare Hands'
     },
     'fishingrod': {
@@ -72,7 +72,7 @@ const craftedResources = {
             'rope': 1,
         },
         craftedOnce: false,
-        requiredStage: "rocks",
+        requiredStage: "rope",
         tooltipDesc: 'A long and pointy stick',
         tooltipCost: 'Staffs: 1',
         class: 'rope'
@@ -189,7 +189,7 @@ const craftedResources = {
 
 function getCraftedResourceConfigById(id) {
     for (const [c, val] of Object.entries(craftedResources)) {
-        if (val.id === id || val.id === id) {
+        if (val.id === id) {
             return val;
         }
     }

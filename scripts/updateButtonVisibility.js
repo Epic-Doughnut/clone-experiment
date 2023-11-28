@@ -5,8 +5,9 @@ const { isPondered, canUnlock } = require('./ponder');
 const { getCraftedResourceKeyByConfig } = require("./json/craftedResources");
 const { isButtonIdVisible, setVisibleButton } = require('./helper');
 const { canCraft } = require('./canCraft');
-const { canBuyBuilding } = require('./canBuyBuilding');
+const { canBuyBuilding, canStoreBuilding, canAffordCost } = require('./canBuyBuilding');
 const { passedStage } = require('./stages');
+const { ponders, getPonderConfig } = require('./json/ponder');
 /**
  * Changes the states of buttons between 'hidden', 'purchasable', and 'button-disabled'
  */
@@ -42,13 +43,12 @@ function updateButtonVisibility() {
 
                 // ponder unlocks
                 if (buttonConfig.tab && buttonConfig.tab === 'ponder') {
-                    // console.log(button.classList);
                     if (button.id && button.classList.contains('unlock')) {
-                        // console.log(button);
                         if (canUnlock(button.id)) state = 'purchasable';
+                        if (state != 'hidden') state = canAffordCost(getPonderConfig(button.id).cost) ? state : 'cant-afford';
                         // If a ponder button is unlocked, hide it
                         if (isPondered(button.getAttribute('unlock'))) state = 'hidden';
-                        // console.log(button, state);
+
                     }
                 }
 
@@ -86,15 +86,14 @@ function updateButtonVisibility() {
         }
 
         // If we can afford this building, it should be purchasable
-        // console.log(buttonConfig);
         if (buttonConfig.data_building) {
             // If we've already purchased a building, it should be visible
-            // 
             state = getBuildingCount(buttonConfig.data_building) ? 'button-disabled' : state;
             // Find the building cost
-            // console.log(buttonConfig);
-            // 
             state = canBuyBuilding(buttonConfig.data_building) ? 'purchasable' : state;
+
+            // If we don't have the capacity for one of the materials, it should be 'cant afford'
+            if (state != 'hidden') state = canStoreBuilding(buttonConfig.data_building) ? state : 'cant-afford';
         }
 
         // If hidden is met, it should be hidden

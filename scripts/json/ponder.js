@@ -175,8 +175,8 @@ let ponders = {
     //     tooltipDesc: "Automatically craft resources when they reach the storage limit",
     //     cost: { 'ponder': 400, 'wood': 1000, 'rocks': 500, 'wheat': 1000 }
     // },
-    'factoryTab': {
-        id: 'ponderFactoryTab',
+    'factory': {
+        id: 'ponderFactory',
         requirement: () => true,
         isPondered: false,
         text: "Factories",
@@ -315,10 +315,19 @@ function addPonders(count) {
         };
     }
 }
-
 addPonders(100);
+
+function getPonderConfig(id) {
+    for (const [key, val] of Object.entries(ponders)) {
+        if (val.id === id) {
+            return val;
+        }
+    }
+    return null;
+}
 
 module.exports = {
     ponders: ponders,
-    resetPonders
+    resetPonders,
+    getPonderConfig
 };

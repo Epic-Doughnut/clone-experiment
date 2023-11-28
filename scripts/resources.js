@@ -20,6 +20,7 @@ const { updateDisplayValue } = require("./sidebar");
 const { updateSkills } = require("./skills");
 const { recalcMaxClones } = require("./recalcMaxClones");
 const { triggerFloatUpText } = require("./triggerFloatUpText");
+const { addProducing, addConsuming, removeProducing, removeConsuming } = require("./factory");
 // console.log(capitalizeFirst);
 
 /**
@@ -184,21 +185,65 @@ function appendCraftedResourceButtons() {
 
     // For each resource, create a button using the captured counts
     for (let name in craftedResources) {
+        console.log('generating button for crafted resource', name);
 
         // config.count = craftedResources[name].value;
         const button = createCraftedResourceButton(craftedResources[name]);
         button.setAttribute('data-tooltip-desc', craftedResources[name].tooltipDesc || "");
         button.setAttribute('data-tooltip-cost', generateTooltipCost(craftedResources[name].cost) || "");
         // console.log('tooltip cost', button.getAttribute('data-tooltip-cost'));
-        container.appendChild(button);
-        const reqResult = passedStage(button.getAttribute('requirement'));
+
+
+
+        // Create a div for the + and - buttons
+        const resourceCountDiv = document.createElement('div');
+        resourceCountDiv.className = `factory-${name}`;
+        resourceCountDiv.classList.add('factory-button');
+        // resourceCountDiv.classList.add(craftedResources[name].requiredStage);
+        resourceCountDiv.classList.add('hidden');
+
+        // Create the + button
+        const plusButton = document.createElement('button');
+        plusButton.textContent = '+';
+        plusButton.addEventListener('click', () => {
+            // Add the resource to the list of factory production
+            addProducing(name);
+            Array.from(craftedResources[name].cost).forEach((cost) => {
+                addConsuming(cost.resource, cost.amount);
+            });
+            // Update the display for this crafted resource
+            updateDisplayValue(name);
+        });
+        console.log('added plus button for', name);
+        // Create the - button
+        const minusButton = document.createElement('button');
+        minusButton.textContent = '-';
+        minusButton.addEventListener('click', () => {
+            removeProducing(name);
+            Array.from(craftedResources[name].cost).forEach((cost) => {
+                removeConsuming(cost.resource, cost.amount);
+            });
+            // Update the display for this crafted resource
+            updateDisplayValue(name);
+        });
+
+
+        // Append the buttons to the div
+        resourceCountDiv.appendChild(plusButton);
+        resourceCountDiv.appendChild(minusButton);
+
+        const dummy = document.createElement('div');
+        dummy.style.display = 'flex';
+        dummy.style.flexDirection = 'row';
+        dummy.appendChild(button);
+        dummy.appendChild(resourceCountDiv);
+        container.appendChild(dummy);
+
+        // const reqResult = passedStage(button.getAttribute('requirement'));
         // console.log(reqResult, button.getAttribute('requirement'), Object.values(getAllStages()));
 
-        // TODO: Figure out what the bug is here
-        if (reqResult) button.classList.remove('hidden');
-        else button.classList.add('hidden');
-
-
+        // if (reqResult) button.classList.remove('hidden');
+        // else button.classList.add('hidden');
         buttons[craftedResources[name].id] = craftedResources[name];
     }
 }

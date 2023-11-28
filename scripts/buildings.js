@@ -97,8 +97,7 @@ function createBuildingButton(buildingKey, buildings) {
 
         return button;
     } catch (error) {
-        console.error('Could not create building button for', buildingKey, buildings);
-
+        console.error('Could not create building button for', buildingKey, buildings, error);
     }
 }
 

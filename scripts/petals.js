@@ -49,8 +49,8 @@ class Petal {
 
 
 const canvas = document.querySelector('canvas#fullscreen');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.width = window.outerWidth;
+canvas.height = window.outerHeight;
 const ctx = canvas.getContext('2d');
 
 function render() {
@@ -60,28 +60,45 @@ function render() {
     window.requestAnimationFrame(render);
 }
 
-
-function stopPetals() {
-    for (var i = 0; i < TOTAL; i++)
-        petalArray.pop();
+function getTimeSegment() {
+    const now = new Date();
+    const minutes = now.getMinutes();
+    return (minutes % 5);
 }
-exports.stopPetals = stopPetals;
+
+
 
 /**
- * 
- * @param {number} newTotal 
+ * Set the total number of petals 
+ * @param {number} newTotal How many petals are there?
  */
 function setPetals(newTotal) {
     const petalImg = new Image();
-    petalImg.src = './petal.png';
+    switch (getTimeSegment()) {
+        default:
+        case 1:
+            petalImg.src = './petal.png';
+            break;
+        case 2:
+            petalImg.src = './pollen.png';
+            break;
+        case 3:
+            petalImg.src = './fall.png';
+            break;
+        case 4:
+            petalImg.src = './snowflake.png';
+            break;
+
+
+    };
 
     if (newTotal > petalArray.length) {
-        for (let i = 0; i < newTotal - petalArray.length; i++) {
+        for (let i = 0; i < newTotal - petalArray.length; ++i) {
             petalArray.push(new Petal(petalImg));
         }
     }
     else if (newTotal < petalArray.length) {
-        for (let i = 0; i < petalArray.length - newTotal; i++) {
+        for (let i = 0; i < petalArray.length - newTotal; ++i) {
             petalArray.pop();
         }
     }

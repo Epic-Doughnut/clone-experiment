@@ -63,8 +63,18 @@ function showTab(tabName) {
             simulateBattle();
         }
     }
+    const canvas = document.querySelector('canvas#fullscreen');
+    const body = document.body,
+        html = document.documentElement;
+    canvas.height = Math.min(body.scrollHeight, body.offsetHeight,
+        html.clientHeight, html.scrollHeight, html.offsetHeight);;
+    setTimeout(() => {
+        canvas.width = document.documentElement.scrollWidth;
+        canvas.height = Math.max(body.scrollHeight, body.offsetHeight,
+            html.clientHeight, html.scrollHeight, html.offsetHeight);
+        console.log("changed canvas dimensions", canvas.width, canvas.height);
 
-
+    }, 100);
     console.log(prevTab, '>', tabName);
 
     // updateSidebar();

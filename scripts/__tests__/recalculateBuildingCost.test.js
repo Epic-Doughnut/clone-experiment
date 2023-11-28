@@ -1,17 +1,14 @@
 const { JSDOM } = require('jsdom');
-const { recalculateBuildingCost } = require('../buildings'); // adjust the path accordingly
+const { recalculateBuildingCost } = require('../recalculateBuildingCost');
 
 describe('recalculateBuildingCost', () => {
 
     beforeAll(() => {
         const dom = new JSDOM(`<!doctype html><html>
     <body>
-    <button id="someBuilding" data-tooltip-cost="" data-tooltip-effect=""></button>
     </body>
     </html>`);
         global.document = dom.window._document;
-        // @ts-ignore
-        global.window = dom.window;
     });
 
 
@@ -40,10 +37,11 @@ describe('recalculateBuildingCost', () => {
     // const recalculateBuildingCost = require('../recalculateBuildingCost');
 
     test('recalculateBuildingCost calculates cost without architect perk', () => {
-        hasPerk.mockImplementation((p) => { return false; });
-        recalculateBuildingCost('someBuilding', buildings, hasPerk);
-        expect(buildings.someBuilding.cost.wood).toBe(120);
-        expect(buildings.someBuilding.cost.stone).toBe(60);
+        document.body.innerHTML += '    <button id="shelter" data-tooltip-cost="" data-tooltip-effect=""></button>';
+        hasPerk.mockReturnValue(false);
+        recalculateBuildingCost('shelter');
+        expect(buildings.someBuilding.cost.sticks).toBe(30);
+
     });
 
     test('recalculateBuildingCost applies architect perk', () => {

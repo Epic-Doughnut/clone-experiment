@@ -143,6 +143,10 @@ const visibilityRules = [
     {
         condition: () => passedStage('combatTab'),
         action: () => calculateWinChance()
+    },
+    {
+        condition: () => passedStage('factory'),
+        action: () => makeVisible('factory-button')
     }
 ];
 
@@ -246,10 +250,10 @@ document.addEventListener('keydown', function (event) {
         case '6':
             if (passedStage('perksTab')) showTab('perksTab');
             break;
+        // case '7':
+        //     if (passedStage('factoryTab')) showTab('factoryTab');
+        //     break;
         case '7':
-            if (passedStage('factoryTab')) showTab('factoryTab');
-            break;
-        case '8':
             if (passedStage('combatTab')) showTab('combatTab');
             break;
         case 'a':
@@ -458,13 +462,14 @@ function update(delta_time) {
 
 }
 
+window.setInterval(() => { setPetals(0); setPetals(10); }, 60 * 1000); // Every minute
 // window.setInterval(render, 100) // Update visuals 10 times per second
 // window.setInterval(tick, 1000); // Every tick lasts for 1 second
 // window.setInterval(saveGame, 10000); // Save the game every 10 seconds
-window.onbeforeunload = function () {
-    // We use a function rather than shorthand because savegame returns a string
-    if (!currentlyDeleting) saveGame();
-};
+// window.onbeforeunload = function () {
+//     // We use a function rather than shorthand because savegame returns a string
+//     if (!currentlyDeleting) saveGame();
+// };
 
 
 // const myResources = {};
@@ -579,6 +584,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     loadGame(); // Get all new new buildings and add them with buttons
     generateButtons(); // Call this once on page load or game initialization
     makeFactoryButtons();
+    appendCraftedResourceButtons();
 
     initializeResourceTags();
 
@@ -587,7 +593,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
     clearSidebar();
     initializeResourceTags(isPondered('organization')); // check if we need groups
 
-    appendCraftedResourceButtons();
 
     updateSidebar();
 
@@ -789,19 +794,19 @@ document.addEventListener('DOMContentLoaded', (event) => {
             buyFactory();
         });
 
-        const upgradeBulkButton = document.createElement('button');
-        upgradeBulkButton.classList.add('tooltip');
-        upgradeBulkButton.id = 'upgradeBulkButton';
-        upgradeBulkButton.textContent = 'Upgrade Bulk';
-        upgradeBulkButton.setAttribute('data-tooltip-desc', 'Craft more resources per second');
-        upgradeBulkButton.setAttribute('tooltipCost', '2 → 4: 30 silver');
-        factoryButtons.appendChild(upgradeBulkButton);
+        // const upgradeBulkButton = document.createElement('button');
+        // upgradeBulkButton.classList.add('tooltip');
+        // upgradeBulkButton.id = 'upgradeBulkButton';
+        // upgradeBulkButton.textContent = 'Upgrade Bulk';
+        // upgradeBulkButton.setAttribute('data-tooltip-desc', 'Craft more resources per second');
+        // upgradeBulkButton.setAttribute('tooltipCost', '2 → 4: 30 silver');
+        // factoryButtons.appendChild(upgradeBulkButton);
 
-        // Upgrade bulk button
-        upgradeBulkButton.addEventListener("click", () => {
-            console.log('upgrading bulk');
-            upgradeBulk();
-        });
+        // // Upgrade bulk button
+        // upgradeBulkButton.addEventListener("click", () => {
+        //     console.log('upgrading bulk');
+        //     upgradeBulk();
+        // });
 
 
 
@@ -828,8 +833,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // Toggle petals
     document.querySelector('input[name="petals"]').addEventListener('click', (event) => {
-        if (event.target.checked) setPetals(getMaterial('clones'));
-        else stopPetals();
+        if (event.target.checked) setPetals(10);
+        else setPetals(0);
     });
 
 

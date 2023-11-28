@@ -27,18 +27,29 @@ button.gathering {
 }
 
 .button-disabled {
-    cursor: help;
-    /* Change the mouse cursor on hover to indicate it's disabled */
-    /* background-color: #644; */
-    background-image: linear-gradient(#744, #544);
-    /* Gray color for disabled state */
-    /* Darker text color for contrast with the gray background */
+    color: #ccc;
+    background-image: linear-gradient(#444, #333);
 }
 
+button.cant-afford {
+    color: #faa;
+    cursor: help;
+    background-image: linear-gradient(#444, #333);
+}
 
 button:hover {
     /* background-color: #666; */
     opacity: .9;
+}
+
+div.factory-button.hidden {
+    display: none;
+}
+
+div.factory-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 .button-disabled:hover {
