@@ -4,10 +4,11 @@ const { skills } = require('./json/skills');
 const { getWorkers } = require('./jobs');
 const { hasPerk } = require('./perks');
 const { isPondered } = require('./ponder');
-const { getFactoryProduction } = require("./factory");
+const { getFactoryProduction, getFactoryConsumption } = require("./factory");
 const { hasPrestige, getLevelOfPrestige } = require("./json/prestige");
 const { getMaterial } = require("./getMaterial");
 const { ponders } = require("./json/ponder");
+const { canCraft } = require("./canCraft");
 
 // Clones work at 1/4 the speed by default
 var cloneMult = 0.25;
@@ -171,8 +172,8 @@ function calcIncrease(resourceName, delta_time) {
     total = Math.sqrt(total);
 
     // Factories don't diminish
-    // TODO: fix glitch with crafting more than possible
-    total += getFactoryProduction(resourceName);
+    total += canCraft(resourceName) ? getFactoryProduction(resourceName) : 0;
+    total -= getFactoryConsumption(resourceName);
     // console.log('sqrt', resourceName, total);
     // Convert from seconds to milliseconds
     return parseFloat((total * delta_time / 1000).toFixed(3));

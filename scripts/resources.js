@@ -115,7 +115,7 @@ function increaseMaterial(material, num) {
             updateSkills(material, num);
             if (material === 'violence') require("./combat").refreshValues();
         } else if (num < 0) { // Subtracting resources
-            resources[material].value += num;
+            resources[material].value = Math.max(resources[material].value + num, 0); // Lower bound at 0
         } else { // Already at max
             resources[material].value = getMax(material);
         }
@@ -124,8 +124,9 @@ function increaseMaterial(material, num) {
 
     }
     else if (material in craftedResources) {
-        console.log('crafting a material', material, num);
-        craftedResources[material].value += num;
+        // console.log('crafting a material', material, num);
+        craftedResources[material].value = Math.max(craftedResources[material].value + num, 0); // Lower bound at 0
+
         updateDisplayValue(material);
         updateSkills(material, num);
     }
@@ -205,12 +206,14 @@ function appendCraftedResourceButtons() {
         // Create the + button
         const plusButton = document.createElement('button');
         plusButton.textContent = '+';
-        plusButton.addEventListener('click', () => {
+        plusButton.addEventListener('click', (event) => {
+            // console.log("plus button for", name, craftedResources[name]);
             // Add the resource to the list of factory production
             addProducing(name);
-            Array.from(craftedResources[name].cost).forEach((cost) => {
-                addConsuming(cost.resource, cost.amount);
-            });
+            for (const [resource, amount] of Object.entries(craftedResources[name].cost)) {
+                // console.log("adding consumption", name, resource, amount);
+                addConsuming(resource, amount);
+            }
             // Update the display for this crafted resource
             updateDisplayValue(name);
         });
@@ -218,11 +221,11 @@ function appendCraftedResourceButtons() {
         // Create the - button
         const minusButton = document.createElement('button');
         minusButton.textContent = '-';
-        minusButton.addEventListener('click', () => {
+        minusButton.addEventListener('click', (event) => {
             removeProducing(name);
-            Array.from(craftedResources[name].cost).forEach((cost) => {
-                removeConsuming(cost.resource, cost.amount);
-            });
+            for (const [resource, amount] of Object.entries(craftedResources[name].cost)) {
+                removeConsuming(resource, amount);
+            };
             // Update the display for this crafted resource
             updateDisplayValue(name);
         });

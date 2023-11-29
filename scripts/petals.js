@@ -3,7 +3,7 @@
 // Credit to https://codepen.io/rudtjd2548/pen/qBpVzxP
 // Evan Jin (진경성)
 const TOTAL = 10;
-const petalArray = [];
+let petalArray = [];
 
 // Petal class
 class Petal {
@@ -28,6 +28,21 @@ class Petal {
             this.xSpeed = 1.5 + Math.random() * 2;
             this.ySpeed = 1 + Math.random() * 1;
             this.flip = Math.random();
+            switch (getTimeSegment()) {
+                default:
+                case 1:
+                    this.petalImg.src = './petal.png';
+                    break;
+                case 2:
+                    this.petalImg.src = './pollen.png';
+                    break;
+                case 3:
+                    this.petalImg.src = './fall.png';
+                    break;
+                case 4:
+                    this.petalImg.src = './snowflake.png';
+                    break;
+            };
         }
         ctx.globalAlpha = this.opacity;
         ctx.drawImage(
@@ -53,12 +68,13 @@ canvas.width = window.outerWidth;
 canvas.height = window.outerHeight;
 const ctx = canvas.getContext('2d');
 
-function render() {
+function startPetalRendering() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     petalArray.forEach(petal => petal.animate());
-    window.requestAnimationFrame(render);
+    window.requestAnimationFrame(startPetalRendering);
 }
+exports.startPetalRendering = startPetalRendering;
 
 function getTimeSegment() {
     const now = new Date();
@@ -74,35 +90,13 @@ function getTimeSegment() {
  */
 function setPetals(newTotal) {
     const petalImg = new Image();
-    switch (getTimeSegment()) {
-        default:
-        case 1:
-            petalImg.src = './petal.png';
-            break;
-        case 2:
-            petalImg.src = './pollen.png';
-            break;
-        case 3:
-            petalImg.src = './fall.png';
-            break;
-        case 4:
-            petalImg.src = './snowflake.png';
-            break;
 
 
-    };
+    petalArray = [];
 
-    if (newTotal > petalArray.length) {
-        for (let i = 0; i < newTotal - petalArray.length; ++i) {
-            petalArray.push(new Petal(petalImg));
-        }
+    for (let i = 0; i < newTotal; ++i) {
+        petalArray.push(new Petal(petalImg));
     }
-    else if (newTotal < petalArray.length) {
-        for (let i = 0; i < petalArray.length - newTotal; ++i) {
-            petalArray.pop();
-        }
-    }
-    render();
 }
 
 exports.setPetals = setPetals;

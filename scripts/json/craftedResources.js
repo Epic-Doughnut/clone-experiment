@@ -46,7 +46,7 @@ const craftedResources = {
         cost: { 'handle': 2, 'rope': 1 },
         craftedOnce: false,
         requiredStage: "rocks",
-        tooltipDesc: 'Stick some sheared sticks together',
+        tooltipDesc: 'Stick some sheared sticks together (+ stick production)',
         tooltipCost: 'Handles: 2',
         class: 'rocks'
         // tool: 'Bare Hands'
@@ -58,7 +58,7 @@ const craftedResources = {
         cost: { 'staff': 1, 'rope': 2 },
         craftedOnce: false,
         requiredStage: "fishing",
-        tooltipDesc: 'A weapon feared by underwater life',
+        tooltipDesc: 'A weapon feared by underwater life (+ fish production)',
         tooltipCost: '',
         class: 'fishing'
         // tool: 'Bare Hands'
@@ -84,7 +84,7 @@ const craftedResources = {
         cost: { 'handle': 1, 'rope': 1, 'sharprocks': 2 },
         craftedOnce: false,
         requiredStage: "spear",
-        tooltipDesc: 'Put a rock straight through that handle',
+        tooltipDesc: 'Put a rock straight through that handle (+ wood production)',
         tooltipCost: 'Spears: 1',
         class: 'spear'
         // tool: 'Bare Hands'
@@ -100,7 +100,7 @@ const craftedResources = {
         },
         craftedOnce: false,
         requiredStage: "spear",
-        tooltipDesc: 'Sadly not made of diamonds',
+        tooltipDesc: 'Sadly not made of diamonds (+ ore production)',
         tooltipCost: 'Axes: 1',
         class: 'spear'
     },
@@ -119,7 +119,7 @@ const craftedResources = {
         value: 0,
         cost: { 'wood': 12 },
         craftedOnce: false,
-        tooltipDesc: 'Outsource your memory',
+        tooltipDesc: 'Outsource your memory (+ ponder production)',
         requiredStage: "paper",
         class: 'paper'
     },
@@ -174,16 +174,16 @@ const craftedResources = {
         tooltipcost: '',
         class: 'agriculture'
     },
-    'steel': { value: 0, cost: { 'iron': 5 } },
-    'beams': { value: 0, cost: { 'wood': 10 } },
-    'crates': { value: 0, cost: { 'wood': 15 } },
-    'nails': { value: 0, cost: { 'iron': 1 } },
-    'slabs': { value: 0, cost: { 'rocks': 20 } },
-    'medicine': { value: 0, cost: { 'herbs': 50 } },
-    'leather': { value: 0, cost: { 'hides': 10 } },
-    'concrete': { value: 0, cost: { 'sand': 32 } },
-    'wood': { value: 0, cost: { 'sticks': 8 } },
-    'sticks': { value: 0, cost: { 'wood': .1 } },
+    'steel': { class: 'factory', value: 0, cost: { 'iron': 5 } },
+    'beams': { class: 'factory', value: 0, cost: { 'wood': 10 } },
+    'crates': { class: 'factory', value: 0, cost: { 'wood': 15 } },
+    'nails': { class: 'factory', value: 0, cost: { 'iron': 1 } },
+    'slabs': { class: 'factory', value: 0, cost: { 'rocks': 20 } },
+    'medicine': { class: 'factory', value: 0, cost: { 'herbs': 50 } },
+    'leather': { class: 'factory', value: 0, cost: { 'hides': 10 } },
+    'concrete': { class: 'factory', value: 0, cost: { 'sand': 32 } },
+    'wood': { class: 'factory', value: 0, cost: { 'sticks': 8 } },
+    'sticks': { class: 'factory', value: 0, cost: { 'wood': .1 } },
 
 };
 

@@ -66,7 +66,7 @@ const buttons = {
 
     /* TABS */
     'productionTabButton': {
-        class: 'tab-button',
+        class: 'tab-button active',
         text: 'Production',
         showTab: 'productionTab',
         tab: 'tabs',

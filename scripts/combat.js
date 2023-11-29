@@ -1,5 +1,6 @@
 const { getMaterial } = require("./getMaterial");
 const { increaseMaterial } = require("./resources");
+const { setMaterial } = require("./setMaterial");
 
 
 const lootTable = {
@@ -112,8 +113,11 @@ function checkForWin() {
         } else if (battleResult === "enemy") {
             combatResult.textContent = "The Enemy won!";
         } else {
-            combatResult.textContent = "It's a draw!";
+            combatResult.textContent = "It's a draw! Huh? That's not supposed to happen!";
         }
+
+        // Consume all our violence
+        setMaterial('violence', 0);
 
         setTimeout(() => {
             // @ts-ignore
@@ -255,6 +259,8 @@ function combat() {
     // @ts-ignore
     fightButton.disabled = true;
     hasRewarded = false;
+
+
 
     startAnimation();
 }

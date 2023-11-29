@@ -19,7 +19,7 @@ function updateButtonVisibility() {
         if (!buttonConfig) { /*console.warn('no button config found for', button, button.id); */return; }
         // console.log(buttonConfig.data_building, buttonConfig.requirement);
         // Reset all states first
-        button.classList.remove('hidden', 'purchasable', 'button-disabled');
+        button.classList.remove('hidden', 'purchasable', 'button-disabled', 'cant-afford');
 
         var state = 'hidden';
 
@@ -88,12 +88,12 @@ function updateButtonVisibility() {
         // If we can afford this building, it should be purchasable
         if (buttonConfig.data_building) {
             // If we've already purchased a building, it should be visible
-            state = getBuildingCount(buttonConfig.data_building) ? 'button-disabled' : state;
+            if (state == 'hidden' && getBuildingCount(buttonConfig.data_building)) state = 'cant-afford';
+            // If we don't have the capacity for one of the materials, it should be 'cant afford'
+            if (state != 'hidden') state = canStoreBuilding(buttonConfig.data_building) ? 'button-disabled' : 'cant-afford';
             // Find the building cost
             state = canBuyBuilding(buttonConfig.data_building) ? 'purchasable' : state;
 
-            // If we don't have the capacity for one of the materials, it should be 'cant afford'
-            if (state != 'hidden') state = canStoreBuilding(buttonConfig.data_building) ? state : 'cant-afford';
         }
 
         // If hidden is met, it should be hidden

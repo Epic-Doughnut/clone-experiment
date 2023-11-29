@@ -95,10 +95,11 @@ function showTooltip(target, desc, effect, cost) {
     // console.log(target, content);
     // @ts-ignore
     tooltip.innerHTML = content;
+    const targetRect = target.getBoundingClientRect();
     // @ts-ignore
-    tooltip.style.left = (target.getBoundingClientRect().right + 5) + 'px';
+    tooltip.style.left = (targetRect.right + 5) + 'px';
     // @ts-ignore
-    tooltip.style.top = (target.getBoundingClientRect().top - tooltip.offsetHeight / 2) + 'px';
+    tooltip.style.top = (targetRect.bottom - tooltip.offsetHeight) + 'px';
     // @ts-ignore
     tooltip.style.display = 'block';
 }

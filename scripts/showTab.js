@@ -20,6 +20,9 @@ function showTab(tabName) {
     console.log("show tab: " + tabName);
     // Get all main container divs and hide them
     let prevTab = getCurrentTab();
+    const activeContent = document.getElementById(tabName);
+
+    activeContent.classList.add('active');
 
     if (tabName === prevTab) return;
 
@@ -38,7 +41,6 @@ function showTab(tabName) {
     }
 
     // Show the clicked tab's main container div and make the tab button active
-    let activeContent = document.getElementById(tabName);
     // @ts-ignore
     setTimeout(() => { activeContent.classList.add("active"); }, 100);
     setTimeout(() => {

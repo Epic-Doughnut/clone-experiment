@@ -79,9 +79,12 @@ function removeProducing(resource) {
     if (activeFactoriesProducing[resource] < 0) activeFactoriesConsuming[resource] = 0;
 }
 
-// function getFactoryConsumption(resource) {
-//     return activeFactoriesConsuming[resource] * ;
-// }
+function getFactoryConsumption(resource) {
+    let ret = activeFactoriesConsuming[resource];
+    if (ret === undefined) ret = 0;
+    // console.log('getFactoryConsumption', resource, activeFactoriesConsuming[resource], ret);
+    return ret;
+}
 
 function getFactoryProduction(resource) {
     let ret = activeFactoriesProducing[resource];
@@ -89,6 +92,8 @@ function getFactoryProduction(resource) {
     // console.log('getFactoryProduction', resource, activeFactoriesProducing[resource], ret);
     return ret;
 }
+
+
 
 
 // Function to update resource production and consumption
@@ -239,14 +244,14 @@ let bulkUpgradeCost = 30;
 let manufactureBonus = 1;
 /**
  * 
- * @param {string[]} resources All resources required for the craft
+ * @param {string[]} costResources All resources required for the craft
  * @param {string} goalResource What we'll be crafting
  */
-function manufacture(resources, goalResource) {
+function manufacture(costResources, goalResource) {
     console.trace();
     // Calculate how many we can afford
     let arr = [];
-    resources.forEach(resource => arr.push(getMaterial(resource) / craftedResources[goalResource].cost[resource]));
+    costResources.forEach(resource => arr.push(getMaterial(resource) / craftedResources[goalResource].cost[resource]));
     let num = Math.min(...arr);
     console.log(num, ...arr);
     num *= manufactureBonus;
@@ -311,6 +316,7 @@ module.exports = {
     // upgradeBulk,
     allMaterials,
     getFactoryProduction,
+    getFactoryConsumption,
     loadFactory,
     activeFactoriesProducing,
     addProducing,

@@ -21,7 +21,7 @@ for (let skill in skills) {
 
 
 const jobsTab = document.getElementById('jobsTab');
-
+let i = 0;
 Object.keys(skills).forEach(skill => {
     const jobDiv = document.createElement('div');
     jobDiv.classList.add('job-button');
@@ -43,6 +43,8 @@ Object.keys(skills).forEach(skill => {
     incrementDiv.textContent = '+';
     jobDiv.appendChild(incrementDiv);
 
+    jobDiv.style.gridColumn = i % 2 + 1;
+    ++i;
     jobsTab.appendChild(jobDiv);
 });
 

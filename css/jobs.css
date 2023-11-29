@@ -1,14 +1,16 @@
-.jobs-tab {
-    display: flex;
-    flex-direction: column;
+#jobsTab.active {
+    display: grid;
+    height: fit-content;
+    justify-items: center;
 }
 
+
 .job-button {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     background-color: #154966;
     /* Example blue color for the button */
-    width: 400px;
+    width: 80%;
     /* Fixed width for the button */
     border-radius: 5px;
     /* Rounded corners for the button */

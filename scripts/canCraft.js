@@ -7,6 +7,7 @@ const { getMaterial } = require('./getMaterial');
  * @returns True if the resource can be crafted, false otherwise.
  */
 function canCraft(resourceKey) {
+    if (!craftedResources[resourceKey]) return false;
     let requirements = craftedResources[resourceKey].cost;
 
     // Check if all requirements are met

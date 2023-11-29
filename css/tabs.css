@@ -58,6 +58,7 @@
 }
 
 .tab-content>.content.active {
+    overflow-y: visible;
     display: flex;
 }
 

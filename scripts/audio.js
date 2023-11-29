@@ -17,9 +17,9 @@ function getSfxVolume() {
     return sfxVolume;
 }
 
-function playSound(filename, isSfx) {
+function playSound(filename, isMusic) {
     const audio = new Audio(filename);
-    audio.volume = isSfx ? getSfxVolume() : getMusicVolume();
+    audio.volume = isMusic ? getMusicVolume() : getSfxVolume();
     audio.play();
 
 }

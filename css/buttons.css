@@ -10,7 +10,7 @@ button {
     font-size: medium;
     margin-bottom: 10px;
     border-radius: 4px;
-    width: min(200px, 100%);
+    width: 200px;
     text-align: justify;
 }
 
@@ -27,14 +27,14 @@ button.gathering {
 }
 
 .button-disabled {
-    color: #ccc;
+    color: #F58549;
     background-image: linear-gradient(#444, #333);
 }
 
 button.cant-afford {
-    color: #faa;
+    color: #f54949;
     cursor: help;
-    background-image: linear-gradient(#444, #333);
+    background-image: linear-gradient(#544, #433);
 }
 
 button:hover {
@@ -50,6 +50,10 @@ div.factory-button {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+
+.factory-button button {
+    width: fit-content;
 }
 
 .button-disabled:hover {

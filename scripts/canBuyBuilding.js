@@ -31,24 +31,20 @@ exports.canBuyBuilding = canBuyBuilding;
 
 function canStoreBuilding(buildingName) {
     // Check if we have enough resources
-    let canBuy = true;
     const buildings = require('./json/buildings').buildings;
     const building = buildings[buildingName];
 
-    canBuy = canAffordCost(building.cost);
+    return canAffordCost(building.cost);
 
-    return canBuy;
 }
 exports.canStoreBuilding = canStoreBuilding;
 
 function canAffordCost(cost) {
-    let canAfford = true;
     for (const resource in cost) {
         if (cost[resource] > getMax(resource)) {
-            canAfford = false;
-            break;
+            return false;
         }
     }
-    return canAfford;
+    return true;
 }
 exports.canAffordCost = canAffordCost;

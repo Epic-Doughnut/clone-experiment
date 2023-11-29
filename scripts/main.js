@@ -39,7 +39,7 @@ const { initializeApp } = require('@firebase/app');
 const { getAnalytics } = require('@firebase/analytics');
 const { setMaterial } = require('./setMaterial');
 const { recalculateAllBuildingCosts } = require('./recalculateBuildingCost');
-const { startPetals, stopPetals, setPetals } = require('./petals');
+const { setPetals, startPetalRendering } = require('./petals');
 
 
 
@@ -462,24 +462,11 @@ function update(delta_time) {
 
 }
 
-window.setInterval(() => { setPetals(0); setPetals(10); }, 60 * 1000); // Every minute
-// window.setInterval(render, 100) // Update visuals 10 times per second
-// window.setInterval(tick, 1000); // Every tick lasts for 1 second
-// window.setInterval(saveGame, 10000); // Save the game every 10 seconds
 // window.onbeforeunload = function () {
 //     // We use a function rather than shorthand because savegame returns a string
 //     if (!currentlyDeleting) saveGame();
 // };
 
-
-// const myResources = {};
-
-// document.getElementById("addResourceBtn").addEventListener("click", function () {
-//     document.getElementById("resourceForm").style.display = "block";
-// });
-
-// @ts-ignore
-// @ts-ignore
 function addResource() {
     // @ts-ignore
     const resourceName = document.getElementById("resourceName").value;
@@ -538,7 +525,7 @@ function updateUI(resourceName) {
 
 
 function toggleOptions() {
-    playSound('./audio/options.wav', true);
+    playSound('./audio/options.wav', false);
 
     const optionsMenu = document.getElementById('optionsMenu');
     optionsMenu.style.display = optionsMenu.style.display === 'none' ? 'block' : 'none';
@@ -649,7 +636,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 const x = event.clientX;
                 const y = event.clientY;
 
-                playSound('./audio/building.wav', true);
+                playSound('./audio/building.wav', false);
 
                 const buildingString = capitalizeFirst(building).split('_').join(' ');
                 if (event.shiftKey) {
@@ -689,12 +676,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
                         // @ts-ignore
                         button.display = 'none';
 
-                        playSound('./audio/ponder.wav', true);
+                        playSound('./audio/ponder.wav', false);
 
 
                         // console.log("Unlocking " + unlockAttr);
                         // Refresh the page when buying organized storage to generate the groups
-                        if (unlockAttr === 'organization') location.reload();
+                        if (unlockAttr === 'organization') { saveGame(); location.reload(); }
 
                         if (unlockAttr.startsWith('ponderEffectiveBuildings')) recalculateAllBuildingCosts();
                     }
@@ -710,7 +697,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
                 // @ts-ignore
                 else if (button.id.slice(0, 5) === 'craft') {
-                    playSound('./audio/craft.wav', true);
+                    playSound('./audio/craft.wav', false);
 
                     // @ts-ignore
                     let cr = getCRKeyFromID(button.id);
@@ -842,6 +829,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // Start the main gameplay loop
     requestAnimationFrame(loop);
 
+    // Start the petal rendering loop
+    requestAnimationFrame(startPetalRendering);
+
     // Update the tooltip when hovering over a button
     document.querySelectorAll('.tooltip').forEach(button => {
 
@@ -942,7 +932,7 @@ function isekai() {
         resetStages();
 
 
-        playSound('./audio/isekaiconfirm.wav', true);
+        playSound('./audio/isekaiconfirm.wav', false);
 
         // Set max of all resources to 100 (tiny boost)
         for (let [r, val] of Object.entries(resources)) {
@@ -964,6 +954,7 @@ function isekai() {
         }
         changeMessage('You are in another world.', 'another', `You feel a need to acquire ${Object.values(lastBuilding.cost).join(',')}`);
         initializeResourceTags(false);
+        saveGame();
         location.reload();
     });
 

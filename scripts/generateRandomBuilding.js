@@ -196,7 +196,13 @@ function generateBuildingDescription() {
 
   return description;
 }
-
+function roundToNearest(number, round) {
+  if (number < round) {
+    return round; // Handle the edge case
+  } else {
+    return Math.round(number / round) * round;
+  }
+}
 /**
  * Generate a random building
  * @returns A building object containing a name, description, effects, boosts, and cost
@@ -212,7 +218,7 @@ function generateRandomBuilding() {
   for (let i = 0; i < numResources; i++) {
     // We don't care about repeats, it's the same as rolling one fewer cost
     const randomResource = possibleResources[Math.floor(Math.random() * possibleResources.length)];
-    randomCosts[randomResource] = Math.floor(Math.random() * 100 * (5 - numResources)); // Fewer resources means more expensive
+    randomCosts[randomResource] = roundToNearest(Math.floor(Math.random() * 100 * (5 - numResources)), 10); // Fewer resources means more expensive
   }
 
   // 0-1 crafted resources
@@ -220,7 +226,7 @@ function generateRandomBuilding() {
   for (let i = 0; i < numCraftedResources; i++) {
     // We don't care about repeats, it's the same as rolling one fewer cost
     const randomResource = possibleCraftedResources[Math.floor(Math.random() * possibleCraftedResources.length)];
-    randomCosts[randomResource] = Math.floor(Math.random() * 50);
+    randomCosts[randomResource] = roundToNearest(Math.floor(Math.random() * 50), 5);
   }
 
 
@@ -232,7 +238,7 @@ function generateRandomBuilding() {
     let randomEffectValue = Math.floor(getRandomNumber(30, 200)); // Adjust the range as needed
     if (randomResource === 'clones') randomEffectValue = Math.floor(getRandomNumber(1, 3));
     else if (randomResource === 'husks') randomEffectValue = Math.floor(getRandomNumber(1, 10));
-    randomEffects[randomResource] = randomEffectValue;
+    randomEffects[randomResource] = roundToNearest(randomEffectValue, 10);
   }
 
   // Generate random boosts
@@ -241,7 +247,7 @@ function generateRandomBuilding() {
   for (let i = 0; i < numBoosts; i++) {
     const randomResource = possibleResources[Math.floor(Math.random() * possibleResources.length)];
     const randomBoostValue = getRandomNumber(1.01, 1.2); // Adjust the range as needed
-    randomBoosts[randomResource] = randomBoostValue;
+    randomBoosts[randomResource] = roundToNearest(randomBoostValue, 5);
   }
 
   // Create a random building object
