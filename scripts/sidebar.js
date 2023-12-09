@@ -226,7 +226,7 @@ function updateDisplayValue(material) {
                 const inc = calcIncrease(material, 1000);
                 // console.log(inc, elementIncrease);
                 if (inc === 0 || Number.isNaN(inc)) elementIncrease.parentElement.innerHTML = `<span id="${material}IncreaseRate"></span>`;
-                else elementIncrease.parentElement.innerHTML = `${inc >= 0 ? '+' : '-'}<span id="${material}IncreaseRate">${inc.toFixed(2)}</span>/s`;
+                else elementIncrease.parentElement.innerHTML = `${inc >= 0 ? '+' : ''}<span id="${material}IncreaseRate">${inc.toFixed(2)}</span>/s`;
             }
             // console.log(material, shouldHide(material), getMaterial(material));
             if (shouldHide(material)) {

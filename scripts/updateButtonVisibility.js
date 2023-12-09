@@ -24,7 +24,11 @@ function updateButtonVisibility() {
         var state = 'hidden';
 
         if (button.id && isButtonIdVisible(button.id)) state = 'button-disabled';
-
+        if (button.classList && button.classList.contains("factory")) {
+            button.classList.add('cant-afford');
+            button.disabled = true;
+            return;
+        }
         // If requirement is met, it should be visible
         try {
             // let getMaterial = require('./getMaterial').getMaterial;

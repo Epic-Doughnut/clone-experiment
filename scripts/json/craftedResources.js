@@ -174,16 +174,16 @@ const craftedResources = {
         tooltipcost: '',
         class: 'agriculture'
     },
-    'steel': { class: 'factory', value: 0, cost: { 'iron': 5 } },
-    'beams': { class: 'factory', value: 0, cost: { 'wood': 10 } },
-    'crates': { class: 'factory', value: 0, cost: { 'wood': 15 } },
-    'nails': { class: 'factory', value: 0, cost: { 'iron': 1 } },
-    'slabs': { class: 'factory', value: 0, cost: { 'rocks': 20 } },
-    'medicine': { class: 'factory', value: 0, cost: { 'herbs': 50 } },
-    'leather': { class: 'factory', value: 0, cost: { 'hides': 10 } },
-    'concrete': { class: 'factory', value: 0, cost: { 'sand': 32 } },
-    'wood': { class: 'factory', value: 0, cost: { 'sticks': 8 } },
-    'sticks': { class: 'factory', value: 0, cost: { 'wood': .1 } },
+    'steel': { id: 'craftSteelButton', tooltipDesc: 'Can only be crafted with a factory', requiredStage: 'factory', class: 'factory', value: 0, cost: { 'iron': 5 } },
+    'beams': { id: 'craftBeamsButton', tooltipDesc: 'Can only be crafted with a factory', requiredStage: 'factory', class: 'factory', value: 0, cost: { 'wood': 10 } },
+    'crates': { id: 'craftCratesButton', tooltipDesc: 'Can only be crafted with a factory', requiredStage: 'factory', class: 'factory', value: 0, cost: { 'wood': 15 } },
+    'nails': { id: 'craftNailsButton', tooltipDesc: 'Can only be crafted with a factory', requiredStage: 'factory', class: 'factory', value: 0, cost: { 'iron': 1 } },
+    'slabs': { id: 'craftSlabsButton', tooltipDesc: 'Can only be crafted with a factory', requiredStage: 'factory', class: 'factory', value: 0, cost: { 'rocks': 20 } },
+    'medicine': { id: 'craftMedicineButton', tooltipDesc: 'Can only be crafted with a factory', requiredStage: 'factory', class: 'factory', value: 0, cost: { 'herbs': 50 } },
+    'leather': { id: 'craftLeatherButton', tooltipDesc: 'Can only be crafted with a factory', requiredStage: 'factory', class: 'factory', value: 0, cost: { 'hides': 10 } },
+    'concrete': { id: 'craftConcreteButton', tooltipDesc: 'Can only be crafted with a factory', requiredStage: 'factory', class: 'factory', value: 0, cost: { 'sand': 32 } },
+    'wood': { id: 'craftWoodButton', tooltipDesc: 'Can only be crafted with a factory', requiredStage: 'factory', class: 'factory', value: 0, cost: { 'sticks': 8 } },
+    'sticks': { id: 'craftSticksButton', tooltipDesc: 'Can only be crafted with a factory', requiredStage: 'factory', class: 'factory', value: 0, cost: { 'wood': .1 } },
 
 };
 

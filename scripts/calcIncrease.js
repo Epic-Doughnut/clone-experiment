@@ -109,7 +109,6 @@ function applyPonderBonuses(total, resourceName) {
 function calcIncrease(resourceName, delta_time) {
     var total = 0;
     // console.log('calcIncrease', resourceName, delta_time);
-    if (isPondered('eatBread') && getMaterial('bread') > 0 && resourceName === 'bread') return parseFloat((-1 * delta_time / 1000).toFixed(3));
 
     // if (resourceName === 'bread' && isPondered('eatBread')) return parseFloat((-1 * delta_time / 1000).toFixed(3));
 
@@ -155,7 +154,11 @@ function calcIncrease(resourceName, delta_time) {
 
 
     // console.log('building boosts', resourceName, total);
-    if (isPondered('eatBread') && getMaterial('bread') > 0 && resourceName !== 'bread') total *= 1.1;
+    if (isPondered('eatBread') && getMaterial('bread') > 0) {
+        if (resourceName !== 'bread') total *= 1.1;
+        else if (resourceName === 'bread') total = -1;
+    }
+
     // Usage: Apply ponders to the 'total' value
     total = applyPonderBonuses(total, resourceName);
     // if (isPondered('fasterResourceGain')) total *= 1.05;
