@@ -25,8 +25,13 @@ function updateButtonVisibility() {
 
         if (button.id && isButtonIdVisible(button.id)) state = 'button-disabled';
         if (button.classList && button.classList.contains("factory")) {
-            button.classList.add('cant-afford');
-            button.disabled = true;
+            if (passedStage('factory')) {
+                button.classList.add('cant-afford');
+                button.disabled = true;
+            }
+            else {
+                button.classList.add('hidden');
+            }
             return;
         }
         // If requirement is met, it should be visible
