@@ -436,6 +436,8 @@ let time_since_render = 0;
 const save_rate = 10_000;
 const manufacture_rate = 1_000;
 const render_rate = 1_000;
+// the main function
+// very laggy
 function update(delta_time) {
 
     // Go through unique resources

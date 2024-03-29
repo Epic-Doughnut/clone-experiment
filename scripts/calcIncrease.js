@@ -88,13 +88,14 @@ function applyPonderBonuses(total, resourceName) {
         if (isPondered(ponderId)) {
 
             if (ponderId.startsWith('fasterResourceGain')) {
-                // console.log('Faster Resource', ponderId);
-                total *= 1.05; // Apply the bonus for this specific ponder
+                total *= 1.05; 
             }
 
             if (ponderId.startsWith('fasterPonder')) {
                 if (resourceName === 'ponder') total *= 1.05;
             }
+
+
         }
     }
     return total;
@@ -132,8 +133,7 @@ function calcIncrease(resourceName, delta_time) {
     // Apply skills to all clones
     total = applySkillBoost(total, resourceName);
 
-    // console.log(getBoost('campfi'))
-    // All buildings after level
+    // Add bonuses from buildings along with effectiveBuildings ponder
     for (const building of Object.keys(buildings)) {
         const boostData = require("./json/buildings").getBoost(building, resourceName);
         if (boostData) {
@@ -141,13 +141,8 @@ function calcIncrease(resourceName, delta_time) {
             var increase = Math.pow(boostData, buildings[building].count);
             for (const [ponderId, ponder] of Object.entries(ponders)) {
                 if (isPondered(ponderId)) {
-
                     if (ponderId.startsWith('effectiveBuildings')) {
-                        increase *= 1.03; // Apply the bonus for this specific ponder
-                    }
-
-                    if (ponderId.startsWith('fasterResourceGain')) {
-                        increase *= 1.05;
+                        increase *= 1.03; 
                     }
                 }
             }
