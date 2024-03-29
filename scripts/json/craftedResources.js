@@ -1,10 +1,4 @@
 /* CRAFTING RESOURCES */
-const { getMaterial } = require('../getMaterial');
-const { getCraftedResource } = require('../getCraftedResource');
-const { resources } = require('./resources');
-const { passedStage } = require('../stages');
-
-
 const craftedResources = {
     'sharprocks': {
         text: 'Sharp Rocks',
