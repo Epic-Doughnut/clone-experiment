@@ -1,7 +1,6 @@
 const { drawAllConnections } = require('./jobs');
-const { updateSidebar } = require('./sidebar');
-const { refreshValues, combat, pauseAnimation, battleResult, simulateBattle } = require('./combat');
-const { getSfxVolume, playSound } = require('./audio');
+const { refreshValues, battleResult, simulateBattle } = require('./combat');
+const {  playSound } = require('./audio');
 
 function getCurrentTab() {
     let tab = '';

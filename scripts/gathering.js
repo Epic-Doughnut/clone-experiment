@@ -2,6 +2,7 @@ const { resources } = require('./json/resources');
 const { capitalizeFirst } = require('./capitalizeFirst');
 const { getSfxVolume } = require('./audio');
 const { updateDisplayValue } = require('./sidebar');
+const { updateRates } = require('./json/currentRates');
 
 /* GATHERING MATERIALS*/
 const sidebarParent = document.querySelector("#resources");
@@ -57,5 +58,6 @@ function toggleResource(resourceKey) {
         // @ts-ignore
         if (sidebarText) sidebarText.style.fontWeight = 'normal';
     }
+    updateRates();
 }
 exports.toggleResource = toggleResource;

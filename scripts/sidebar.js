@@ -138,7 +138,7 @@ function abbreviateNumber(num) {
  * @returns 
  */
 function updateSidebar() {
-    const allMaterials = require('./factory').allMaterials;
+    const allMaterials = require('./json/allMaterials').allMaterials;
     Array.from(allMaterials).forEach(r => { updateDisplayValue(r); });
 }
 

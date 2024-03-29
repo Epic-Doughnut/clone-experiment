@@ -8,14 +8,8 @@
     "start": "webpack serve --mode development",
     "build": "webpack --mode production"
   },
-  "jest": {
-    "testEnvironment": "node",
-    "setupFiles": [
-      "C:/Users/Alpine Missionary/Documents/GitHub/clone-idle/scripts/__tests__/setupJSDOM.js"
-    ]
-  },
   "keywords": [],
-  "author": "",
+  "author": "Joey Sherrill",
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^29.5.7",
