@@ -36,14 +36,14 @@ function generateEffectString(building) {
 
     for (let [resource, boost] of Object.entries(building.boost)) {
         let percentageBoost = Math.round((boost - 1) * 100);
-        // if (isPondered('effectiveBuildings')) percentageBoost *= 1.01;
+        
+        
         // Apply ponder bonuses
-
         for (const [ponderId, ponder] of Object.entries(ponders)) {
             if (isPondered(ponderId)) {
-
+                // Effective buildings increases your bonus by 3% per ponder level
                 if (ponderId.startsWith('effectiveBuildings')) {
-                    percentageBoost *= 1.03; // Apply the bonus for this specific ponder
+                    percentageBoost *= 1.03; 
                 }
 
             }

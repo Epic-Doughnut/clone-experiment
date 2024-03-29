@@ -110,10 +110,12 @@ function increaseMaterial(material, num) {
     if (material in resources) {
         // if (material === 'clones') recalcMaxClones();
         if (getMaterial(material) < getMax(material) && num > 0) { // Adding resources
-            if (isPondered('fasterResourceGain')) num *= 1.05;
+
             resources[material].value += num;
             updateSkills(material, num);
+
             if (material === 'violence') require("./combat").refreshValues();
+            
         } else if (num < 0) { // Subtracting resources
             resources[material].value = Math.max(resources[material].value + num, 0); // Lower bound at 0
         } else { // Already at max

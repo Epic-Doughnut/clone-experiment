@@ -146,6 +146,9 @@ function calcIncrease(resourceName, delta_time) {
                         increase *= 1.03; // Apply the bonus for this specific ponder
                     }
 
+                    if (ponderId.startsWith('fasterResourceGain')) {
+                        increase *= 1.05;
+                    }
                 }
             }
             total *= increase;
