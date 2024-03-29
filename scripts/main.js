@@ -432,8 +432,10 @@ function loop(current_time) {
 
 let time_since_last_save = 0;
 let time_since_manufature = 0;
+let time_since_render = 0;
 const save_rate = 10_000;
 const manufacture_rate = 1_000;
+const render_rate = 1_000;
 function update(delta_time) {
 
     // Go through unique resources
@@ -442,7 +444,12 @@ function update(delta_time) {
     }
 
     // updateResourceIncreaseRates();
-    render();
+    time_since_render += delta_time;
+    if (render_rate < time_since_render)
+    {
+        render();
+        time_since_render = 0;
+    }
 
     // Save the game every 10 seconds
     time_since_last_save += delta_time;
