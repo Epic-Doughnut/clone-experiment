@@ -1,8 +1,8 @@
-const { getSfxVolume, playSound } = require('./audio');
+const { playSound } = require('./audio');
 const { canCraft } = require('./canCraft');
 const { getMaterial } = require('./getMaterial');
 const { craftedResources } = require('./json/craftedResources');
-const { resources } = require('./json/resources');
+const { allMaterials } = require('./json/allMaterials');
 // Assuming these are defined globally
 // var manufacturedMap = {
 //     clay: ['bricks'],
@@ -41,10 +41,6 @@ var switchedManufacturedMap = {
 };
 
 
-var allMaterials = [];
-Object.keys(resources).forEach(r => allMaterials.push(r));
-Object.keys(craftedResources).forEach(r => allMaterials.push(r));
-console.log("All materials: ", allMaterials);
 
 let activeFactoriesProducing = {};
 let activeFactoriesConsuming = {};
@@ -313,8 +309,7 @@ module.exports = {
     createFactoryDiv,
     attemptManufacture,
     buyFactory,
-    // upgradeBulk,
-    allMaterials,
+   
     getFactoryProduction,
     getFactoryConsumption,
     loadFactory,

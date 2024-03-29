@@ -13,7 +13,7 @@ const { makeVisible } = require('./makeVisible');
 const { updateButtonVisibility } = require('./updateButtonVisibility');
 const { getCraftedResource } = require('./getCraftedResource');
 const { getMaterial } = require('./getMaterial');
-const { buyFactory, attemptManufacture, upgradeBulk, allMaterials } = require('./factory');
+const { buyFactory, attemptManufacture } = require('./factory');
 const { isPondered, generatePonderButtons } = require("./ponder");
 const { hasTool, addTool } = require('./tools');
 const { getAteFish, setAteFish } = require('./ateFish');
@@ -40,7 +40,8 @@ const { getAnalytics } = require('@firebase/analytics');
 const { setMaterial } = require('./setMaterial');
 const { recalculateAllBuildingCosts } = require('./recalculateBuildingCost');
 const { setPetals, startPetalRendering } = require('./petals');
-
+const { getRate, setRate } = require('./json/currentRates');
+const { allMaterials } = require('./json/allMaterials');
 
 
 function setTotalTime(time) {
@@ -442,7 +443,8 @@ function update(delta_time) {
 
     // Go through unique resources
     for (const key of [... new Set(Object.values(allMaterials))]) {
-        increaseMaterial(key, calcIncrease(key, delta_time));
+        // increaseMaterial(key, calcIncrease(key, delta_time));
+        increaseMaterial(key, getRate(key));
     }
 
     // updateResourceIncreaseRates();
@@ -759,6 +761,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 // @ts-ignore
                 let perk = button.textContent;
                 selectAbility(perk);
+            }
+
+
+            // Recalculate all the increases of each material and save them to globalRates
+            for (const key of [... new Set(Object.values(allMaterials))])
+            {
+                setRate(key, calcIncrease(key, 1_000));
             }
 
         }
