@@ -900,11 +900,11 @@ document.addEventListener('DOMContentLoaded', (event) =>
     });
 
     // Toggle petals
-    document.querySelector('input[name="petals"]').addEventListener('click', (event) =>
-    {
-        if (event.target.checked) setPetals(10);
-        else setPetals(0);
-    });
+    // document.querySelector('input[name="petals"]').addEventListener('click', (event) =>
+    // {
+    //     if (event.target.checked) setPetals(10);
+    //     else setPetals(0);
+    // });
 
 
 
@@ -912,7 +912,7 @@ document.addEventListener('DOMContentLoaded', (event) =>
     requestAnimationFrame(loop);
 
     // Start the petal rendering loop
-    requestAnimationFrame(startPetalRendering);
+    // requestAnimationFrame(startPetalRendering);
 
     // Update the tooltip when hovering over a button
     document.querySelectorAll('.tooltip').forEach(button =>
