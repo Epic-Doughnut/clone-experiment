@@ -25,9 +25,12 @@ const perkBoosts = {
 };
 
 
-function applyPerkBoost(total, resourceName) {
-    for (const [perk, resources] of Object.entries(perkBoosts)) {
-        if (resources.includes(resourceName) && hasPerk(perk)) {
+function applyPerkBoost(total, resourceName)
+{
+    for (const [perk, resources] of Object.entries(perkBoosts))
+    {
+        if (resources.includes(resourceName) && hasPerk(perk))
+        {
             total *= 1.75; // 75% bonus to specific
         }
     }
@@ -46,11 +49,16 @@ const skillBoosts = {
     'hunting': ['huntingBoost'],
 };
 
-function applySkillBoost(total, resourceName) {
-    for (const [skill, boosts] of Object.entries(skillBoosts)) {
-        if (skills[skill].affectedResources.includes(resourceName)) {
-            boosts.forEach(boost => {
-                if (hasPrestige(boost)) {
+function applySkillBoost(total, resourceName)
+{
+    for (const [skill, boosts] of Object.entries(skillBoosts))
+    {
+        if (skills[skill].affectedResources.includes(resourceName))
+        {
+            boosts.forEach(boost =>
+            {
+                if (hasPrestige(boost))
+                {
                     total *= 1.1 * getLevelOfPrestige(boost);
                 }
             });
@@ -75,9 +83,11 @@ const resourceToolMap = {
     // Add more mappings as needed
 };
 
-function applyToolBoost(total, resourceName) {
+function applyToolBoost(total, resourceName)
+{
     const toolName = resourceToolMap[resourceName];
-    if (toolName && getMaterial(toolName) > 10) {
+    if (toolName && getMaterial(toolName) > 10)
+    {
         total *= 1 + Math.log10(getMaterial(toolName) / 10);
     }
     // console.log(resourceName, toolName, total);
@@ -85,15 +95,20 @@ function applyToolBoost(total, resourceName) {
 }
 
 // Apply ponder bonuses
-function applyPonderBonuses(total, resourceName) {
-    for (const [ponderId, ponder] of Object.entries(ponders)) {
-        if (isPondered(ponderId)) {
+function applyPonderBonuses(total, resourceName)
+{
+    for (const [ponderId, ponder] of Object.entries(ponders))
+    {
+        if (isPondered(ponderId))
+        {
 
-            if (ponderId.startsWith('fasterResourceGain')) {
-                total *= 1.05; 
+            if (ponderId.startsWith('fasterResourceGain'))
+            {
+                total *= 1.05;
             }
 
-            if (ponderId.startsWith('fasterPonder')) {
+            if (ponderId.startsWith('fasterPonder'))
+            {
                 if (resourceName === 'ponder') total *= 1.05;
             }
 
@@ -109,7 +124,8 @@ function applyPonderBonuses(total, resourceName) {
  * @param {number} delta_time How much time has elapsed
  * @returns {number} The amount that resource should increase by
 */
-function calcIncrease(resourceName, delta_time) {
+function calcIncrease(resourceName, delta_time)
+{
     var total = 0;
     // console.log('calcIncrease', resourceName, delta_time);
 
@@ -120,7 +136,8 @@ function calcIncrease(resourceName, delta_time) {
     if (resourceName === 'clones' && isPondered('autoClone')) total = 1;
 
     // Gathering personally
-    if (resources[resourceName] && resources[resourceName].isGetting) {
+    if (resources[resourceName] && resources[resourceName].isGetting)
+    {
         total += 1;
     }
 
@@ -136,15 +153,20 @@ function calcIncrease(resourceName, delta_time) {
     total = applySkillBoost(total, resourceName);
 
     // Add bonuses from buildings along with effectiveBuildings ponder
-    for (const building of Object.keys(buildings)) {
+    for (const building of Object.keys(buildings))
+    {
         const boostData = require("./json/buildings").getBoost(building, resourceName);
-        if (boostData) {
+        if (boostData)
+        {
 
             var increase = Math.pow(boostData, buildings[building].count);
-            for (const [ponderId, ponder] of Object.entries(ponders)) {
-                if (isPondered(ponderId)) {
-                    if (ponderId.startsWith('effectiveBuildings')) {
-                        increase *= 1.03; 
+            for (const [ponderId, ponder] of Object.entries(ponders))
+            {
+                if (isPondered(ponderId))
+                {
+                    if (ponderId.startsWith('effectiveBuildings'))
+                    {
+                        increase *= 1.03;
                     }
                 }
             }
@@ -154,7 +176,8 @@ function calcIncrease(resourceName, delta_time) {
 
 
     // console.log('building boosts', resourceName, total);
-    if (isPondered('eatBread') && getMaterial('bread') > 0) {
+    if (isPondered('eatBread') && getMaterial('bread') > 0)
+    {
         if (resourceName !== 'bread') total *= 1.1;
         else if (resourceName === 'bread') total = -1;
     }
@@ -179,7 +202,8 @@ function calcIncrease(resourceName, delta_time) {
     total -= getFactoryConsumption(resourceName);
     // console.log('sqrt', resourceName, total);
     // Convert from seconds to milliseconds
-    return parseFloat((total * delta_time / 1000).toFixed(3));
+    // return parseFloat((total * delta_time / 1000).toFixed(3));
+    return total * delta_time / 1000;
 }
 exports.calcIncrease = calcIncrease;
 function updateRates()

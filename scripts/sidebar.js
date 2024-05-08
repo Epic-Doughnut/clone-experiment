@@ -5,26 +5,30 @@ const { getFactoryProduction } = require("./factory");
 const { getMaterial } = require("./getMaterial");
 const { getMax } = require("./helper");
 const { craftedResources } = require("./json/craftedResources");
-const { setRate } = require("./json/currentRates");
+const { setRate, getRate } = require("./json/currentRates");
 const { resources } = require("./json/resources");
 
 
 
 
 
-function toggleGroupVisibility(groupName) {
+function toggleGroupVisibility(groupName)
+{
     const group = document.getElementById(`group-${groupName}`);
     const toggleButton = document.getElementById(`toggle-${groupName}`); // Ensure you have this button with the id 'toggle-groupName'
 
-    Array.from(group.children).forEach(element => {
+    Array.from(group.children).forEach(element =>
+    {
         if (element.tagName === 'P') element.classList.toggle('hidden');
     });
 
     // Check if the group is currently hidden
-    if (toggleButton.classList.contains('arrow-down')) {
+    if (toggleButton.classList.contains('arrow-down'))
+    {
         toggleButton.classList.remove('arrow-down');
         toggleButton.classList.add('arrow-right');
-    } else {
+    } else
+    {
         toggleButton.classList.remove('arrow-right');
         toggleButton.classList.add('arrow-down');
     }
@@ -32,7 +36,8 @@ function toggleGroupVisibility(groupName) {
 
 
 // Function to create a group container
-function createResourceGroupContainer(groupName) {
+function createResourceGroupContainer(groupName)
+{
     const groupContainer = document.createElement('div');
     groupContainer.className = 'resourceGroup';
     groupContainer.id = `group-${groupName}`;
@@ -50,7 +55,8 @@ function createResourceGroupContainer(groupName) {
 
 
 // Iterates over each group and resource to create tags
-function initializeResourceTags(withGroups) {
+function initializeResourceTags(withGroups)
+{
     // if (isPondered('organization')) withGroups = true;
     console.log("initialzing resource tags");
     console.trace();
@@ -65,9 +71,11 @@ function initializeResourceTags(withGroups) {
         construction: ['bricks', 'beams', 'nails', 'slabs', 'concrete'],
         // ... Add other groups as necessary
     };
-    for (let [groupName, groupOfResources] of Object.entries(resourceGroups)) {
+    for (let [groupName, groupOfResources] of Object.entries(resourceGroups))
+    {
 
-        groupOfResources.forEach(resourceName => {
+        groupOfResources.forEach(resourceName =>
+        {
             // console.log(resourceName, groupName);
             let parentElement = document.getElementById('resource-' + resourceName);
 
@@ -79,10 +87,12 @@ function initializeResourceTags(withGroups) {
 
             // Hide the element if we should, otherwise create a resource tag
             // console.log(resourceName, shouldHide(resourceName), getMaterial(resourceName));
-            if (shouldHide(resourceName)) {
+            if (shouldHide(resourceName))
+            {
                 parentElement.style.display = 'none';
             }
-            else {
+            else
+            {
                 parentElement.style.display = '';
             }
             // console.log(shouldHide);
@@ -91,7 +101,8 @@ function initializeResourceTags(withGroups) {
     }
 }
 
-function shouldHide(resourceName) {
+function shouldHide(resourceName)
+{
 
     var shouldHide = true;
     // for (let c in parentElement.classList) {
@@ -99,7 +110,8 @@ function shouldHide(resourceName) {
     //     if (require('./stages').passedStage(c)) { shouldHide = false; console.log('dont hide', resourceName, c); }
     // }
 
-    if (getMaterial(resourceName) > 0) {
+    if (getMaterial(resourceName) > 0)
+    {
         shouldHide = false;
         if (resources[resourceName]) resources[resourceName].isVisible = true;
     }
@@ -110,16 +122,19 @@ function shouldHide(resourceName) {
 
 }
 
-function abbreviateNumber(num) {
+function abbreviateNumber(num)
+{
     if (typeof num !== 'number') return num;
-    function format(value, unit) {
+    function format(value, unit)
+    {
         if (value < 10) return roundToDecimals(value, 2) + unit;
         if (value < 100) return roundToDecimals(value, 1) + unit;
         if (value < 1000) return roundToDecimals(value, 0) + unit;
         return Math.round(value) + unit;
     }
 
-    function roundToDecimals(number, decimals) {
+    function roundToDecimals(number, decimals)
+    {
         const factor = Math.pow(10, decimals);
         return (Math.round(number * factor) / factor).toFixed(decimals);
     }
@@ -138,7 +153,8 @@ function abbreviateNumber(num) {
  * Updates the resource count, gain rates, and maxes of all resources
  * @returns 
  */
-function updateSidebar() {
+function updateSidebar()
+{
     const allMaterials = require('./json/allMaterials').allMaterials;
     Array.from(allMaterials).forEach(r => { updateDisplayValue(r); });
 }
@@ -146,19 +162,23 @@ function updateSidebar() {
 
 // Create all our resource tags in the sidebar
 const resourcesContainer = document.getElementById('resources');
-function createResourceTag(resourceName, groupName) {
+function createResourceTag(resourceName, groupName)
+{
     // if (!resources.hasOwnProperty(resourceName)) throw "Invalid resource: " + resourceName;
     // console.log("Creating resource tag for ", resourceName, groupName);
     let groupContainer;
-    if (groupName) {
+    if (groupName)
+    {
         groupContainer = document.getElementById(`group-${groupName}`);
-        if (!groupContainer) {
+        if (!groupContainer)
+        {
             groupContainer = createResourceGroupContainer(groupName);
             resourcesContainer.appendChild(groupContainer);
             // console.log('appending', groupContainer, resourcesContainer, resourcesContainer.childElementCount);
         }
     }
-    else {
+    else
+    {
         groupContainer = document.getElementById('resources');
     }
 
@@ -208,12 +228,15 @@ module.exports = {
  * Updates the display value of one resource, a specific updateSidebar()
  * @param {string} material The name of the resource to update
  */
-function updateDisplayValue(material) {
+function updateDisplayValue(material)
+{
     const element = resourcesContainer.querySelector(`#${material}Value`);
     const elementIncrease = resourcesContainer.querySelector(`#${material}IncreaseRate`);
 
-    if (element) {
-        try {
+    if (element)
+    {
+        try
+        {
             const count = getMaterial(material);
             const max = getMax(material);
             element.textContent = `${abbreviateNumber(count)} / ${abbreviateNumber(max)}`;
@@ -223,25 +246,30 @@ function updateDisplayValue(material) {
             if (count / max > .8) element.style.color = '#fec';
             if (count / max > .95) element.style.color = '#fcc';
 
-            if (elementIncrease) {
-                const inc = calcIncrease(material, 1000);
-                setRate(material, inc);
-                // console.log(inc, elementIncrease);
+            if (elementIncrease)
+            {
+                // const inc = calcIncrease(material, 1000);
+                // setRate(material, inc);
+                const inc = getRate(material);
                 if (inc === 0 || Number.isNaN(inc)) elementIncrease.parentElement.innerHTML = `<span id="${material}IncreaseRate"></span>`;
                 else elementIncrease.parentElement.innerHTML = `${inc >= 0 ? '+' : ''}<span id="${material}IncreaseRate">${inc.toFixed(2)}</span>/s`;
             }
             // console.log(material, shouldHide(material), getMaterial(material));
-            if (shouldHide(material)) {
+            if (shouldHide(material))
+            {
                 element.parentElement.style.display = 'none';
-            } else {
+            } else
+            {
                 element.parentElement.style.display = '';
             }
-        } catch (error) {
+        } catch (error)
+        {
             console.error(element, material, error);
         }
 
         // Bold resource when we're gathering it
-        if (resources[material] && resources[material].isGetting) {
+        if (resources[material] && resources[material].isGetting)
+        {
             const sidebarText = document.querySelector("#resources").querySelector('#resource-' + material);
 
             if (sidebarText) sidebarText.style.fontWeight = 'bold';
@@ -250,14 +278,15 @@ function updateDisplayValue(material) {
     }
 
     const craftedElement = document.querySelector(`#craft${capitalizeFirst(material)}Button`);
-    if (craftedElement) {
+    if (craftedElement)
+    {
         craftedElement.textContent = `${craftedResources[material].text || capitalizeFirst(material)}`;
 
         let factoryCount = getFactoryProduction(material);
         if (factoryCount === NaN || factoryCount === undefined) factoryCount = 0;
         if (factoryCount > 0) craftedElement.textContent += `(${factoryCount})`;
 
-        setRate(material, factoryCount);
+        // setRate(material, getRate(material) + factoryCount); // Without this addition, we overwrite the true value
     }
 
     // updateRates();

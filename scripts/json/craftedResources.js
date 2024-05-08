@@ -181,25 +181,52 @@ const craftedResources = {
 
 };
 
-function getCraftedResourceConfigById(id) {
-    for (const [c, val] of Object.entries(craftedResources)) {
-        if (val.id === id) {
+/**
+ * Get a crafted resource config from an ID.
+ * @param {string} id The id of a resource e.g. craftHandle
+ * @returns Resource config
+ */
+function getCraftedResourceConfigById(id)
+{
+    for (const [c, val] of Object.entries(craftedResources))
+    {
+        if (val.id === id)
+        {
             return val;
         }
     }
     return null;
 }
 
-function getCraftedResourceKeyByConfig(config) {
-    for (let k in craftedResources) {
+function getCraftedResourceKeyByConfig(config)
+{
+    for (let k in craftedResources)
+    {
         // console.log(k);
         if (craftedResources[k].id === config.id) return k;
     }
     return null;
 }
 
-function resetCraftedResources() {
-    for (const [key, val] of Object.entries(craftedResources)) {
+/**
+ * Get a crafted resource key from an ID.
+ * @param {string} id The id of a resource e.g. craftHandle
+ * @returns Resource key e.g. handle
+ */
+function getCRKeyFromID(id)
+{
+    for (const [r, val] of Object.entries(craftedResources))
+    {
+        //console.log(r, val, id);
+        if (val.id === id) return r;
+    }
+    return 'error ' + id;
+}
+
+function resetCraftedResources()
+{
+    for (const [key, val] of Object.entries(craftedResources))
+    {
         val.value = 0;
         val.craftedOnce = false;
     }
@@ -209,5 +236,6 @@ module.exports = {
     craftedResources,
     getCraftedResourceConfigById,
     getCraftedResourceKeyByConfig,
-    resetCraftedResources
+    resetCraftedResources,
+    getCRKeyFromID
 };

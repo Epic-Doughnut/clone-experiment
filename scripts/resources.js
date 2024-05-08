@@ -113,8 +113,10 @@ function increaseMaterial(material, num)
 {
     // Ensure we actually need to do anything
     if (num == 0 || Number.isNaN(num)) return;
+
+    // Sanitize input
     material = material.toLowerCase();
-    // console.log('increase material', material, num);
+    console.log('increase material', material, num);
     // if (Math.abs(num) > 5) console.log('changing', material, 'by', num);
 
     // This check ensures that the material key exists in the resources map.

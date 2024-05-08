@@ -23,7 +23,6 @@ function stopAllGathering()
         // @ts-ignore
         if (sidebarText) sidebarText.style.fontWeight = 'normal';
         updateDisplayValue(key);
-        // updateRates();
     }
 }
 const emojiGatherDiv = document.querySelector('#emojiGatherDisplay');
@@ -65,6 +64,9 @@ function toggleResource(resourceKey)
         // @ts-ignore
         if (sidebarText) sidebarText.style.fontWeight = 'normal';
     }
+
+    updateRates();
     updateDisplayValue(resourceKey);
+
 }
 exports.toggleResource = toggleResource;

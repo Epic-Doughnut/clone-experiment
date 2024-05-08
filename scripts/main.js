@@ -1,8 +1,8 @@
-const { craftedResources, resetCraftedResources } = require('./json/craftedResources');
+const { craftedResources, resetCraftedResources, getCRKeyFromID } = require('./json/craftedResources');
 const { buildings, resetBuildings } = require("./json/buildings");
 const { ponders, resetPonders } = require("./json/ponder");
 const { buttons } = require("./json/buttons");
-const { resources, resetResources } = require('./json/resources');
+const { resources, resetResources, getRKeyFromID } = require('./json/resources');
 
 const { saveGame, loadGame } = require("./saving");
 const { appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource, updateResourceIncreaseRates, increaseMax } = require('./resources');
@@ -39,7 +39,7 @@ const { initializeApp } = require('@firebase/app');
 const { getAnalytics } = require('@firebase/analytics');
 const { setMaterial } = require('./setMaterial');
 const { recalculateAllBuildingCosts } = require('./recalculateBuildingCost');
-const { setPetals, startPetalRendering } = require('./petals');
+// const { setPetals, startPetalRendering } = require('./petals');
 const { getRate } = require('./json/currentRates');
 const { allMaterials } = require('./json/allMaterials');
 const { updateRates } = require('./calcIncrease');
@@ -423,18 +423,20 @@ function getMessage()
 
 /* GAME LOOP */
 
-
-let milliseconds_per_frame = 50;
+const ideal_fps = 10;
+let milliseconds_per_frame = 1000 / ideal_fps;
 let last_time = null;
 let total_time = 0;
 let accumulated_lag = 0;
-const fidelity = 10;
+const max_frames_delayed = 10;
 
 function loop(current_time)
 {
     if (last_time === null) last_time = current_time;
 
     const delta_time = current_time - last_time;
+
+    // console.log("Time since last frame: " + delta_time);
 
     total_time += delta_time;
     accumulated_lag += delta_time;
@@ -445,9 +447,9 @@ function loop(current_time)
     let normalRate = milliseconds_per_frame;
 
     // simulate with less fidelity to make up time
-    if (accumulated_lag >= fidelity * milliseconds_per_frame)
+    if (accumulated_lag >= max_frames_delayed * milliseconds_per_frame)
     {
-        milliseconds_per_frame = accumulated_lag / fidelity;
+        milliseconds_per_frame = accumulated_lag / max_frames_delayed;
     }
     while (accumulated_lag >= milliseconds_per_frame)
     {
@@ -471,19 +473,19 @@ const render_rate = 1_000;
 // very laggy
 function update(delta_time)
 {
-
+    // console.log("update's delta_time: " + delta_time);
     // Go through unique resources
     Array.from(allMaterials).forEach((key) =>
     {
-        increaseMaterial(key, getRate(key) * delta_time / 1000);
+        increaseMaterial(key, getRate(key) * delta_time / 1000.0);
     });
 
     // updateResourceIncreaseRates();
     time_since_render += delta_time;
     if (render_rate < time_since_render)
     {
-        render();
         time_since_render = 0;
+        render();
     }
 
     // Save the game every 10 seconds
@@ -492,8 +494,8 @@ function update(delta_time)
     total_time += delta_time;
     if (time_since_last_save >= save_rate)
     {
-        saveGame();
         time_since_last_save = 0;
+        saveGame();
     }
 
     // Manufacture every second
@@ -635,37 +637,8 @@ document.addEventListener('DOMContentLoaded', (event) =>
     require('./trade').generateTradeTable(resources);
 
 
-    // for (let i = 0; i < 30; ++i)
-    //     //console.log(generateRandomBuilding());
 
-    /**
-     * Get a resource key from an ID.
-     * @param {string} id The id of a resource e.g. gatherGame
-     * @returns Resource key e.g. game
-     */
-    function getRKeyFromID(id)
-    {
-        for (const [r, val] of Object.entries(resources))
-        {
-            // //console.log(resources[r].id, id);
-            if (val.id === id) return r;
-        }
-        return 'error ' + id;
-    }
-    /**
-     * Get a crafted resource key from an ID.
-     * @param {string} id The id of a resource e.g. craftHandle
-     * @returns Resource key e.g. handle
-     */
-    function getCRKeyFromID(id)
-    {
-        for (const [r, val] of Object.entries(craftedResources))
-        {
-            //console.log(r, val, id);
-            if (val.id === id) return r;
-        }
-        return 'error ' + id;
-    }
+
 
     // General document click handler
     document.addEventListener("click", (event) =>

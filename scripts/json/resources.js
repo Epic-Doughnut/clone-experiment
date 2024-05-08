@@ -174,36 +174,58 @@ const resources = {
         basemax: 100
     }
 };
-function isResource(resource) {
+function isResource(resource)
+{
     // return resources[resource] !== null;
     return resource in resources;
 }
 
 
 
-function getResourceConfigById(id) {
-    for (let r in resources) {
-        if (resources[r].id === id) {
+function getResourceConfigById(id)
+{
+    for (let r in resources)
+    {
+        if (resources[r].id === id)
+        {
             return resources[r];
         }
     }
     return null;
 }
 
-function resetResources() {
-    for (const [key, val] of Object.entries(resources)) {
+function resetResources()
+{
+    for (const [key, val] of Object.entries(resources))
+    {
         val.value = 0;
     }
 }
 
-function getBaseMax(resource) {
+function getBaseMax(resource)
+{
     return resources[resource].basemax;
+}
+
+/**
+     * Get a resource key from an ID.
+     * @param {string} id The id of a resource e.g. gatherGame
+     * @returns Resource key e.g. game
+     */
+function getRKeyFromID(id)
+{
+    for (const [r, val] of Object.entries(resources))
+    {
+        if (val.id === id) return r;
+    }
+    return 'error ' + id;
 }
 module.exports = {
     resources,
     isResource,
     getResourceConfigById,
     resetResources,
-    getBaseMax
+    getBaseMax,
+    getRKeyFromID
 };
 

@@ -309,7 +309,6 @@ function calculatePlayerMight()
     return might;
 }
 
-//console.log
 let enemyMight = 400; // Initialize enemy might as a global variable
 
 function getNextBattleMight(playerWonPreviousBattle)

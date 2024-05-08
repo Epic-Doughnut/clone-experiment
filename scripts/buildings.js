@@ -18,6 +18,7 @@ const { getPlayerUid } = require('./playerUid');
 const { triggerFloatUpText } = require('./triggerFloatUpText');
 const { makeVisible } = require('./makeVisible');
 const { updateButtonVisibility } = require('./updateButtonVisibility');
+const { updateRates } = require('./calcIncrease');
 
 /* BUILDINGS */
 
@@ -188,6 +189,8 @@ function buyBuilding(buildingName)
     updateButtonVisibility();
 
     updateBuildingList();
+
+    updateRates();
 
     logEvent(getAnalytics(), 'building_purchase', {
         building_name: buildingName,
