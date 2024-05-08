@@ -21,6 +21,7 @@ const { updateSkills } = require("./skills");
 const { recalcMaxClones } = require("./recalcMaxClones");
 const { triggerFloatUpText } = require("./triggerFloatUpText");
 const { addProducing, addConsuming, removeProducing, removeConsuming } = require("./factory");
+const { updateButtonVisibility } = require("./updateButtonVisibility");
 // console.log(capitalizeFirst);
 
 /**
@@ -115,7 +116,7 @@ function increaseMaterial(material, num) {
             updateSkills(material, num);
 
             if (material === 'violence') require("./combat").refreshValues();
-            
+
         } else if (num < 0) { // Subtracting resources
             resources[material].value = Math.max(resources[material].value + num, 0); // Lower bound at 0
         } else { // Already at max
@@ -444,6 +445,7 @@ function craftResource(resourceKey) {
     // document.querySelector("#" + resourceKey + "Value").textContent = craftedResources[resourceKey].value.toFixed(2);
     if (!craftedResources[resourceKey].craftedOnce) craftedResources[resourceKey].craftedOnce = true;
     updateDisplayValue(resourceKey);
+    updateButtonVisibility();
 }
 
 

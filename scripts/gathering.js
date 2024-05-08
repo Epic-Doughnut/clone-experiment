@@ -2,7 +2,7 @@ const { resources } = require('./json/resources');
 const { capitalizeFirst } = require('./capitalizeFirst');
 const { getSfxVolume } = require('./audio');
 const { updateDisplayValue } = require('./sidebar');
-const { updateRates } = require('./json/currentRates');
+const { updateRates } = require('./calcIncrease');
 
 /* GATHERING MATERIALS*/
 const sidebarParent = document.querySelector("#resources");
@@ -20,6 +20,7 @@ function stopAllGathering() {
         // @ts-ignore
         if (sidebarText) sidebarText.style.fontWeight = 'normal';
         updateDisplayValue(key);
+        // updateRates();
     }
 }
 const emojiGatherDiv = document.querySelector('#emojiGatherDisplay');
@@ -58,6 +59,6 @@ function toggleResource(resourceKey) {
         // @ts-ignore
         if (sidebarText) sidebarText.style.fontWeight = 'normal';
     }
-    updateRates();
+    updateDisplayValue(resourceKey);
 }
 exports.toggleResource = toggleResource;

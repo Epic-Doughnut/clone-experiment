@@ -1,14 +1,16 @@
 const { resources } = require("./json/resources");
-
+const { allMaterials } = require("./json/allMaterials");
 const { skills } = require('./json/skills');
+const { hasPrestige, getLevelOfPrestige } = require("./json/prestige");
+const { ponders } = require("./json/ponder");
+
 const { getWorkers } = require('./jobs');
 const { hasPerk } = require('./perks');
 const { isPondered } = require('./ponder');
 const { getFactoryProduction, getFactoryConsumption } = require("./factory");
-const { hasPrestige, getLevelOfPrestige } = require("./json/prestige");
 const { getMaterial } = require("./getMaterial");
-const { ponders } = require("./json/ponder");
 const { canCraft } = require("./canCraft");
+const { setRate } = require('./json/currentRates');
 
 // Clones work at 1/4 the speed by default
 var cloneMult = 0.25;
@@ -180,3 +182,8 @@ function calcIncrease(resourceName, delta_time) {
     return parseFloat((total * delta_time / 1000).toFixed(3));
 }
 exports.calcIncrease = calcIncrease;
+function updateRates()
+{
+    Array.from(allMaterials).forEach((key) => { setRate(key, calcIncrease(key, 1000)); });
+}
+exports.updateRates = updateRates;

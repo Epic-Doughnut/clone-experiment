@@ -5,7 +5,7 @@ const { buttons } = require("./json/buttons");
 const { resources, resetResources } = require('./json/resources');
 
 const { saveGame, loadGame } = require("./saving");
-const { appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource, calcIncrease, updateResourceIncreaseRates, increaseMax } = require('./resources');
+const { appendCraftedResourceButtons, increaseMaterial, craftAllResources, craftResource, updateResourceIncreaseRates, increaseMax } = require('./resources');
 const { buyMaxBuildings, buyBuilding, } = require('./buildings');
 const { selectAbility, resetPerks } = require('./perks');
 const { clearSidebar, getMax } = require('./helper');
@@ -40,9 +40,9 @@ const { getAnalytics } = require('@firebase/analytics');
 const { setMaterial } = require('./setMaterial');
 const { recalculateAllBuildingCosts } = require('./recalculateBuildingCost');
 const { setPetals, startPetalRendering } = require('./petals');
-const { getRate, updateRates } = require('./json/currentRates');
+const { getRate } = require('./json/currentRates');
 const { allMaterials } = require('./json/allMaterials');
-
+const { updateRates } = require('./calcIncrease');
 
 function setTotalTime(time) {
     total_time = time;
@@ -172,6 +172,7 @@ function render() {
     try {
         updateButtonVisibility();
         // updateBounceAnimation();
+        updateRates();
         if (currentHoverButton !== null) updateTooltip(currentHoverButton);
     } catch (err) {
         console.warn(err);
@@ -443,7 +444,6 @@ function update(delta_time) {
 
     // Go through unique resources
     for (const key of [... new Set(Object.values(allMaterials))]) {
-        // increaseMaterial(key, calcIncrease(key, delta_time));
         increaseMaterial(key, getRate(key) * delta_time / 1000);
     }
 

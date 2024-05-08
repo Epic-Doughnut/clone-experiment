@@ -1,5 +1,4 @@
 const { allMaterials } = require('./allMaterials');
-const { calcIncrease } = require('../calcIncrease');
 var globalRates = {};
 
 function showGlobalRates()
@@ -23,14 +22,8 @@ function getRate(key)
     return globalRates[key];
 }
 
-function updateRates()
-{
-    Array.from(allMaterials).forEach((key) => {setRate(key, calcIncrease(key, 1_000));});
-}
-
 module.exports = {
     setRate: setRate,
     getRate: getRate,
     showGlobalRates: showGlobalRates,
-    updateRates : updateRates,
 };

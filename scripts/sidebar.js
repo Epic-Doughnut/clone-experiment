@@ -1,10 +1,11 @@
 // @ts-nocheck
-const { calcIncrease } = require("./calcIncrease");
+const { calcIncrease, updateRates } = require("./calcIncrease");
 const { capitalizeFirst } = require('./capitalizeFirst');
 const { getFactoryProduction } = require("./factory");
 const { getMaterial } = require("./getMaterial");
 const { getMax } = require("./helper");
-const { getCraftedResourceConfigById, craftedResources } = require("./json/craftedResources");
+const { craftedResources } = require("./json/craftedResources");
+const { setRate } = require("./json/currentRates");
 const { resources } = require("./json/resources");
 
 
@@ -224,6 +225,7 @@ function updateDisplayValue(material) {
 
             if (elementIncrease) {
                 const inc = calcIncrease(material, 1000);
+                setRate(material, inc);
                 // console.log(inc, elementIncrease);
                 if (inc === 0 || Number.isNaN(inc)) elementIncrease.parentElement.innerHTML = `<span id="${material}IncreaseRate"></span>`;
                 else elementIncrease.parentElement.innerHTML = `${inc >= 0 ? '+' : ''}<span id="${material}IncreaseRate">${inc.toFixed(2)}</span>/s`;
@@ -254,5 +256,9 @@ function updateDisplayValue(material) {
         let factoryCount = getFactoryProduction(material);
         if (factoryCount === NaN || factoryCount === undefined) factoryCount = 0;
         if (factoryCount > 0) craftedElement.textContent += `(${factoryCount})`;
+
+        setRate(material, factoryCount);
     }
+
+    // updateRates();
 }

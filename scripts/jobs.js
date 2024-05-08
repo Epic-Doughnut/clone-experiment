@@ -5,11 +5,9 @@ const { resources } = require('./json/resources');
 
 
 const { getMaterial } = require('./getMaterial');
-const { isPondered } = require("./ponder");
 const { getMax } = require('./helper');
 const { triggerFloatUpText } = require('./triggerFloatUpText');
 const { playSound } = require('./audio');
-const { updateRates } = require('./json/currentRates');
 
 /* JOBS FUNCTIONALITY */
 
@@ -244,7 +242,6 @@ function updateDisplay(jobType) {
 function updateTotal() {
     const totalElement = document.querySelector('#jobs-total');
     totalElement.textContent = "Assigned Clones: " + getTotalJobs() + " / " + getMax('clones');
-    updateRates();
 }
 
 

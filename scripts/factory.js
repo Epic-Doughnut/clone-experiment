@@ -2,7 +2,6 @@ const { playSound } = require('./audio');
 const { canCraft } = require('./canCraft');
 const { getMaterial } = require('./getMaterial');
 const { craftedResources } = require('./json/craftedResources');
-const { allMaterials } = require('./json/allMaterials');
 // Assuming these are defined globally
 // var manufacturedMap = {
 //     clay: ['bricks'],

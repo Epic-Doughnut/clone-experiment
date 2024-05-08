@@ -17,6 +17,7 @@ const { logEvent, getAnalytics } = require('@firebase/analytics');
 const { getPlayerUid } = require('./playerUid');
 const { triggerFloatUpText } = require('./triggerFloatUpText');
 const { makeVisible } = require('./makeVisible');
+const { updateButtonVisibility } = require('./updateButtonVisibility');
 
 /* BUILDINGS */
 
@@ -165,8 +166,9 @@ function buyBuilding(buildingName) {
     // Update the cost of the building
     recalculateBuildingCost(buildingName);
 
+    // Update all the other buttons
+    updateButtonVisibility();
 
-    // addToBuildingList(buildingName, building.emoji);
     updateBuildingList();
 
     logEvent(getAnalytics(), 'building_purchase', {
