@@ -135,7 +135,7 @@ function abbreviateNumber(num) {
 }
 
 /**
- * Updates the resource count and maxes of all resources
+ * Updates the resource count, gain rates, and maxes of all resources
  * @returns 
  */
 function updateSidebar() {

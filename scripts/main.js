@@ -443,9 +443,10 @@ const render_rate = 1_000;
 function update(delta_time) {
 
     // Go through unique resources
-    for (const key of [... new Set(Object.values(allMaterials))]) {
+    Array.from(allMaterials).forEach((key) =>
+    {
         increaseMaterial(key, getRate(key) * delta_time / 1000);
-    }
+    });
 
     // updateResourceIncreaseRates();
     time_since_render += delta_time;
@@ -764,15 +765,17 @@ document.addEventListener('DOMContentLoaded', (event) => {
             }
 
 
-            // Recalculate all the increases of each material and save them to globalRates
-            updateRates();
-            updateSidebar();
+            
         }
 
         // @ts-ignore
         if (event.target.matches("#alone")) {
             increaseCloneByOne(event);
         }
+
+        // Recalculate all the increases of each material and save them to globalRates
+        // updateRates();
+        updateSidebar();
     });
 
     /**
