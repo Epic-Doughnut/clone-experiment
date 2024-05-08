@@ -24,20 +24,24 @@ const lootTable = {
 
 let currLoot = {};
 
-function getCurrLoot() {
+function getCurrLoot()
+{
     return currLoot;
 }
 
-function generateLoot() {
+function generateLoot()
+{
     let loot = {};
-    for (const resource in lootTable) {
-        if (Math.random() < lootTable[resource].probability) {
+    for (const resource in lootTable)
+    {
+        if (Math.random() < lootTable[resource].probability)
+        {
             const quantity = Math.floor(lootTable[resource].quantity * (Math.random() * .4 + .8)); // Get loot 80% - 120%
             if (quantity > 0) loot[resource] = quantity;
         }
     }
     currLoot = loot;
-    console.log(currLoot);
+    //console.log(currLoot);
     return loot;
 }
 
@@ -45,8 +49,10 @@ function generateLoot() {
 
 // script.js
 const arena = document.getElementById('arena');
-function createBalls(team, count) {
-    for (let i = 0; i < count; i++) {
+function createBalls(team, count)
+{
+    for (let i = 0; i < count; i++)
+    {
         const ball = document.createElement('div');
         ball.className = `ball ${team}`;
         ball.style.left = `${team === 'player' ? 10 : 90}%`; // Starting positions
@@ -60,10 +66,12 @@ let playerTroops = [];
 let enemyTroops = [];
 let animations = [];
 const animTime = 3000;
-function startAnimation() {
+function startAnimation()
+{
 
     const balls = document.querySelectorAll('.ball');
-    balls.forEach(ball => {
+    balls.forEach(ball =>
+    {
         const isplayerTeam = ball.classList.contains('player');
         const targetX = isplayerTeam ? arena.offsetWidth : -arena.offsetWidth; // Target positions
         // console.log(ball, targetX);
@@ -72,21 +80,25 @@ function startAnimation() {
         ], {
             duration: animTime,
             fill: 'none'
-        }).finished.then(() => {
+        }).finished.then(() =>
+        {
             ball.remove();
         }));
     });
     update();
 
-    setTimeout(() => {
+    setTimeout(() =>
+    {
         const playerBalls = document.querySelectorAll('.player').length;
         const enemyBalls = document.querySelectorAll('.enemy').length;
 
-        if (playerBalls === 0 || enemyBalls === 0) {
+        if (playerBalls === 0 || enemyBalls === 0)
+        {
             return;
         }
 
-        for (const ball of document.querySelectorAll('.ball')) {
+        for (const ball of document.querySelectorAll('.ball'))
+        {
             ball.remove();
         }
         // Need to battle again
@@ -98,7 +110,8 @@ function startAnimation() {
 }
 
 let hasRewarded = false;
-function checkForWin() {
+function checkForWin()
+{
     if (hasRewarded) return;
     const playerBalls = document.querySelectorAll('.player').length;
     const enemyBalls = document.querySelectorAll('.enemy').length;
@@ -106,32 +119,39 @@ function checkForWin() {
     if (playerBalls === 0 && enemyBalls > 0) battleResult = 'enemy';
     else if (enemyBalls === 0 && playerBalls > 0) battleResult = 'player';
 
-    if (battleResult !== null) {
+    if (battleResult !== null)
+    {
         const combatResult = document.getElementById('combatResult');
-        if (battleResult === "player") {
+        if (battleResult === "player")
+        {
             combatResult.textContent = "You won!";
-        } else if (battleResult === "enemy") {
+        } else if (battleResult === "enemy")
+        {
             combatResult.textContent = "The Enemy won!";
-        } else {
+        } else
+        {
             combatResult.textContent = "It's a draw! Huh? That's not supposed to happen!";
         }
 
         // Consume all our violence
         setMaterial('violence', 0);
 
-        setTimeout(() => {
+        setTimeout(() =>
+        {
             // @ts-ignore
             fightButton.disabled = false;
         }, animTime / 2);
 
         // Reward the player their loot if they won
-        if (battleResult === "player") {
+        if (battleResult === "player")
+        {
             hasRewarded = true;
             let stanceMult = 1;
             if (getStance() === 'aggressive') stanceMult = .75;
             if (getStance() === 'careful') stanceMult = 1.25;
 
-            for (const [lootName, value] of Object.entries(currLoot)) {
+            for (const [lootName, value] of Object.entries(currLoot))
+            {
                 increaseMaterial(lootName, value * stanceMult);
                 combatResult.innerHTML += `<br>+${value * stanceMult} ${lootName}`;
             }
@@ -148,10 +168,14 @@ function checkForWin() {
 }
 
 
-function detectCollisions(player, enemy) {
-    for (let i = 0; i < player.length; i++) {
-        for (let j = 0; j < enemy.length; j++) {
-            if (isColliding(playerTroops[i], enemyTroops[j])) {
+function detectCollisions(player, enemy)
+{
+    for (let i = 0; i < player.length; i++)
+    {
+        for (let j = 0; j < enemy.length; j++)
+        {
+            if (isColliding(playerTroops[i], enemyTroops[j]))
+            {
                 // Handle the collision
                 handleCollision(playerTroops[i], enemyTroops[j]);
             }
@@ -159,7 +183,8 @@ function detectCollisions(player, enemy) {
     }
 }
 
-function isColliding(ball1, ball2) {
+function isColliding(ball1, ball2)
+{
     const rect1 = ball1.getBoundingClientRect();
     const rect2 = ball2.getBoundingClientRect();
 
@@ -171,19 +196,22 @@ function isColliding(ball1, ball2) {
     );
 }
 
-function handleCollision(playerBall, enemyBall) {
+function handleCollision(playerBall, enemyBall)
+{
     if (Math.random() < 1 / (1 + Math.pow(10, (getCurrEnemyMight() - calculatePlayerMight()) / chanceSpread))) enemyBall.remove();
     else playerBall.remove();
 
 }
 
 // Call this function continuously, e.g., using requestAnimationFrame
-function update() {
+function update()
+{
     detectCollisions(playerTroops, enemyTroops);
     if (!checkForWin() && !hasRewarded) requestAnimationFrame(update);
 }
 
-function calcRounding() {
+function calcRounding()
+{
     const playerMight = calculatePlayerMight();
     const enemyMight = getCurrEnemyMight();
 
@@ -201,9 +229,11 @@ function calcRounding() {
     return [playerCount, enemyCount];
 }
 
-function pauseAnimation() {
+function pauseAnimation()
+{
     // const balls = document.querySelectorAll('.ball');
-    animations.forEach(ball => {
+    animations.forEach(ball =>
+    {
         ball.pause();
     });
 }
@@ -213,9 +243,11 @@ const fightButton = document.querySelector('button#startCombat');
 let battleResult = null; // Variable to store battle result
 
 const chanceSpread = 200; // Larger means smaller armies have a higher chance to beat larger armies
-function simulateBattle() {
+function simulateBattle()
+{
     // Perform the battle simulation logic here
-    function calculateBattleResult() {
+    function calculateBattleResult()
+    {
         const playerMight = calculatePlayerMight();
         const enemyMight = getCurrEnemyMight();
         const playerChance = 1 / (1 + Math.pow(10, (enemyMight - playerMight) / chanceSpread));
@@ -223,9 +255,11 @@ function simulateBattle() {
         // Generate a random number between 0 and 1 to simulate the battle outcome
         const randomOutcome = Math.random();
 
-        if (randomOutcome < playerChance) {
+        if (randomOutcome < playerChance)
+        {
             return 'player'; // Player wins
-        } else {
+        } else
+        {
             return 'enemy'; // Enemy wins
         }
     }
@@ -240,10 +274,12 @@ function simulateBattle() {
 /**
  * Main combat function, start everything
  */
-function combat() {
+function combat()
+{
     battleResult = null;
     // Remove all balls
-    for (const ball of document.querySelectorAll('.ball')) {
+    for (const ball of document.querySelectorAll('.ball'))
+    {
         ball.remove();
     }
     // Round down the balls to 12
@@ -265,30 +301,35 @@ function combat() {
     startAnimation();
 }
 
-function calculatePlayerMight() {
+function calculatePlayerMight()
+{
     let might = getMaterial('violence') + getMaterial('spear') + getMaterial('medicine');
     if (getStance() === 'aggressive') might *= 1.2;
     else if (getStance() === 'careful') might *= 0.8;
     return might;
 }
 
-
+//console.log
 let enemyMight = 400; // Initialize enemy might as a global variable
 
-function getNextBattleMight(playerWonPreviousBattle) {
+function getNextBattleMight(playerWonPreviousBattle)
+{
 
     if (playerWonPreviousBattle === null) return enemyMight;
     // Check if the player won the previous battle
-    if (playerWonPreviousBattle) {
+    if (playerWonPreviousBattle)
+    {
         // Increase the difficulty for the next battle
         enemyMight *= 1.3; // You can adjust the increment as needed
-    } else {
+    } else
+    {
         // Decrease the difficulty for the next battle
         enemyMight /= 1.1; // You can adjust the decrement as needed
     }
 
     // Ensure the baseMight doesn't go below a minimum value
-    if (enemyMight < 200) {
+    if (enemyMight < 200)
+    {
         enemyMight = 200; // Set a minimum might value
     }
 
@@ -300,23 +341,27 @@ function getNextBattleMight(playerWonPreviousBattle) {
 }
 
 
-function setEnemyMight(might) {
+function setEnemyMight(might)
+{
     enemyMight = might; // Update the global enemyMight variable
 }
 
-function getCurrEnemyMight() {
+function getCurrEnemyMight()
+{
     return enemyMight; // Return the global enemyMight variable
 }
 
-function calculateEnemyMight() {
-    console.log('battle result was', battleResult);
+function calculateEnemyMight()
+{
+    //console.log('battle result was', battleResult);
     const might = getNextBattleMight(battleResult === null || battleResult === 'player');
     return might;
 }
 
 const playerMightElement = document.getElementById('playerMight');
 const enemyMightElement = document.getElementById('enemyMight');
-function calculateWinChance() {
+function calculateWinChance()
+{
 
     const playerMight = calculatePlayerMight();
     const enemyMight = getCurrEnemyMight();
@@ -342,18 +387,22 @@ function calculateWinChance() {
 
 let stance = 'balanced';
 
-function getStance() {
+function getStance()
+{
     return stance;
 }
 
-function setStance(newStance) {
+function setStance(newStance)
+{
     stance = newStance;
 }
 
 const stanceButtons = document.querySelectorAll('button.stance');
-function switchStance(newStance) {
-    console.log('switch stance to ', newStance);
-    stanceButtons.forEach(element => {
+function switchStance(newStance)
+{
+    //console.log('switch stance to ', newStance);
+    stanceButtons.forEach(element =>
+    {
         // @ts-ignore
         element.disabled = false;
     });
@@ -368,13 +417,15 @@ window.switchStance = switchStance;
 /**
  * Refresh all the values of the combat UI, including chance to win, loots, and enemy might
  */
-function refreshValues() {
+function refreshValues()
+{
     // console.log(getCurrLoot());
     if (Object.keys(getCurrLoot()).length < 1) generateLoot();
 
     const lootList = document.getElementById('lootList');
     lootList.innerHTML = '';
-    for (const [resource, quantity] of Object.entries(getCurrLoot())) {
+    for (const [resource, quantity] of Object.entries(getCurrLoot()))
+    {
         lootList.innerHTML += `<span>${resource} (${quantity})</span> <br>`;
     }
 

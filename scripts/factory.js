@@ -45,43 +45,51 @@ let activeFactoriesProducing = {};
 let activeFactoriesConsuming = {};
 
 // @ts-ignore
-function isProducing(resource) {
+function isProducing(resource)
+{
     return resource in activeFactoriesProducing;
 }
 
 // @ts-ignore
-function isConsuming(resource) {
+function isConsuming(resource)
+{
     return resource in activeFactoriesConsuming;
 }
 
-function addProducing(resource) {
+function addProducing(resource)
+{
     if (activeFactoriesProducing[resource]) activeFactoriesProducing[resource]++;
     else activeFactoriesProducing[resource] = 1;
 }
 
-function addConsuming(resource, amount) {
+function addConsuming(resource, amount)
+{
     if (activeFactoriesConsuming[resource]) activeFactoriesConsuming[resource] += amount;
     else activeFactoriesConsuming[resource] = amount;
 }
 
-function removeConsuming(resource, amount) {
+function removeConsuming(resource, amount)
+{
     activeFactoriesConsuming[resource] -= amount;
     if (activeFactoriesConsuming[resource] < 0) activeFactoriesConsuming[resource] = 0;
 }
 
-function removeProducing(resource) {
+function removeProducing(resource)
+{
     activeFactoriesProducing[resource]--;
     if (activeFactoriesProducing[resource] < 0) activeFactoriesConsuming[resource] = 0;
 }
 
-function getFactoryConsumption(resource) {
+function getFactoryConsumption(resource)
+{
     let ret = activeFactoriesConsuming[resource];
     if (ret === undefined) ret = 0;
     // console.log('getFactoryConsumption', resource, activeFactoriesConsuming[resource], ret);
     return ret;
 }
 
-function getFactoryProduction(resource) {
+function getFactoryProduction(resource)
+{
     let ret = activeFactoriesProducing[resource];
     if (Number.isNaN(ret) || ret === undefined) ret = 0;
     // console.log('getFactoryProduction', resource, activeFactoriesProducing[resource], ret);
@@ -93,12 +101,15 @@ function getFactoryProduction(resource) {
 
 // Function to update resource production and consumption
 // @ts-ignore
-function updateFactoryResourceTracking(oldProduced, newProduced) {
+function updateFactoryResourceTracking(oldProduced, newProduced)
+{
     // if (newProduced === null) return;
     // If this factory was previously producing something, reduce the count
-    if (oldProduced && oldProduced !== 'none') {
+    if (oldProduced && oldProduced !== 'none')
+    {
         activeFactoriesProducing[oldProduced]--;
-        Array.from(craftedResources[oldProduced].cost).forEach((cost) => {
+        Array.from(craftedResources[oldProduced].cost).forEach((cost) =>
+        {
             activeFactoriesConsuming[cost.resource] -= cost.amount;
         });
     }
@@ -106,8 +117,10 @@ function updateFactoryResourceTracking(oldProduced, newProduced) {
     // Update the production count for the new resource
     if (activeFactoriesProducing[newProduced]) activeFactoriesProducing[newProduced]++;
     else activeFactoriesProducing[newProduced] = 1;
-    if (craftedResources[newProduced]) {
-        Array.from(craftedResources[newProduced].cost).forEach((cost) => {
+    if (craftedResources[newProduced])
+    {
+        Array.from(craftedResources[newProduced].cost).forEach((cost) =>
+        {
             activeFactoriesConsuming[cost.resource] += cost.amount;
         });
     }
@@ -115,7 +128,8 @@ function updateFactoryResourceTracking(oldProduced, newProduced) {
 
 // Call this whenever a factory's settings change
 // @ts-ignore
-function onFactoryModified(factoryIndex, newProduced) {
+function onFactoryModified(factoryIndex, newProduced)
+{
     const rightSelect = document.querySelector(`#factory-${factoryIndex} .rightSelect`);
     updateFactoryResourceTracking(rightSelect.getAttribute('data-produced'), newProduced);
     rightSelect.setAttribute('data-produced', newProduced);
@@ -128,7 +142,8 @@ function onFactoryModified(factoryIndex, newProduced) {
 //         }
 //     });
 // });
-function createFactoryDiv() {
+function createFactoryDiv()
+{
 
     // Initialize resource tracking objects
 
@@ -142,7 +157,8 @@ function createFactoryDiv() {
     const rightSelect = document.createElement('select');
 
     // Populate the right dropdown
-    Object.keys(switchedManufacturedMap).forEach(resource => {
+    Object.keys(switchedManufacturedMap).forEach(resource =>
+    {
 
         const option = document.createElement('option');
         option.value = resource;
@@ -155,7 +171,8 @@ function createFactoryDiv() {
     rightSelect.setAttribute('data-produced', 'none');
 
 
-    rightSelect.addEventListener('change', function () {
+    rightSelect.addEventListener('change', function ()
+    {
         // Get the current produced resource for this factory
         const currentProduced = this.getAttribute('data-produced');
         // @ts-ignore
@@ -172,7 +189,8 @@ function createFactoryDiv() {
         this.setAttribute('data-produced', newProduced);
 
 
-        if (newProduced && newProduced !== 'none') {
+        if (newProduced && newProduced !== 'none')
+        {
             // @ts-ignore
             document.querySelector(`#resource-${newProduced}`).style.color = 'thistle';
             leftText.innerHTML = '';
@@ -182,7 +200,8 @@ function createFactoryDiv() {
     });
 
     // Add the initial option for left select
-    function addInitialOption(selectElement, text) {
+    function addInitialOption(selectElement, text)
+    {
         const initialOption = document.createElement('option');
         initialOption.value = '';
         initialOption.textContent = text;
@@ -206,11 +225,14 @@ function createFactoryDiv() {
 
 }
 
-function loadFactory(crafting) {
-    console.log("loading a factory for ", crafting);
+function loadFactory(crafting)
+{
+    //console.log("loading a factory for ", crafting);
     let div = createFactoryDiv();
-    if (crafting) {
-        try {
+    if (crafting)
+    {
+        try
+        {
 
             div.querySelector('select').value = crafting;
 
@@ -218,14 +240,16 @@ function loadFactory(crafting) {
             document.querySelector(`#resource-${crafting}`).style.color = 'thistle';
             div.querySelector('.factoryCost').innerHTML = '';
             div.querySelector('.factoryCost').innerHTML += `${require('./resources').generateTooltipCost(craftedResources[crafting].cost)}`;
-        } catch (error) {
+        } catch (error)
+        {
             console.warn(error);
         }
     }
 
     const buyFactoryButton = document.getElementById('buyFactoryButton');
 
-    if (buyFactoryButton) {
+    if (buyFactoryButton)
+    {
 
         buyFactoryButton.setAttribute('tooltipCost', `${newFactorySilverCost.toFixed(0)} silver`);
         updateFactoryResourceTracking('none', crafting);
@@ -242,13 +266,14 @@ let manufactureBonus = 1;
  * @param {string[]} costResources All resources required for the craft
  * @param {string} goalResource What we'll be crafting
  */
-function manufacture(costResources, goalResource) {
+function manufacture(costResources, goalResource)
+{
     console.trace();
     // Calculate how many we can afford
     let arr = [];
     costResources.forEach(resource => arr.push(getMaterial(resource) / craftedResources[goalResource].cost[resource]));
     let num = Math.min(...arr);
-    console.log(num, ...arr);
+    //console.log(num, ...arr);
     num *= manufactureBonus;
     // The factories get to be half price of normal crafting bc efficiency
     require('./resources').craftResourceQuantity(goalResource, num);
@@ -269,9 +294,11 @@ function manufacture(costResources, goalResource) {
 //     upButton.setAttribute('tooltipCost', `${manufactureBulk} → ${manufactureBulk + 2}: ${bulkUpgradeCost.toFixed(0)} silver`);
 // }
 
-function attemptManufacture() {
+function attemptManufacture()
+{
     const factories = document.querySelectorAll('.factory');
-    factories.forEach(factory => {
+    factories.forEach(factory =>
+    {
 
         // const leftSelect = factory.querySelector('span:first-child');
         const rightSelect = factory.querySelector('select:last-child');
@@ -279,7 +306,8 @@ function attemptManufacture() {
         const goalResource = rightSelect.value;
         const resources = switchedManufacturedMap[goalResource];
         // console.log("checking factory", goalResource);
-        if (resources && goalResource && canCraft(goalResource)) {
+        if (resources && goalResource && canCraft(goalResource))
+        {
             manufacture(resources, goalResource);
         }
 
@@ -287,10 +315,12 @@ function attemptManufacture() {
 }
 
 var newFactorySilverCost = 50;
-function buyFactory() {
+function buyFactory()
+{
     const buyFactoryButton = document.getElementById('buyFactoryButton');
-    if (getMaterial('silver') < newFactorySilverCost) {
-        console.log('Not enough silver!'); return;
+    if (getMaterial('silver') < newFactorySilverCost)
+    {
+        //console.log('Not enough silver!'); return;
     }
 
     // Has enough silver to afford factory
@@ -308,7 +338,7 @@ module.exports = {
     createFactoryDiv,
     attemptManufacture,
     buyFactory,
-   
+
     getFactoryProduction,
     getFactoryConsumption,
     loadFactory,

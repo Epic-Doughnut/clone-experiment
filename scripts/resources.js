@@ -31,16 +31,22 @@ const { updateButtonVisibility } = require("./updateButtonVisibility");
  * @returns 
  */
 // @ts-ignore
-function isResourceAffectedByJob(job, resource) {
+function isResourceAffectedByJob(job, resource)
+{
     const skill = skills[job];
     if (!skill) return false;
 
-    if (skill.affectedResources.includes(resource)) {
+    if (skill.affectedResources.includes(resource))
+    {
         // Check if there's a tool requirement for this resource
-        if (skill.needTools && Array.isArray(skill.needTools)) {
-            for (let toolObj of skill.needTools) {
-                for (let tool in toolObj) {
-                    if (toolObj[tool].includes(resource)) {
+        if (skill.needTools && Array.isArray(skill.needTools))
+        {
+            for (let toolObj of skill.needTools)
+            {
+                for (let tool in toolObj)
+                {
+                    if (toolObj[tool].includes(resource))
+                    {
                         // Check if player has this tool
                         // For now, just returning true to indicate the resource is affected and a tool is needed
                         // But you may want to replace this with a check to see if the player possesses the required tool
@@ -52,7 +58,8 @@ function isResourceAffectedByJob(job, resource) {
             return true;
         }
         // If no tool requirement was found for the resource, it's still affected by the job
-        else {
+        else
+        {
             return true;
         }
     }
@@ -63,7 +70,8 @@ function isResourceAffectedByJob(job, resource) {
 
 
 
-function calcSecondsRemaining(resourceName, needed) {
+function calcSecondsRemaining(resourceName, needed)
+{
     if (needed <= getMaterial(resourceName)) return 0;
 
     // How much per second
@@ -85,7 +93,8 @@ const resourcesContainer = document.getElementById('resources');
 exports.resourcesContainer = resourcesContainer;
 
 
-function increaseMax(material, num) {
+function increaseMax(material, num)
+{
     // console.log("increase max ", material, num);
     // console.trace();
     resources[material].max += num;
@@ -100,7 +109,8 @@ function increaseMax(material, num) {
 }
 
 // Generic increase
-function increaseMaterial(material, num) {
+function increaseMaterial(material, num)
+{
     // Ensure we actually need to do anything
     if (num == 0 || Number.isNaN(num)) return;
     material = material.toLowerCase();
@@ -108,32 +118,38 @@ function increaseMaterial(material, num) {
     // if (Math.abs(num) > 5) console.log('changing', material, 'by', num);
 
     // This check ensures that the material key exists in the resources map.
-    if (material in resources) {
+    if (material in resources)
+    {
         // if (material === 'clones') recalcMaxClones();
-        if (getMaterial(material) < getMax(material) && num > 0) { // Adding resources
+        if (getMaterial(material) < getMax(material) && num > 0)
+        { // Adding resources
 
             resources[material].value += num;
             updateSkills(material, num);
 
             if (material === 'violence') require("./combat").refreshValues();
 
-        } else if (num < 0) { // Subtracting resources
+        } else if (num < 0)
+        { // Subtracting resources
             resources[material].value = Math.max(resources[material].value + num, 0); // Lower bound at 0
-        } else { // Already at max
+        } else
+        { // Already at max
             resources[material].value = getMax(material);
         }
         updateDisplayValue(material);
         // reassignJobsBasedOnResources();
 
     }
-    else if (material in craftedResources) {
+    else if (material in craftedResources)
+    {
         // console.log('crafting a material', material, num);
         craftedResources[material].value = Math.max(craftedResources[material].value + num, 0); // Lower bound at 0
 
         updateDisplayValue(material);
         updateSkills(material, num);
     }
-    else {
+    else
+    {
         // Creating a new material
         if (resources[material]) resources[material].value += num;
         if (craftedResources[material]) craftedResources[material].value += num;
@@ -151,9 +167,11 @@ window.increaseMaterial = increaseMaterial;
 window.increaseMax = increaseMax;
 
 
-function updateResourceIncreaseRates() {
+function updateResourceIncreaseRates()
+{
     // const resources = ["clones", "sticks", "vines", "rocks", "fish", "wood", "ponder"];
-    for (let resource in resources) {
+    for (let resource in resources)
+    {
         // console.log("increase of " + resource);
         const rate = calcIncrease(resource, 1000);
         var rateElement = document.getElementById(`${resource}IncreaseRate`);
@@ -167,7 +185,8 @@ function updateResourceIncreaseRates() {
  * @param {Object} config 
  * @returns Button
  */
-function createCraftedResourceButton(config) {
+function createCraftedResourceButton(config)
+{
     const button = document.createElement('button');
     button.className = config.class + ' tooltip';
     button.setAttribute('id', config.id);
@@ -185,11 +204,13 @@ function createCraftedResourceButton(config) {
 
 
 const container = document.querySelector('#craftedResourceButtons');
-function appendCraftedResourceButtons() {
+function appendCraftedResourceButtons()
+{
 
     // For each resource, create a button using the captured counts
-    for (let name in craftedResources) {
-        console.log('generating button for crafted resource', name);
+    for (let name in craftedResources)
+    {
+        //console.log('generating button for crafted resource', name);
 
         // config.count = craftedResources[name].value;
         const button = createCraftedResourceButton(craftedResources[name]);
@@ -209,24 +230,28 @@ function appendCraftedResourceButtons() {
         // Create the + button
         const plusButton = document.createElement('button');
         plusButton.textContent = '+';
-        plusButton.addEventListener('click', (event) => {
+        plusButton.addEventListener('click', (event) =>
+        {
             // console.log("plus button for", name, craftedResources[name]);
             // Add the resource to the list of factory production
             addProducing(name);
-            for (const [resource, amount] of Object.entries(craftedResources[name].cost)) {
+            for (const [resource, amount] of Object.entries(craftedResources[name].cost))
+            {
                 // console.log("adding consumption", name, resource, amount);
                 addConsuming(resource, amount);
             }
             // Update the display for this crafted resource
             updateDisplayValue(name);
         });
-        console.log('added plus button for', name);
+        //console.log('added plus button for', name);
         // Create the - button
         const minusButton = document.createElement('button');
         minusButton.textContent = '-';
-        minusButton.addEventListener('click', (event) => {
+        minusButton.addEventListener('click', (event) =>
+        {
             removeProducing(name);
-            for (const [resource, amount] of Object.entries(craftedResources[name].cost)) {
+            for (const [resource, amount] of Object.entries(craftedResources[name].cost))
+            {
                 removeConsuming(resource, amount);
             };
             // Update the display for this crafted resource
@@ -255,7 +280,8 @@ function appendCraftedResourceButtons() {
 }
 
 // @ts-ignore
-function appendCraftedResourceButton(name) {
+function appendCraftedResourceButton(name)
+{
 
     const button = createCraftedResourceButton(craftedResources[name]);
     button.setAttribute('data-tooltip-desc', craftedResources[name].tooltipDesc);
@@ -269,10 +295,12 @@ function appendCraftedResourceButton(name) {
 // Call the function to replace <p> elements with the buttons
 // appendCraftedResourceButton('sticks');
 
-function generateTooltipCost(requirements) {
+function generateTooltipCost(requirements)
+{
     if (requirements === null) return '';
     var str = '';
-    for (let material in requirements) {
+    for (let material in requirements)
+    {
 
         const hasEnough = getMaterial(material, resources) >= requirements[material];/* Your logic to check if there's enough of the material */;
         const colorClass = hasEnough ? 'enough' : 'not-enough';
@@ -285,16 +313,20 @@ function generateTooltipCost(requirements) {
 
 
 const emojiDisplay = document.getElementById('emojiDisplay');
-function updateEmojiDisplay() {
+function updateEmojiDisplay()
+{
     let emojiStr = "";
-    function getColorComponent() {
+    function getColorComponent()
+    {
         return (Math.floor(Math.random() * 55 + 200));
     }
     // Loop through the jobCounts map to get each job and its count
-    for (const [skillKey, skill] of Object.entries(skills)) {
+    for (const [skillKey, skill] of Object.entries(skills))
+    {
 
         let skillColor = "";
-        switch (skillKey) {
+        switch (skillKey)
+        {
             case 'gathering':
                 skillColor = 'rgb(227, 254, 210)';
                 break;
@@ -327,7 +359,8 @@ function updateEmojiDisplay() {
                 break;
         }
         // console.log(skillKey, skillColor);
-        for (const resource of Object.values(skill.affectedResources)) {
+        for (const resource of Object.values(skill.affectedResources))
+        {
             // console.log(resource);
             // for (let resource in resources) {
             // let resource = resources[getAffectedResources(job)[0]];
@@ -336,7 +369,8 @@ function updateEmojiDisplay() {
             if (count === undefined || count == 0) continue;
             const emoji = resources[resource].emoji || '𓀟';  // get the emoji corresponding to the job from the resources map
             // console.log(job, emoji);
-            if (emoji) {
+            if (emoji)
+            {
                 emojiStr += `<span class='tooltip' style='color:${skillColor};'tooltipdesc='${resource}' tooltipcost=''>${emoji.repeat(count)}</span>`;  // repeat the emoji based on the count
                 // Color in range 0xccc - 0xfff
             }
@@ -345,12 +379,14 @@ function updateEmojiDisplay() {
 
     emojiDisplay.innerHTML = emojiStr;  // update the emojiDisplay div with the generated emoji string
 
-    function adjustFontSize() {
+    function adjustFontSize()
+    {
         let fontSize = 48;  // Starting font size
 
         emojiDisplay.style.fontSize = `${fontSize}px`;
 
-        while ((emojiDisplay.offsetWidth > 600) && fontSize > 30) {
+        while ((emojiDisplay.offsetWidth > 600) && fontSize > 30)
+        {
             // 30 is a minimum font-size threshold to prevent an infinite loop
             fontSize -= 1; // decrease the font size
             emojiDisplay.style.fontSize = `${fontSize}px`;
@@ -378,34 +414,40 @@ const autoCraftTable = {
     'clay': 'bricks'
 };
 
-function craftAllResources(resourceKey) {
-    try {
+function craftAllResources(resourceKey)
+{
+    try
+    {
         const cost = craftedResources[resourceKey].cost;
         let sufficientResources = [];
-        for (let mat in cost) {
+        for (let mat in cost)
+        {
             // if (getMaterial(mat, resources) < cost[mat]) {
             sufficientResources.push(getMaterial(mat, resources) / cost[mat]);
             // }
         }
         let min = Math.floor(Math.min(...sufficientResources));
-        console.log(resourceKey, min);
+        //console.log(resourceKey, min);
         craftResourceQuantity(resourceKey, min);
 
 
-    } catch (error) {
-        console.log('Failed to craftall for: ', resourceKey, error);
+    } catch (error)
+    {
+        //console.log('Failed to craftall for: ', resourceKey, error);
     }
 }
 
-function craftResourceQuantity(resourceKey, quantity) {
+function craftResourceQuantity(resourceKey, quantity)
+{
     if (!craftedResources.hasOwnProperty(resourceKey)) throw "Invalid craft for missing resource: " + resourceKey;
 
     if (!canCraft(resourceKey)) return; // Takes care of quantity < 1
     let cost = craftedResources[resourceKey].cost;
     quantity = Math.floor(quantity); // Make sure the quantity is a whole number
 
-    for (const [mat, val] of Object.entries(cost)) {
-        console.log('crafting quantity:', mat, val);
+    for (const [mat, val] of Object.entries(cost))
+    {
+        //console.log('crafting quantity:', mat, val);
         increaseMaterial(mat, -val * quantity);
         updateDisplayValue(mat);
     }
@@ -423,15 +465,18 @@ function craftResourceQuantity(resourceKey, quantity) {
 }
 
 
-function craftOne(resourceKey, cost, craftBonus) {
-    for (const [mat, val] of Object.entries(cost)) {
+function craftOne(resourceKey, cost, craftBonus)
+{
+    for (const [mat, val] of Object.entries(cost))
+    {
         increaseMaterial(mat, -val);
     }
     increaseMaterial(resourceKey, craftBonus);
 
 }
 // Craft function
-function craftResource(resourceKey) {
+function craftResource(resourceKey)
+{
     if (!craftedResources.hasOwnProperty(resourceKey)) throw "Invalid craft for missing resource: " + resourceKey;
 
     if (!canCraft(resourceKey)) return;

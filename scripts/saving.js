@@ -34,7 +34,8 @@ const { setPetals } = require('./petals');
 
 
 
-function saveGame() {
+function saveGame()
+{
     let save = {
         skills: {}, // This will hold the experience and level for each skill
         craftedResources: {}, // This will hold the value for each crafted item
@@ -56,7 +57,8 @@ function saveGame() {
     };
 
     // Extract exp and level from skills and save to save.skills
-    for (let skill in skills) {
+    for (let skill in skills)
+    {
         save.skills[skill] = {
             exp: skills[skill].exp,
             level: skills[skill].level
@@ -64,8 +66,10 @@ function saveGame() {
     }
 
     // Extract value from craftedResources and save to save.craftedItems
-    for (let item in craftedResources) {
-        if (!save.craftedResources.hasOwnProperty(item)) {
+    for (let item in craftedResources)
+    {
+        if (!save.craftedResources.hasOwnProperty(item))
+        {
             save.craftedResources[item] = { value: 0, craftedOnce: false };
         }
 
@@ -74,9 +78,11 @@ function saveGame() {
 
     }
 
-    for (let item in resources) {
+    for (let item in resources)
+    {
         // Check if the item exists in the save.resources object. If not, initialize it.
-        if (!save.resources.hasOwnProperty(item)) {
+        if (!save.resources.hasOwnProperty(item))
+        {
             save.resources[item] = { value: 0, max: 0 };
         }
 
@@ -94,14 +100,17 @@ function saveGame() {
     // @ts-ignore
     save.connections = Array.from(getConnections().entries());
 
-    for (let u in ponders) {
+    for (let u in ponders)
+    {
         save.unlocks[u] = isPondered(u);
     }
 
     let lastNewBuilding = null;
-    for (let b in buildings) {
+    for (let b in buildings)
+    {
         save.buildings[b] = buildings[b].count;
-        if (buildings[b].hasOwnProperty('name')) {
+        if (buildings[b].hasOwnProperty('name'))
+        {
             // save new building data 
             save.newBuildings[b] = buildings[b];
             lastNewBuilding = buildings[b];
@@ -109,13 +118,15 @@ function saveGame() {
     }
 
     // console.log(allVisibleButtons.values());
-    for (let a in allVisibleButtons) {
+    for (let a in allVisibleButtons)
+    {
         // console.log(a);
         save.allVisibleButtons.push(a);
         // console.log(save.allVisibleButtons);
     }
 
-    function extractTextFromHTML(htmlString) {
+    function extractTextFromHTML(htmlString)
+    {
         const div = document.createElement('div');
         div.innerHTML = htmlString;
 
@@ -125,17 +136,19 @@ function saveGame() {
         return [textContent, spanText];
     }
 
-    function getMessageTooltip() {
+    function getMessageTooltip()
+    {
         // Get most recent building
         // return messageElement.querySelector("#alone").getAttribute('tooltipDesc');
         let needs = "You feel peckish for some seafood.";
         if (lastNewBuilding && lastNewBuilding.cost)
             needs = 'You feel a strange, constructive urge to acquire ' + Object.keys(lastNewBuilding.cost).join(', ');
-        console.log('message tooltip:', needs);
+        //console.log('message tooltip:', needs);
         return needs;
     }
 
-    for (const [key, val] of Object.entries(activeFactoriesProducing)) {
+    for (const [key, val] of Object.entries(activeFactoriesProducing))
+    {
         save.factories[key] = val;
     }
 
@@ -145,7 +158,8 @@ function saveGame() {
     messageArray.push(messageTooltip);
     save.message = messageArray;
 
-    for (const [key, val] of Object.entries(prestige)) {
+    for (const [key, val] of Object.entries(prestige))
+    {
         save.prestige[key] = { cost: val.cost, level: val.level };
     }
 
@@ -166,22 +180,29 @@ function saveGame() {
 }
 
 
-function loadBuildings(savegame) {
+function loadBuildings(savegame)
+{
 
-    if (typeof savegame.newBuildings !== 'undefined') {
-        for (let b in savegame.newBuildings) {
+    if (typeof savegame.newBuildings !== 'undefined')
+    {
+        for (let b in savegame.newBuildings)
+        {
             try { buildings[b] = savegame.newBuildings[b]; }
             catch (error) { console.warn('error with building', b, error); }
         }
     }
 
-    if (typeof savegame.buildings !== 'undefined') {
-        for (let b in savegame.buildings) {
+    if (typeof savegame.buildings !== 'undefined')
+    {
+        for (let b in savegame.buildings)
+        {
             // console.log(b, savegame.buildings[b]);
-            try {
+            try
+            {
                 buildings[b].count = savegame.buildings[b];
                 // Update button text
-                if (buildings[b].count > 0) {
+                if (buildings[b].count > 0)
+                {
                     updateBuildingButtonCount(b, buildings[b].count, buildings[b].emoji);
 
                     // Calculate the costs of all the buildings
@@ -189,7 +210,8 @@ function loadBuildings(savegame) {
                 }
 
             }
-            catch (error) {
+            catch (error)
+            {
                 console.warn('error with building', b, error);
             }
         }
@@ -197,11 +219,13 @@ function loadBuildings(savegame) {
     }
 }
 
-function loadGame() {
-    console.log("Loading Game");
+function loadGame()
+{
+    //console.log("Loading Game");
 
     // Get User ID
-    if (!localStorage.getItem('player_uid')) {
+    if (!localStorage.getItem('player_uid'))
+    {
         const newUid = generateUniqueID(); // Replace with your UID generation logic
         localStorage.setItem('player_uid', newUid);
     }
@@ -215,24 +239,31 @@ function loadGame() {
 
     logEvent(getAnalytics(), 'load', { savegame: savegame, playerUid: playerUid });
 
-    if (savegame === null) {
+    if (savegame === null)
+    {
         // NEW GAME
         return;
     }
-    if (typeof savegame.resources !== "undefined") {
-        for (let i in savegame.resources) {
+    if (typeof savegame.resources !== "undefined")
+    {
+        for (let i in savegame.resources)
+        {
             if (i.valueOf() === "undefined" || i === null || resources[i] === null) continue;
-            try {
+            try
+            {
                 require('./setMaterial').setMaterial(i, savegame.resources[i].value);
                 // require('./setMax').setMax(i, savegame.resources[i].max);
             }
-            catch (error) {
+            catch (error)
+            {
                 console.warn('error with loading resource', i, error);
             }
-            console.log("Updating resources for " + i + " to " + savegame.resources[i].value, savegame.resources[i].max);
-            try {
+            //console.log("Updating resources for " + i + " to " + savegame.resources[i].value, savegame.resources[i].max);
+            try
+            {
                 if (resources[i].value != 0) require('./sidebar').updateDisplayValue(i);
-            } catch (error) {
+            } catch (error)
+            {
 
             }
         }
@@ -240,35 +271,43 @@ function loadGame() {
 
     setPetals(10);
 
-    if (typeof savegame.skills !== 'undefined') {
-        for (let i in savegame.skills) {
+    if (typeof savegame.skills !== 'undefined')
+    {
+        for (let i in savegame.skills)
+        {
             skills[i].exp = savegame.skills[i].exp;
             skills[i].level = savegame.skills[i].level;
         }
     }
 
-    if (typeof savegame.craftedResources !== "undefined") {
-        for (var key of Object.keys(savegame.craftedResources)) {
+    if (typeof savegame.craftedResources !== "undefined")
+    {
+        for (var key of Object.keys(savegame.craftedResources))
+        {
             // console.log('loading crafted', key, savegame.craftedResources[key], craftedResources[key]);
             if (!craftedResources[key]) continue;
             craftedResources[key].value = savegame.craftedResources[key].value;
             if (Number.isNaN(craftedResources[key].value)) craftedResources[key].value = 0;
             craftedResources[key].craftedOnce = savegame.craftedResources[key].craftedOnce;
-            try {
+            try
+            {
                 require('./sidebar').updateDisplayValue(key);
 
-            } catch (error) {
+            } catch (error)
+            {
 
             }
         }
     }
 
-    if (typeof savegame.tools !== 'undefined') {
+    if (typeof savegame.tools !== 'undefined')
+    {
         // playerTools = savegame.tools;
         // Union the tool lists together
         let union = [...new Set([...getAllTools(), ...savegame.tools])];
         // playerTools = union;
-        for (let tool in union) {
+        for (let tool in union)
+        {
             addTool(tool);
         }
 
@@ -277,38 +316,49 @@ function loadGame() {
         // }
     }
 
-    if (typeof savegame.stages !== 'undefined') {
-        for (let s in savegame.stages) {
+    if (typeof savegame.stages !== 'undefined')
+    {
+        for (let s in savegame.stages)
+        {
             makeVisible(savegame.stages[s]);
         }
     }
-    if (typeof savegame.jobs !== 'undefined') {
+    if (typeof savegame.jobs !== 'undefined')
+    {
         // jobCounts = savegame.jobs;
-        for (let j in savegame.jobs) {
+        for (let j in savegame.jobs)
+        {
             jobCounts[j] = savegame.jobs[j];
             // console.log(j);
             updateDisplay(j);
         }
     }
-    if (typeof savegame.unlocks !== 'undefined') {
-        for (let u in savegame.unlocks) {
-            try {
+    if (typeof savegame.unlocks !== 'undefined')
+    {
+        for (let u in savegame.unlocks)
+        {
+            try
+            {
                 ponders[u].isPondered = savegame.unlocks[u];
 
-            } catch (error) {
+            } catch (error)
+            {
                 console.warn('Old save data includes obsolete ponder', u);
             }
         }
     }
 
-    if (isPondered('skillsTable')) {
+    if (isPondered('skillsTable'))
+    {
         populateSkillsTable();
     }
 
     // Perks before buildings to update costs
-    if (typeof savegame.perks !== 'undefined') {
+    if (typeof savegame.perks !== 'undefined')
+    {
         // myPerks = savegame.perks;
-        for (let [i, perk] of Object.entries(savegame.perks)) {
+        for (let [i, perk] of Object.entries(savegame.perks))
+        {
             addPerk(perk);
             require('./selectCorrectPerkButton').selectCorrectPerkButton(perk);
             if (parseFloat(i) > 100) break;
@@ -316,14 +366,18 @@ function loadGame() {
     }
 
 
-    if (typeof savegame.prestige !== 'undefined') {
-        for (const [key, val] of Object.entries(savegame.prestige)) {
+    if (typeof savegame.prestige !== 'undefined')
+    {
+        for (const [key, val] of Object.entries(savegame.prestige))
+        {
 
-            try {
+            try
+            {
                 setPrestigeCost(key, val['cost']);
                 setPrestigeLevel(key, val['level']);
             }
-            catch (error) {
+            catch (error)
+            {
                 console.warn('error with loading prestige', key, error);
             }
         }
@@ -340,13 +394,15 @@ function loadGame() {
     // If we have a clone, then we ate fish
     setAteFish(resources.clones.max >= 1);
     // console.log('atefish', ateFish);
-    if (getAteFish()) {
+    if (getAteFish())
+    {
         const fishButton = document.querySelector("#eatFish");
         // @ts-ignore
         fishButton.style.display = 'none';
     }
     // Change the message to the latest one
-    if (typeof savegame.message !== 'undefined') {
+    if (typeof savegame.message !== 'undefined')
+    {
         // [full message, span, tooltip]
         require('./changeMessage').changeMessage(savegame.message[0], savegame.message[1], savegame.message[2] ? savegame.message[2] : null);
 
@@ -354,10 +410,12 @@ function loadGame() {
 
 
     // Calculate resources earned while away
-    if (typeof savegame.time !== 'undefined') {
+    if (typeof savegame.time !== 'undefined')
+    {
         require('./main').setTotalTime(savegame.time[total_time]);
         const time_difference = Date.now() - savegame.time['time_of_save'];
-        for (let r in resources) {
+        for (let r in resources)
+        {
             const inc = calcIncrease(r, time_difference);
             resources[r].value += inc;
             // console.log(r, time_difference, inc);
@@ -365,23 +423,27 @@ function loadGame() {
         }
     }
 
-    if (typeof savegame.allVisibleButtons !== 'undefined') {
-        console.log(savegame.allVisibleButtons);
-        for (let a in savegame.allVisibleButtons) {
+    if (typeof savegame.allVisibleButtons !== 'undefined')
+    {
+        //console.log(savegame.allVisibleButtons);
+        for (let a in savegame.allVisibleButtons)
+        {
             setVisibleButton(a);
         }
 
     }
 
-    if (typeof savegame.connections !== 'undefined') {
+    if (typeof savegame.connections !== 'undefined')
+    {
         setConnections(new Map(savegame.connections));
 
         if (getConnections().size === 0) setConnections(new Map());
-        console.log(getConnections());
+        //console.log(getConnections());
     }
 
 
-    for (let job in jobCounts) {
+    for (let job in jobCounts)
+    {
         distributeWorkers(job, jobCounts[job]);
     }
 
@@ -395,7 +457,8 @@ function loadGame() {
                     loadFactory(key);
 
 
-    if (typeof savegame.audioVolume !== 'undefined') {
+    if (typeof savegame.audioVolume !== 'undefined')
+    {
         setMusicVolume(savegame.audioVolume['music']);
         setSfxVolume(savegame.audioVolume['sfx']);
     }

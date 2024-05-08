@@ -2,12 +2,15 @@
  * Recalculates the cost of a building
  * @param {string} buildingKey The building we recalculate the cost of
  */
-function recalculateBuildingCost(buildingKey) {
+function recalculateBuildingCost(buildingKey)
+{
     const buildings = require('./json/buildings').buildings;
     let building = buildings[buildingKey];
-    if (building && building.cost && building.ratio) {
-        for (let material in building.cost) {
-            console.log(building, building.basecost[material], building.ratio, building.count);
+    if (building && building.cost && building.ratio)
+    {
+        for (let material in building.cost)
+        {
+            //console.log(building, building.basecost[material], building.ratio, building.count);
             building['cost'][material] = Math.round(building.basecost[material] * Math.pow(building.ratio, building.count));
 
             if (require('./perks').hasPerk('Architect')) building.cost[material] *= 0.75; // 25% reduction for architects
@@ -19,7 +22,8 @@ function recalculateBuildingCost(buildingKey) {
     // Update tooltip cost
     const myButton = document.querySelector('#' + buildingKey);
     var newText = require('./resources').generateTooltipCost(building.cost);
-    if (myButton) {
+    if (myButton)
+    {
         myButton.setAttribute('data-tooltip-cost', newText);
         const effectString = require('./buildings').generateEffectString(building);
         myButton.setAttribute('data-tooltip-effect', effectString);
@@ -29,10 +33,12 @@ function recalculateBuildingCost(buildingKey) {
 }
 exports.recalculateBuildingCost = recalculateBuildingCost;
 
-function recalculateAllBuildingCosts() {
-    console.log('recalculateAllBuildingCosts');;
+function recalculateAllBuildingCosts()
+{
+    //console.log('recalculateAllBuildingCosts');;
     const buildings = require('./json/buildings').buildings;
-    for (let buildingKey of Object.keys(buildings)) {
+    for (let buildingKey of Object.keys(buildings))
+    {
         recalculateBuildingCost(buildingKey);
     }
 }

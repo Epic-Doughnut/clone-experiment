@@ -6,11 +6,14 @@ const { updateRates } = require('./calcIncrease');
 
 /* GATHERING MATERIALS*/
 const sidebarParent = document.querySelector("#resources");
-function stopAllGathering() {
-    for (const [key, val] of Object.entries(resources)) {
+function stopAllGathering()
+{
+    for (const [key, val] of Object.entries(resources))
+    {
         val.isGetting = false;
         const rButton = document.querySelector("#gather" + capitalizeFirst(key));
-        if (rButton) {
+        if (rButton)
+        {
             rButton.textContent = val.defaultText;
             rButton.classList.remove('gathering');
         }
@@ -24,7 +27,8 @@ function stopAllGathering() {
     }
 }
 const emojiGatherDiv = document.querySelector('#emojiGatherDisplay');
-function toggleResource(resourceKey) {
+function toggleResource(resourceKey)
+{
 
     const gatherAudio = new Audio('./audio/gather.wav');
     gatherAudio.volume = getSfxVolume();
@@ -40,7 +44,8 @@ function toggleResource(resourceKey) {
     emojiGatherDiv.textContent = '𓀟'; // Default emoji 𓀟
 
 
-    if (!resource.isGetting) {
+    if (!resource.isGetting)
+    {
         stopAllGathering(); // Stop all gathering actions
         resource.isGetting = true;
         // @ts-ignore
@@ -49,9 +54,10 @@ function toggleResource(resourceKey) {
         if (sidebarText) sidebarText.style.fontWeight = 'bold';
         // @ts-ignore
         emojiGatherDiv.textContent = resource.emoji;
-        console.log(resource.emoji);
+        //console.log(resource.emoji);
         resourceButton.classList.add('gathering');
-    } else {
+    } else
+    {
         resource.isGetting = false;
         resourceButton.classList.remove('gathering');
         // @ts-ignore

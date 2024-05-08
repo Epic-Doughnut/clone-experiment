@@ -28,23 +28,29 @@ const { updateButtonVisibility } = require('./updateButtonVisibility');
  * @param {Object} building The building object
  * @returns The string representation of the effect of the building
  */
-function generateEffectString(building) {
+function generateEffectString(building)
+{
     let effectParts = [];
 
-    for (let [resource, value] of Object.entries(building.effects)) {
+    for (let [resource, value] of Object.entries(building.effects))
+    {
         effectParts.push(`+${value} max ${resource}`);
     }
 
-    for (let [resource, boost] of Object.entries(building.boost)) {
+    for (let [resource, boost] of Object.entries(building.boost))
+    {
         let percentageBoost = Math.round((boost - 1) * 100);
-        
-        
+
+
         // Apply ponder bonuses
-        for (const [ponderId, ponder] of Object.entries(ponders)) {
-            if (isPondered(ponderId)) {
+        for (const [ponderId, ponder] of Object.entries(ponders))
+        {
+            if (isPondered(ponderId))
+            {
                 // Effective buildings increases your bonus by 3% per ponder level
-                if (ponderId.startsWith('effectiveBuildings')) {
-                    percentageBoost *= 1.03; 
+                if (ponderId.startsWith('effectiveBuildings'))
+                {
+                    percentageBoost *= 1.03;
                 }
 
             }
@@ -63,7 +69,8 @@ function generateEffectString(building) {
  * @param {Object} cost The building cost configuration
  * @returns A string representation of the cost of the building separated by new lines
  */
-function generateBuildingTooltipCost(cost) {
+function generateBuildingTooltipCost(cost)
+{
     return Object.entries(cost).map(([material, amount]) => `${amount.toFixed(2)} ${material}`).join('\n');
 }
 
@@ -73,8 +80,10 @@ function generateBuildingTooltipCost(cost) {
  * @param {Object} buildings Main buildings object
  * @returns The building button
  */
-function createBuildingButton(buildingKey, buildings) {
-    try {
+function createBuildingButton(buildingKey, buildings)
+{
+    try
+    {
         const building = buildings[buildingKey];
 
         // Deep copy basecost to create cost
@@ -85,7 +94,7 @@ function createBuildingButton(buildingKey, buildings) {
             .join(', ');
 
         const requirementFunction = createRequirementFunction(building.cost);
-        console.log('create building button:', building, JSON.parse(JSON.stringify(building.emoji)));
+        //console.log('create building button:', building, JSON.parse(JSON.stringify(building.emoji)));
         const button = {
             'class': 'tooltip ' + buildingKey,
             'tab': 'production',
@@ -97,7 +106,8 @@ function createBuildingButton(buildingKey, buildings) {
         };
 
         return button;
-    } catch (error) {
+    } catch (error)
+    {
         console.error('Could not create building button for', buildingKey, buildings, error);
     }
 }
@@ -107,10 +117,13 @@ function createBuildingButton(buildingKey, buildings) {
  * @param {Object} costs The costs of the building
  * @returns A function that checks if a building should be visible
  */
-function createRequirementFunction(costs) {
-    return function () {
+function createRequirementFunction(costs)
+{
+    return function ()
+    {
         const costCondition = Object.entries(costs)
-            .every(([material, amount]) => {
+            .every(([material, amount]) =>
+            {
                 const hasEnoughResource = getMaterial(material) >= Math.floor(amount / 2);
                 // console.log(`Checking ${material}: Need ${Math.floor(amount / 2)}, Have ${getMaterial(material, resources)}, Result: ${hasEnoughResource}`);
                 return hasEnoughResource;
@@ -126,8 +139,9 @@ function createRequirementFunction(costs) {
  * @param {string} buildingName The name of the building
  * @returns 
  */
-function buyBuilding(buildingName) {
-    console.log("Buying building " + buildingName);
+function buyBuilding(buildingName)
+{
+    //console.log("Buying building " + buildingName);
     const building = buildings[buildingName];
 
 
@@ -139,21 +153,25 @@ function buyBuilding(buildingName) {
     building.count++;
 
     // Subtract the cost
-    for (const resource in building.cost) {
+    for (const resource in building.cost)
+    {
         increaseMaterial(resource, -building.cost[resource]);
     }
     // Add the effects
-    for (const [resource, amount] of Object.entries(building.effects)) {
+    for (const [resource, amount] of Object.entries(building.effects))
+    {
         // console.log('bought building effects', resource, amount);
         increaseMax(resource, amount);
         // Update max clones after updating the count
-        if (resource === 'clones') {
+        if (resource === 'clones')
+        {
             recalcMaxClones();
             updateTotal();
         }
     }
 
-    for (const [key, val] of Object.entries(building.boost)) {
+    for (const [key, val] of Object.entries(building.boost))
+    {
         // Get the rate of change for this resource
         const rateElement = document.getElementById(`${key}IncreaseRate`);
         if (!rateElement) continue;
@@ -182,12 +200,14 @@ function buyBuilding(buildingName) {
  * @param {string} buildingName The name of the building
  * @returns The number of buildings that were purchased
  */
-function buyMaxBuildings(buildingName) {
+function buyMaxBuildings(buildingName)
+{
     let i = 0;
     let building = buildings[buildingName];
     // TODO update with cool formula
     // Math.floor(Math.log((currency * (building.ratio - 1)) / (building.basecost * Math.pow(building.ratio, building.count))) / Math.log(building.ratio));
-    while (canBuyBuilding(buildingName)) {
+    while (canBuyBuilding(buildingName))
+    {
         buyBuilding(buildingName);
         ++i;
     }

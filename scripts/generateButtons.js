@@ -9,9 +9,11 @@ const { showTab } = require('./showTab');
 const { updateDisplayValue } = require('./sidebar');
 const { addProducing, removeProducing, addConsuming, removeConsuming } = require('./factory');
 
-function createStyledColumns(parent) {
+function createStyledColumns(parent)
+{
     const columns = [];
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 3; i++)
+    {
         const col = document.createElement('div');
         col.style.width = '33.33%';
         col.style.display = 'inline-block';
@@ -22,7 +24,8 @@ function createStyledColumns(parent) {
     return columns;
 }
 
-function createButtonElement(btn, key) {
+function createButtonElement(btn, key)
+{
     const buttonElement = document.createElement('button');
 
     buttonElement.id = key;
@@ -39,12 +42,14 @@ function createButtonElement(btn, key) {
 }
 
 /* BUTTONS GENERATE */
-function generateButtons() {
+function generateButtons()
+{
 
-    console.log("Generating buttons");
+    //console.log("Generating buttons");
     console.trace();
     // Create the columns
-    for (let buildingKey in buildings) {
+    for (let buildingKey in buildings)
+    {
         const button = createBuildingButton(buildingKey, buildings);
         buttons[buildingKey] = button;
         // console.log("Made button for " + buildingKey);
@@ -68,20 +73,24 @@ function generateButtons() {
     let ponderColumnIndex = 1;
 
     // Add counters for other tabs as needed
-    for (let key in buttons) {
+    for (let key in buttons)
+    {
         const btn = buttons[key];
         const buttonElement = createButtonElement(btn, key);
 
         buttonElement.setAttribute('data-tooltip-cost', btn.tooltipCost);
 
-        if (btn.showTab) {
-            buttonElement.addEventListener('click', () => {
+        if (btn.showTab)
+        {
+            buttonElement.addEventListener('click', () =>
+            {
                 showTab(btn.showTab);
-                console.log("Switching to tab: " + btn.showTab);
+                //console.log("Switching to tab: " + btn.showTab);
             });
         }
         // Append to the appropriate column based on the tab property
-        if (btn.tab === 'production') {
+        if (btn.tab === 'production')
+        {
             //style='grid-column:${col}; grid-row:${row};
             buttonElement.style.gridColumn = productionColumnIndex.toString();
             // buttonElement.style.gridRow = '0';
@@ -89,36 +98,45 @@ function generateButtons() {
             productionContainer.appendChild(buttonElement);
             // productionColumns[productionColumnIndex].appendChild(buttonElement);
             // productionColumnIndex = (productionColumnIndex + 1) % 3;
-        } else if (btn.tab === 'experiment') {
+        } else if (btn.tab === 'experiment')
+        {
             experimentColumns[experimentColumnIndex].appendChild(buttonElement);
             experimentColumnIndex = (experimentColumnIndex + 1) % 3;
-        } else if (btn.tab === 'tabs') {
+        } else if (btn.tab === 'tabs')
+        {
             // @ts-ignore
             tabsContainer.appendChild(buttonElement);
-        } else if (btn.tab === 'ponder') {
+        } else if (btn.tab === 'ponder')
+        {
             buttonElement.style.gridColumn = ponderColumnIndex.toString();
             ponderColumnIndex = (ponderColumnIndex) % 4 + 1;
             ponderContainer.appendChild(buttonElement);
-        } else if (btn.tab === 'job') {
+        } else if (btn.tab === 'job')
+        {
             // Do nothing but catch the jobs
         }
-        else {
+        else
+        {
             document.getElementById(btn.tab).appendChild(btn);
         }
         // Add more conditions for other tabs as needed
         // Update tooltip for buildings
         const building = Object.keys(buildings).find(building => building === key);
-        if (building) {
+        if (building)
+        {
             recalculateBuildingCost(key);
         }
         // Hide the buttons we shouldn't see yet
         // console.log(btn);
-        try {
-            if (!btn.requirement()) {
+        try
+        {
+            if (!btn.requirement())
+            {
                 // console.log(buttonElement, btn.requirement());
                 buttonElement.style.display = 'none';
             }
-        } catch (err) {
+        } catch (err)
+        {
             // console.warn('Error with requirement while generating buttons: ', btn, err);
         }
     }

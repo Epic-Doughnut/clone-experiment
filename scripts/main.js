@@ -44,7 +44,8 @@ const { getRate } = require('./json/currentRates');
 const { allMaterials } = require('./json/allMaterials');
 const { updateRates } = require('./calcIncrease');
 
-function setTotalTime(time) {
+function setTotalTime(time)
+{
     total_time = time;
 }
 
@@ -151,30 +152,37 @@ const visibilityRules = [
     }
 ];
 
-function render() {
+function render()
+{
 
-    for (let i = visibilityRules.length - 1; i >= 0; i--) {
+    for (let i = visibilityRules.length - 1; i >= 0; i--)
+    {
         const rule = visibilityRules[i];
-        if (rule.condition()) {
+        if (rule.condition())
+        {
             rule.action();
             // Remove the rule from the array
             visibilityRules.splice(i, 1);
         }
     }
 
-    for (let tool in toolsToStages) {
-        if (!hasTool(tool) && getCraftedResource(tool) > 0) {
+    for (let tool in toolsToStages)
+    {
+        if (!hasTool(tool) && getCraftedResource(tool) > 0)
+        {
             addTool(tool);
             makeVisible(toolsToStages[tool]);
         }
     }
 
-    try {
+    try
+    {
         updateButtonVisibility();
         // updateBounceAnimation();
         updateRates();
         if (currentHoverButton !== null) updateTooltip(currentHoverButton);
-    } catch (err) {
+    } catch (err)
+    {
         console.warn(err);
     }
 
@@ -200,9 +208,11 @@ const audioFiles = [
 let currentAudio = null;
 let timeoutId = null;
 
-function playRandomTrack() {
+function playRandomTrack()
+{
     // Stop current audio if playing
-    if (currentAudio) {
+    if (currentAudio)
+    {
         currentAudio.pause();
         currentAudio.currentTime = 0;
     }
@@ -218,22 +228,27 @@ function playRandomTrack() {
     scheduleNextTrack();
 }
 
-function scheduleNextTrack() {
+function scheduleNextTrack()
+{
     // Clear any existing timeout
-    if (timeoutId) {
+    if (timeoutId)
+    {
         clearTimeout(timeoutId);
     }
 
     // When the current track ends, wait for up to 30 seconds before playing the next
     const silenceDuration = Math.random() * 30000 + 5000; // Random silence duration 5 - 35 seconds
-    currentAudio.onended = () => {
+    currentAudio.onended = () =>
+    {
         timeoutId = setTimeout(playRandomTrack, silenceDuration);
     };
 }
 
 /* HOTKEYS */
-document.addEventListener('keydown', function (event) {
-    switch (event.key) {
+document.addEventListener('keydown', function (event)
+{
+    switch (event.key)
+    {
         case '1':
             showTab('productionTab');
             break;
@@ -319,8 +334,10 @@ let isDark = true;
 
 // @ts-ignore
 // @ts-ignore
-function eatFish() {
-    if (!getAteFish() && getMaterial('fish', resources) >= 1) {
+function eatFish()
+{
+    if (!getAteFish() && getMaterial('fish', resources) >= 1)
+    {
         // eat a fish and blackout
         const fishAudio = new Audio('./audio/fish.wav');
         fishAudio.volume = getSfxVolume();
@@ -335,7 +352,8 @@ function eatFish() {
         const fishButton = document.querySelector("#eatFish");
         // @ts-ignore
         fishButton.style.display = 'none';
-        setTimeout(() => {
+        setTimeout(() =>
+        {
             changeMessage("You are with yourself in a forest.", 'with yourself', 'You feel peckish for some seafood.');
             increaseMax('clones', 1);
             increaseMaterial('clones', 1);
@@ -344,32 +362,37 @@ function eatFish() {
     }
 }
 
-function fadeToBlack() {
+function fadeToBlack()
+{
 
     overlay.style.display = 'flex';
     overlay.style.opacity = '1';
 
-    setTimeout(() => {
+    setTimeout(() =>
+    {
         // @ts-ignore
         overlayText.style.opacity = '1';
     }, 2000);
 
-    setTimeout(() => {
+    setTimeout(() =>
+    {
         // @ts-ignore
         overlayButton.style.display = 'block';
         overlayButton.style.opacity = '1';
     }, 5000);
 }
 
-function hideOverlay() {
-    // console.log('hiding overlay');
+function hideOverlay()
+{
+    // //console.log('hiding overlay');
     // console.trace();
     overlayText.style.opacity = '0';
 
     overlayButton.style.opacity = '0';
 
     overlay.style.opacity = '0';
-    setTimeout(() => {
+    setTimeout(() =>
+    {
         overlay.style.display = 'none';
     }, 1000);
 
@@ -379,18 +402,21 @@ function hideOverlay() {
     // location.reload();
 }
 
-function navigateTo(url) {
+function navigateTo(url)
+{
     // Trigger the overlay to fade in
     var overlay = document.getElementById('page-transition-overlay');
     overlay.classList.add('fade-in');
 
     // Wait for the fade in to complete before changing the page
-    setTimeout(function () {
+    setTimeout(function ()
+    {
         window.location.href = url;
     }, 300); // This duration should match the CSS opacity transition
 }
 
-function getMessage() {
+function getMessage()
+{
     return messageElement;
 }
 
@@ -404,7 +430,8 @@ let total_time = 0;
 let accumulated_lag = 0;
 const fidelity = 10;
 
-function loop(current_time) {
+function loop(current_time)
+{
     if (last_time === null) last_time = current_time;
 
     const delta_time = current_time - last_time;
@@ -418,10 +445,12 @@ function loop(current_time) {
     let normalRate = milliseconds_per_frame;
 
     // simulate with less fidelity to make up time
-    if (accumulated_lag >= fidelity * milliseconds_per_frame) {
+    if (accumulated_lag >= fidelity * milliseconds_per_frame)
+    {
         milliseconds_per_frame = accumulated_lag / fidelity;
     }
-    while (accumulated_lag >= milliseconds_per_frame) {
+    while (accumulated_lag >= milliseconds_per_frame)
+    {
 
         accumulated_lag -= milliseconds_per_frame;
         update(milliseconds_per_frame);
@@ -440,7 +469,8 @@ const manufacture_rate = 1_000;
 const render_rate = 1_000;
 // the main function
 // very laggy
-function update(delta_time) {
+function update(delta_time)
+{
 
     // Go through unique resources
     Array.from(allMaterials).forEach((key) =>
@@ -460,14 +490,16 @@ function update(delta_time) {
     time_since_last_save += delta_time;
     time_since_manufature += delta_time;
     total_time += delta_time;
-    if (time_since_last_save >= save_rate) {
+    if (time_since_last_save >= save_rate)
+    {
         saveGame();
         time_since_last_save = 0;
     }
 
     // Manufacture every second
-    if (passedStage('factoryTab') && time_since_manufature >= manufacture_rate) {
-        console.log('manufacturing attempt', time_since_manufature, manufacture_rate);
+    if (passedStage('factoryTab') && time_since_manufature >= manufacture_rate)
+    {
+        //console.log('manufacturing attempt', time_since_manufature, manufacture_rate);
         time_since_manufature = 0;
         attemptManufacture();
     }
@@ -479,7 +511,8 @@ function update(delta_time) {
 //     if (!currentlyDeleting) saveGame();
 // };
 
-function addResource() {
+function addResource()
+{
     // @ts-ignore
     const resourceName = document.getElementById("resourceName").value;
     // @ts-ignore
@@ -514,8 +547,8 @@ function addResource() {
         requirement: () => true // By default, making this always visible. Modify as needed.
     };
 
-    console.log(newResource);
-    console.log(newButton);
+    //console.log(newResource);
+    //console.log(newButton);
 
     // Hide form once resource is added
     // @ts-ignore
@@ -525,7 +558,8 @@ function addResource() {
     // updateUI(resourceName);
 }
 
-function updateUI(resourceName) {
+function updateUI(resourceName)
+{
     // Here you can create a new DOM element to display the added resource
     const resourceDiv = document.createElement("div");
     resourceDiv.innerHTML = `${resourceName}: ${resources[resourceName].value}`;
@@ -536,7 +570,8 @@ function updateUI(resourceName) {
 
 
 
-function toggleOptions() {
+function toggleOptions()
+{
     playSound('./audio/options.wav', false);
 
     const optionsMenu = document.getElementById('optionsMenu');
@@ -554,7 +589,8 @@ let currentlyDeleting = false;
 
 
 // After all has been loaded
-document.addEventListener('DOMContentLoaded', (event) => {
+document.addEventListener('DOMContentLoaded', (event) =>
+{
 
 
     // Your web app's Firebase configuration
@@ -600,16 +636,18 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 
     // for (let i = 0; i < 30; ++i)
-    //     console.log(generateRandomBuilding());
+    //     //console.log(generateRandomBuilding());
 
     /**
      * Get a resource key from an ID.
      * @param {string} id The id of a resource e.g. gatherGame
      * @returns Resource key e.g. game
      */
-    function getRKeyFromID(id) {
-        for (const [r, val] of Object.entries(resources)) {
-            // console.log(resources[r].id, id);
+    function getRKeyFromID(id)
+    {
+        for (const [r, val] of Object.entries(resources))
+        {
+            // //console.log(resources[r].id, id);
             if (val.id === id) return r;
         }
         return 'error ' + id;
@@ -619,21 +657,25 @@ document.addEventListener('DOMContentLoaded', (event) => {
      * @param {string} id The id of a resource e.g. craftHandle
      * @returns Resource key e.g. handle
      */
-    function getCRKeyFromID(id) {
-        for (const [r, val] of Object.entries(craftedResources)) {
-            console.log(r, val, id);
+    function getCRKeyFromID(id)
+    {
+        for (const [r, val] of Object.entries(craftedResources))
+        {
+            //console.log(r, val, id);
             if (val.id === id) return r;
         }
         return 'error ' + id;
     }
 
     // General document click handler
-    document.addEventListener("click", (event) => {
+    document.addEventListener("click", (event) =>
+    {
         // Start the music playback
         // We need to wait for a click https://developer.chrome.com/blog/autoplay/
         if (currentAudio === null) playRandomTrack();
         // @ts-ignore
-        if (event.target.matches("button")) {
+        if (event.target.matches("button"))
+        {
 
 
             // one of our buttons was clicked
@@ -641,7 +683,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
             // BUILDING BUTTONS
             // @ts-ignore
-            if (button.getAttribute('data_building') && button.getAttribute('data_building') !== 'undefined' && button.classList.contains('purchasable')) {
+            if (button.getAttribute('data_building') && button.getAttribute('data_building') !== 'undefined' && button.classList.contains('purchasable'))
+            {
 
                 // @ts-ignore
                 var building = button.getAttribute('data_building');
@@ -651,10 +694,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 playSound('./audio/building.wav', false);
 
                 const buildingString = capitalizeFirst(building).split('_').join(' ');
-                if (event.shiftKey) {
+                if (event.shiftKey)
+                {
                     let count = buyMaxBuildings(building);
                     triggerFloatUpText(x, y, `+${count} ${buildingString}s`, 'aqua');
-                } else {
+                } else
+                {
                     buyBuilding(building);
                     triggerFloatUpText(x, y, `+1 ${buildingString}`, 'aqua');
                 }
@@ -662,23 +707,29 @@ document.addEventListener('DOMContentLoaded', (event) => {
             }
             // PONDER BUTTONS
             // @ts-ignore
-            else if (button.classList.contains('unlock')) {
+            else if (button.classList.contains('unlock'))
+            {
                 // @ts-ignore
                 const unlockAttr = button.getAttribute('unlock');
-                // console.log('click');
-                console.log(unlockAttr);
-                if (ponders[unlockAttr]) {
+                // //console.log('click');
+                //console.log(unlockAttr);
+                if (ponders[unlockAttr])
+                {
                     var canUnlock = true;
-                    for (let material in ponders[unlockAttr].cost) {
-                        if (getMaterial(material, resources) < ponders[unlockAttr].cost[material]) {
-                            // console.log("Cannot unlock " + unlockAttr);
+                    for (let material in ponders[unlockAttr].cost)
+                    {
+                        if (getMaterial(material, resources) < ponders[unlockAttr].cost[material])
+                        {
+                            // //console.log("Cannot unlock " + unlockAttr);
                             canUnlock = false;
                             break;
                         }
                     }
 
-                    if (canUnlock) {
-                        for (let material in ponders[unlockAttr].cost) {
+                    if (canUnlock)
+                    {
+                        for (let material in ponders[unlockAttr].cost)
+                        {
                             increaseMaterial(material, -ponders[unlockAttr].cost[material]);
                         }
                         ponders[unlockAttr].isPondered = true;
@@ -691,7 +742,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                         playSound('./audio/ponder.wav', false);
 
 
-                        // console.log("Unlocking " + unlockAttr);
+                        // //console.log("Unlocking " + unlockAttr);
                         // Refresh the page when buying organized storage to generate the groups
                         if (unlockAttr === 'organization') { saveGame(); location.reload(); }
 
@@ -702,13 +753,15 @@ document.addEventListener('DOMContentLoaded', (event) => {
             }
             // OTHER BUTTONS
             // @ts-ignore
-            else if (button.id !== 'undefined') {
-                // console.log(button);
+            else if (button.id !== 'undefined')
+            {
+                // //console.log(button);
                 // @ts-ignore
                 if (button.id.slice(0, 6) === "gather") toggleResource(getRKeyFromID(button.id));
 
                 // @ts-ignore
-                else if (button.id.slice(0, 5) === 'craft') {
+                else if (button.id.slice(0, 5) === 'craft')
+                {
                     playSound('./audio/craft.wav', false);
 
                     // @ts-ignore
@@ -731,13 +784,15 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 else if (button.id === 'overlay-button') hideOverlay();
 
                 // @ts-ignore
-                else if (button.id === 'deleteSaveButton' && confirm("Are you sure you want to delete your save data? This will reset all your progress.")) {
+                else if (button.id === 'deleteSaveButton' && confirm("Are you sure you want to delete your save data? This will reset all your progress."))
+                {
                     deleteGame();
                 }
                 // @ts-ignore
                 else if (button.id === 'clearJobAssignments') clearJobAssignments();
                 // @ts-ignore
-                else if (button.id === 'darkModeToggle') {
+                else if (button.id === 'darkModeToggle')
+                {
                     body.classList.toggle('dark-mode');
                     // @ts-ignore
                     darkModeToggle.classList.toggle('dark');
@@ -748,28 +803,32 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 }
 
                 // @ts-ignore
-                else if (button.id === 'prestige') {
+                else if (button.id === 'prestige')
+                {
                     isekai();
                 }
                 // @ts-ignore
-                else if (button.id === 'startCombat') {
+                else if (button.id === 'startCombat')
+                {
                     combat();
                 }
             }
 
             // @ts-ignore
-            if (button.classList.contains('tierOneButton')) {
+            if (button.classList.contains('tierOneButton'))
+            {
                 // @ts-ignore
                 let perk = button.textContent;
                 selectAbility(perk);
             }
 
 
-            
+
         }
 
         // @ts-ignore
-        if (event.target.matches("#alone")) {
+        if (event.target.matches("#alone"))
+        {
             increaseCloneByOne(event);
         }
 
@@ -781,7 +840,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
     /**
      * Make factory buttons of buy new factory and buy bulk upgrade.
      */
-    function makeFactoryButtons() {
+    function makeFactoryButtons()
+    {
         const factoryButtons = document.querySelector('#factoryButtons');
 
         const buyFactoryButton = document.createElement('button');
@@ -793,9 +853,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
         factoryButtons.appendChild(buyFactoryButton);
 
         // Buy new factory button
-        buyFactoryButton.addEventListener("click", () => {
+        buyFactoryButton.addEventListener("click", () =>
+        {
 
-            console.log('buying factory');
+            //console.log('buying factory');
             buyFactory();
         });
 
@@ -809,7 +870,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
         // // Upgrade bulk button
         // upgradeBulkButton.addEventListener("click", () => {
-        //     console.log('upgrading bulk');
+        //     //console.log('upgrading bulk');
         //     upgradeBulk();
         // });
 
@@ -823,7 +884,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // Adjust music volume
     document.getElementById('musicVolume').value = getMusicVolume();
-    document.getElementById('musicVolume').addEventListener('input', function () {
+    document.getElementById('musicVolume').addEventListener('input', function ()
+    {
         // @ts-ignore
         setMusicVolume(this.value);
         currentAudio.volume = getMusicVolume();
@@ -831,13 +893,15 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // Adjust sfx volume
     document.getElementById('sfxVolume').value = getSfxVolume();
-    document.getElementById('sfxVolume').addEventListener('input', function () {
+    document.getElementById('sfxVolume').addEventListener('input', function ()
+    {
         // @ts-ignore
         setSfxVolume(this.value);
     });
 
     // Toggle petals
-    document.querySelector('input[name="petals"]').addEventListener('click', (event) => {
+    document.querySelector('input[name="petals"]').addEventListener('click', (event) =>
+    {
         if (event.target.checked) setPetals(10);
         else setPetals(0);
     });
@@ -851,10 +915,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
     requestAnimationFrame(startPetalRendering);
 
     // Update the tooltip when hovering over a button
-    document.querySelectorAll('.tooltip').forEach(button => {
+    document.querySelectorAll('.tooltip').forEach(button =>
+    {
 
         // Update the tooltip on mouse enter
-        button.addEventListener('mouseenter', function (e) {
+        button.addEventListener('mouseenter', function (e)
+        {
             updateTooltip(button);
             currentHoverButton = button;
         });
@@ -862,7 +928,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
         // TODO: move this event listener
         // Update on onclick for purchases
-        button.addEventListener('onclick', function () {
+        button.addEventListener('onclick', function ()
+        {
             updateTooltip(button);
         });
 
@@ -885,7 +952,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 });
 
 
-function increaseCloneByOne(event) {
+function increaseCloneByOne(event)
+{
     // increaseMaterial('clones', 1);
     let text = '+1 Clone';
 
@@ -909,7 +977,8 @@ function increaseCloneByOne(event) {
  * @param {number} n A fibonacci number
  * @returns The fibonacci number after n
  */
-function nextFibonacci(n) {
+function nextFibonacci(n)
+{
     let a = n * (1 + Math.sqrt(5)) / 2.0;
     return Math.round(a);
 }
@@ -919,7 +988,8 @@ function nextFibonacci(n) {
  * @param {number} n A fibonacci number
  * @returns The fibonacci number before n
  */
-function prevFibonacci(n) {
+function prevFibonacci(n)
+{
     let a = n / ((1 + Math.sqrt(5)) / 2.0);
     return Math.round(a);
 }
@@ -933,11 +1003,13 @@ const overlayBackButton = document.getElementById('overlay-back-button'); // Get
  * 
  * Also handles resetting all resources, crafted resources, ponders, perks, buildings, and overall progress.
  */
-function isekai() {
+function isekai()
+{
 
     // Handle the isekai itself
-    overlayButton.addEventListener('click', () => {
-        console.log('isekai button clicked');
+    overlayButton.addEventListener('click', () =>
+    {
+        //console.log('isekai button clicked');
         const husksDue = getMaterial('clones') + getMaterial('husks');
 
         // Reset functions to be executed when "Continue" is clicked
@@ -953,7 +1025,8 @@ function isekai() {
         playSound('./audio/isekaiconfirm.wav', false);
 
         // Set max of all resources to 100 (tiny boost)
-        for (let [r, val] of Object.entries(resources)) {
+        for (let [r, val] of Object.entries(resources))
+        {
             val.max = 100;
         }
 
@@ -965,7 +1038,8 @@ function isekai() {
         overlay.style.display = 'none';
 
         let lastBuilding = null;
-        for (let i = 0; i < newBuildingsCount; i++) {
+        for (let i = 0; i < newBuildingsCount; i++)
+        {
             const randomBuilding = generateRandomBuilding();
             buildings[randomBuilding.name.split(' ').join('_')] = randomBuilding;
             lastBuilding = randomBuilding;
@@ -977,8 +1051,9 @@ function isekai() {
     });
 
     const newBuildingsCount = 4;
-    overlayBackButton.addEventListener('click', () => {
-        console.log('back button clicked');
+    overlayBackButton.addEventListener('click', () =>
+    {
+        //console.log('back button clicked');
         // Just close the overlay without executing reset functions
         overlay.style.display = 'none';
     });
@@ -1003,16 +1078,19 @@ function isekai() {
 
     fadeToBlack();
 
-    setTimeout(() => {
+    setTimeout(() =>
+    {
         // @ts-ignore
         overlayBackButton.style.display = 'block';
     }, 5000);
 
-    function createPrestigeButtons() {
+    function createPrestigeButtons()
+    {
 
         const buttonContainer = document.getElementById('isekaiButtons');
         let i = 1;
-        Object.keys(prestige).forEach(key => {
+        Object.keys(prestige).forEach(key =>
+        {
             const button = document.createElement('button');
             button.innerHTML = `<b>${prestige[key].text}</b><br>Level: ${prestige[key].level}<br>Cost: ${prestige[key].cost}`;
             button.setAttribute('tooltipCost', prestige[key].cost);
@@ -1022,9 +1100,10 @@ function isekai() {
             button.style.gridRow = Math.floor(i / 4 + 1).toString();
             ++i;
             // Optional: Add an event listener if you want to handle clicks
-            button.addEventListener('click', () => {
+            button.addEventListener('click', () =>
+            {
                 // You can implement what happens when the button is clicked
-                console.log(`Button ${key} was clicked`);
+                //console.log(`Button ${key} was clicked`);
                 if (getMaterial('husks') < prestige[key].cost) return;
                 prestige[key].level++;
                 increaseMaterial('husks', -prestige[key].cost);
@@ -1036,10 +1115,11 @@ function isekai() {
                 updateTooltip(button);
             });
             // Right-click to decrease level
-            button.addEventListener('contextmenu', (e) => {
+            button.addEventListener('contextmenu', (e) =>
+            {
                 e.preventDefault();
                 // You can implement what happens when the button is clicked
-                console.log(`Button ${key} was right clicked`);
+                //console.log(`Button ${key} was right clicked`);
                 if (prestige[key].level <= 0) return;
                 prestige[key].level--;
                 prestige[key].cost = prevFibonacci(prestige[key].cost);
@@ -1053,7 +1133,8 @@ function isekai() {
             });
             buttonContainer.appendChild(button);
 
-            button.addEventListener('mouseenter', function (e) {
+            button.addEventListener('mouseenter', function (e)
+            {
                 updateTooltip(button);
                 currentHoverButton = button;
             });
@@ -1084,7 +1165,8 @@ module.exports = {
     isekai,
     update
 };
-function deleteGame() {
+function deleteGame()
+{
     localStorage.removeItem('save'); currentlyDeleting = true; location.reload();
 }
 
